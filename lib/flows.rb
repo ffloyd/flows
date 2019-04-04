@@ -1,4 +1,4 @@
-require "flows/version"
+require 'flows/version'
 
 module Flows
   class Error < StandardError; end
