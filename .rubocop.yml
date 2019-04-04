@@ -14,3 +14,6 @@ Metrics/BlockLength:
 
 Style/FrozenStringLiteralComment:
   EnforcedStyle: never
+
+Metrics/ParameterLists:
+  CountKeywordArgs: false
