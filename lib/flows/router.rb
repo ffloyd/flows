@@ -1,11 +1,16 @@
 module Flows
   # Node router: defines predicate rules to calculate next node.
   class Router
-    def initialize(route_hash)
+    DEFAULT_PREPROCESSOR = ->(output, _context) { output }
+
+    def initialize(route_hash, preprocessor: DEFAULT_PREPROCESSOR)
       @route_def = route_hash
+      @preprocessor = preprocessor
     end
 
-    def call(data)
+    def call(input, context:)
+      data = @preprocessor.call(input, context)
+
       matched_entry = @route_def.find do |predicate, _|
         if predicate.respond_to?(:call)
           predicate.call(data)
