@@ -1,38 +1,27 @@
 module Flows
   # Representation of FSM node.
   class Node
-    attr_reader :name,
-                :body,
-                :router
+    attr_reader :name, :meta
 
-    def initialize(name, body:, router:)
+    def initialize(name:, body:, router:, meta:, preprocessor: nil, postprocessor: nil)
       @name = name
       @body = body
       @router = router
+
+      @meta = meta.freeze
+
+      @preprocessor = preprocessor
+      @postprocessor = postprocessor
     end
 
-    def call(input:, context:)
-      output = body.call(input)
+    def call(input, context:)
+      input  = @preprocessor.call(input, context, @meta) if @preprocessor
+      output = @body.call(input)
+      output = @postprocessor.call(output, context, @meta) if @postprocessor
 
-      route = resolve_route(output, context)
+      route = @router.call(output, context: context, meta: @meta)
 
       [output, route]
-    end
-
-    private
-
-    def resolve_route(output, context)
-      matched_entry = router.find do |predicate, _|
-        if predicate.respond_to?(:call)
-          predicate.call(output, context)
-        else
-          predicate === output # rubocop:disable Style/CaseEquality
-        end
-      end
-
-      raise Error, 'no route found' unless matched_entry
-
-      matched_entry[1]
     end
   end
 end

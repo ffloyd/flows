@@ -12,3 +12,11 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 end
+
+RSpec.shared_context 'with helpers' do
+  def proc_double(result)
+    double.tap do |dbl|
+      allow(dbl).to receive(:call).and_return(result)
+    end
+  end
+end

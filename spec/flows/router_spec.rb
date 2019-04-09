@@ -1,4 +1,8 @@
+require 'spec_helper'
+
 RSpec.describe Flows::Router do
+  include_context 'with helpers'
+
   describe '.call' do
     subject(:call) { router.call(output, context: context, meta: meta) }
 
@@ -6,11 +10,7 @@ RSpec.describe Flows::Router do
     let(:context) { double }
     let(:meta) { double }
 
-    let(:predicate) do
-      double.tap do |dbl|
-        allow(dbl).to receive(:call).and_return(true)
-      end
-    end
+    let(:predicate) { proc_double true }
 
     context 'when no preprocessor specified' do
       let(:router) do
@@ -69,11 +69,7 @@ RSpec.describe Flows::Router do
 
       let(:preprocessor_result) { double }
 
-      let(:preprocessor) do
-        double.tap do |dbl|
-          allow(dbl).to receive(:call).and_return(preprocessor_result)
-        end
-      end
+      let(:preprocessor) { proc_double preprocessor_result }
 
       it 'calls preprocessor with output, contexta and meta' do
         call

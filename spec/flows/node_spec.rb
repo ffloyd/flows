@@ -1,81 +1,90 @@
 require 'spec_helper'
 
 RSpec.describe Flows::Node do
-  describe 'simplest node which should return `:output` as result and `:next_node` as route' do
-    subject(:node) do
-      described_class.new(
-        :node,
-        body: ->(_) { :output },
-        router: {
-          ->(_, _) { true } => :next_node
-        }
-      )
+  include_context 'with helpers'
+
+  describe '.call' do
+    subject(:call) do
+      node.call(input, context: context)
     end
 
-    it 'has selected name' do
-      expect(node.name).to eq :node
+    let(:input) { double }
+    let(:context) { double }
+
+    let(:name) { :node_name }
+
+    let(:output) { double }
+    let(:body) { proc_double output }
+
+    let(:router) do
+      Flows::Router.new(output => :next_route)
     end
 
-    it 'returns `:output` as output and `:next_node` as route' do
-      result = node.call(input: nil, context: {})
+    let(:meta) { { some: :meta } }
 
-      expect(result).to eq %i[output next_node]
-    end
-  end
-
-  describe 'node with comparsion routing based on lambdas' do
-    subject(:node) do
-      described_class.new(
-        :node,
-        body: ->(input) { input },
-        router: {
-          ->(output, _) { true if output > 10 } => :big,
-          ->(output, _) { true if output > 0 } => :small
-        }
-      )
+    let(:init_params) do
+      {
+        name: name,
+        body: body,
+        router: router,
+        meta: meta
+      }
     end
 
-    it 'when input is 100 routes to `:big`' do
-      _, route = node.call(input: 100, context: {})
+    context 'with simplest node' do
+      let(:node) { described_class.new(init_params) }
 
-      expect(route).to eq :big
+      it 'returns output and next route' do
+        expect(call).to eq [output, :next_route]
+      end
     end
 
-    it 'when input is 2 routes to `:small`' do
-      _, route = node.call(input: 2, context: {})
+    context 'with defined preprocessor' do
+      let(:node) do
+        described_class.new(
+          init_params.merge(preprocessor: preprocessor)
+        )
+      end
 
-      expect(route).to eq :small
+      let(:preprocessor_result) { double }
+      let(:preprocessor) { proc_double preprocessor_result }
+
+      it 'calls preprocessor with input, context and meta' do
+        call
+
+        expect(preprocessor).to have_received(:call).with(input, context, meta)
+      end
+
+      it 'uses preprocessor output as body input' do
+        call
+
+        expect(body).to have_received(:call).with(preprocessor_result)
+      end
     end
 
-    it 'when no route for given input raises an error' do
-      expect do
-        node.call(input: -10, context: {})
-      end.to raise_error Flows::Error
-    end
-  end
+    context 'with defined postprocessor' do
+      let(:node) do
+        described_class.new(
+          init_params.merge(postprocessor: postprocessor)
+        )
+      end
 
-  describe 'node with boolean routing based on case equality' do
-    subject(:node) do
-      described_class.new(
-        :node,
-        body: ->(input) { input },
-        router: {
-          true => :good,
-          false => :bad
-        }
-      )
-    end
+      let(:router) { proc_double :next_route }
 
-    it 'when input is `true` routes to `:good`' do
-      _, route = node.call(input: true, context: {})
+      let(:postprocessor_result) { double }
+      let(:postprocessor) { proc_double postprocessor_result }
 
-      expect(route).to eq :good
-    end
+      it 'calls postprocessor with body output, context and meta' do
+        call
 
-    it 'when input is `false` routes to `:bad`' do
-      _, route = node.call(input: false, context: {})
+        expect(postprocessor).to have_received(:call).with(output, context, meta)
+      end
 
-      expect(route).to eq :bad
+      it 'uses postprocessor output as router input' do
+        call
+
+        expect(router).to have_received(:call).with(postprocessor_result, context: context, meta: meta)
+      end
     end
   end
 end
