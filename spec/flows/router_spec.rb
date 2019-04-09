@@ -1,83 +1,97 @@
 RSpec.describe Flows::Router do
-  RSpec.shared_examples 'router tests' do
-    context 'when input is `:symbol`' do
-      let(:input) { :symbol }
+  describe '.call' do
+    subject(:call) { router.call(output, context: context, meta: meta) }
 
-      it { is_expected.to eq :route_for_symbol_value }
-    end
+    let(:output) { double }
+    let(:context) { double }
+    let(:meta) { double }
 
-    context 'when input is `10`' do
-      let(:input) { 10 }
-
-      it { is_expected.to eq :route_for_integers }
-    end
-
-    context 'when input is `:other_symbol`' do
-      let(:input) { :other_symbol }
-
-      it { is_expected.to eq :route_for_other_symbols }
-    end
-
-    context 'when unexpected input `nil`' do
-      let(:input) { nil }
-
-      it { expect { invoke }.to raise_error Flows::Error }
-    end
-  end
-
-  describe 'case equality based routing' do
-    subject(:invoke) { router.call(input, context: {}) }
-
-    let(:router) do
-      described_class.new(
-        :symbol => :route_for_symbol_value,
-        Integer => :route_for_integers,
-        Symbol => :route_for_other_symbols
-      )
-    end
-
-    include_examples 'router tests'
-  end
-
-  describe 'proc based routing' do
-    subject(:invoke) { router.call(input, context: {}) }
-
-    let(:router) do
-      described_class.new(
-        ->(x) { x == :symbol } => :route_for_symbol_value,
-        ->(x) { x.is_a?(Integer) } => :route_for_integers,
-        ->(x) { x.is_a?(Symbol) } => :route_for_other_symbols
-      )
-    end
-
-    include_examples 'router tests'
-  end
-
-  describe 'use data from context using preprocessor' do
-    subject(:invoke) { router.call(input, context: context) }
-
-    let(:router) do
-      described_class.new({
-                            context_used: :context_used,
-                            input: :context_not_used
-                          }, preprocessor: preprocessor)
-    end
-
-    let(:preprocessor) do
-      lambda do |input, context|
-        if context == 'use me'
-          :context_used
-        else
-          input
-        end
+    let(:predicate) do
+      double.tap do |dbl|
+        allow(dbl).to receive(:call).and_return(true)
       end
     end
 
-    let(:input) { :input }
-    let(:context) { 'use me' }
+    context 'when no preprocessor specified' do
+      let(:router) do
+        described_class.new(
+          predicate => :next_route
+        )
+      end
 
-    it 'uses context' do
-      expect(invoke).to eq :context_used
+      it 'calls predicate with output' do
+        call
+
+        expect(predicate).to have_received(:call).with(output)
+      end
+
+      it 'returns route' do
+        expect(call).to eq :next_route
+      end
+    end
+
+    context 'when several predicates matches' do
+      let(:router) do
+        described_class.new(
+          predicate => :first_route,
+          predicate.clone => :second_route,
+          predicate.clone => :third_route
+        )
+      end
+
+      it 'returns first matched route' do
+        expect(call).to eq :first_route
+      end
+    end
+
+    context 'when case equality used instead of predicates' do
+      let(:router) do
+        described_class.new(
+          meta => :first_route,
+          context => :second_route,
+          output => :third_route
+        )
+      end
+
+      it 'returns correct route' do
+        expect(call).to eq :third_route
+      end
+    end
+
+    context 'when preprocessor used' do
+      let(:router) do
+        described_class.new(routes, preprocessor: preprocessor)
+      end
+
+      let(:routes) do
+        { preprocessor_result => :route }
+      end
+
+      let(:preprocessor_result) { double }
+
+      let(:preprocessor) do
+        double.tap do |dbl|
+          allow(dbl).to receive(:call).and_return(preprocessor_result)
+        end
+      end
+
+      it 'calls preprocessor with output, contexta and meta' do
+        call
+
+        expect(preprocessor).to have_received(:call).with(output, context, meta)
+      end
+
+      it 'uses preprocessor result as data for routing' do
+        expect(call).to eq :route
+      end
+    end
+
+    context 'when no route matched' do
+      let(:router) { described_class.new(no_match: :route) }
+
+      it 'raises Flows::Error' do
+        expect { call }.to raise_error Flows::Error
+      end
     end
   end
 end
