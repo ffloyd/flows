@@ -3,7 +3,7 @@ module Flows
   class Node
     attr_reader :name, :meta
 
-    def initialize(name:, body:, router:, meta:, preprocessor: nil, postprocessor: nil)
+    def initialize(name:, body:, router:, meta: {}, preprocessor: nil, postprocessor: nil)
       @name = name
       @body = body
       @router = router

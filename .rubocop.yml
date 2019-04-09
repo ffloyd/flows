@@ -17,3 +17,6 @@ Style/FrozenStringLiteralComment:
 
 Metrics/ParameterLists:
   CountKeywordArgs: false
+
+Style/WhileUntilModifier:
+  Enabled: false
