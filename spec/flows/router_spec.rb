@@ -86,7 +86,7 @@ RSpec.describe Flows::Router do
       let(:router) { described_class.new(no_match: :route) }
 
       it 'raises Flows::Error' do
-        expect { call }.to raise_error Flows::Error
+        expect { call }.to raise_error Flows::Router::NoRouteError
       end
     end
   end
