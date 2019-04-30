@@ -1,3 +1,7 @@
+require_relative 'result/success'
+require_relative 'result/failure'
+require_relative 'result/helpers'
+
 module Flows
   # Result object with context
   class Result
