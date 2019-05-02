@@ -1,25 +1,12 @@
 require 'spec_helper'
 
+require_relative '../support/operation_examples'
+
 RSpec.describe Flows::Operation do
   let(:invoke) { operation.new.call(params) }
 
   describe 'simplest operation' do
-    let(:operation) do
-      Class.new do
-        include Flows::Operation
-
-        step :calc_sum
-
-        success :result
-        failure :error
-
-        def calc_sum(first:, second:)
-          return err(error: :division_by_zero) if second.zero?
-
-          ok(result: first / second)
-        end
-      end
-    end
+    let(:operation) { OperationExamples::OneStep }
 
     context 'when success path' do
       let(:params) do
@@ -53,54 +40,7 @@ RSpec.describe Flows::Operation do
   end
 
   describe 'two success result variants and two errors variants' do
-    let(:operation) do
-      Class.new do
-        include Flows::Operation
-
-        def guns
-          %w[rifle pistol]
-        end
-
-        def blades
-          %w[sword dagger]
-        end
-
-        step :pick_weapon_set
-        step :pick_weapon
-        step :build_result
-
-        success team_red: [:gun],
-                team_blue: [:blade]
-
-        failure unexisting_team: %i[color],
-                weapon_not_found: %i[set index]
-
-        def pick_weapon_set(color:, **)
-          weapon_set = case color
-                       when 'red' then guns
-                       when 'blue' then blades
-                       else return err(:unexisting_team, color: color)
-                       end
-
-          ok(weapon_set: weapon_set)
-        end
-
-        def pick_weapon(weapon_index:, weapon_set:, **)
-          weapon = weapon_set[weapon_index]
-
-          return err(:weapon_not_found, set: weapon_set, index: weapon_index) if weapon.nil?
-
-          ok(weapon: weapon)
-        end
-
-        def build_result(weapon:, color:, **)
-          case color
-          when 'red' then ok(:team_red, gun: weapon)
-          when 'blue' then ok(:team_blue, blade: weapon)
-          end
-        end
-      end
-    end
+    let(:operation) { OperationExamples::DifferentOutputStatuses }
 
     context 'when success :team_red path' do
       let(:params) do
@@ -174,7 +114,7 @@ RSpec.describe Flows::Operation do
       end
 
       it do
-        expect(invoke.error).to eq(set: operation.new.guns, index: 100)
+        expect(invoke.error).to eq(set: operation::GUNS, index: 100)
       end
     end
   end
