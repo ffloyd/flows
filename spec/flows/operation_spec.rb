@@ -135,7 +135,7 @@ RSpec.describe Flows::Operation do
     end
 
     it 'raises error on initialization' do
-      expect { operation.new }.to raise_error described_class::NoSuccessResultShapeError
+      expect { operation.new }.to raise_error described_class::NoSuccessShapeError
     end
   end
 
@@ -168,11 +168,11 @@ RSpec.describe Flows::Operation do
 
     context 'when failure result generated' do
       let(:params) do
-        { should_fail: false }
+        { should_fail: true }
       end
 
       it do
-        expect { invoke }.to raise_error described_class::NoFailureResultShapeError
+        expect { invoke }.to raise_error described_class::NoFailureShapeError
       end
     end
   end
@@ -187,7 +187,7 @@ RSpec.describe Flows::Operation do
       end
     end
 
-    it 'raises error on creation' do
+    it do
       expect { operation.new }.to raise_error described_class::NoStepsError
     end
   end
@@ -204,7 +204,7 @@ RSpec.describe Flows::Operation do
       end
     end
 
-    it 'raises error on creation' do
+    it do
       expect { operation.new }.to raise_error described_class::NoStepImplementationError
     end
   end
@@ -219,11 +219,13 @@ RSpec.describe Flows::Operation do
         success :output_a, :output_b
         failure :error
 
-        def do_job
+        def do_job(**)
           ok(output_a: :ok)
         end
       end
     end
+
+    let(:params) { {} }
 
     it do
       expect { invoke }.to raise_error described_class::MissingOutputError
@@ -240,11 +242,13 @@ RSpec.describe Flows::Operation do
         success :output_a, :output_b
         failure :error
 
-        def do_job
+        def do_job(**)
           err(wrong_key: :ok)
         end
       end
     end
+
+    let(:params) { {} }
 
     it do
       expect { invoke }.to raise_error described_class::MissingOutputError

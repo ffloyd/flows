@@ -2,7 +2,7 @@ module Flows
   module Operation
     # DSL methods for operation
     module DSL
-      attr_reader :steps, :success_filter, :failure_filter
+      attr_reader :steps, :success_shapes, :failure_shapes
 
       def step(name)
         @steps << {
@@ -11,7 +11,7 @@ module Flows
       end
 
       def success(*keys, **code_keys_map)
-        @success_filter = if keys.empty?
+        @success_shapes = if keys.empty?
                             code_keys_map
                           else
                             { success: keys }
@@ -19,7 +19,7 @@ module Flows
       end
 
       def failure(*keys, **code_keys_map)
-        @failure_filter = if keys.empty?
+        @failure_shapes = if keys.empty?
                             code_keys_map
                           else
                             { failure: keys }

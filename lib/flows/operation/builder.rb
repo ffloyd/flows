@@ -2,9 +2,9 @@ module Flows
   module Operation
     # Flow builder
     class Builder
-      def initialize(operation)
-        @operation = operation
-        @steps = operation.class.steps
+      def initialize(steps:, method_source:)
+        @method_source = method_source
+        @steps = steps
       end
 
       def call
@@ -27,8 +27,10 @@ module Flows
 
       def resolve_bodies!
         @steps.map! do |step|
+          raise ::Flows::Operation::NoStepImplementationError unless @method_source.respond_to?(step[:name])
+
           step.merge(
-            body: @operation.method(step[:name])
+            body: @method_source.method(step[:name])
           )
         end
       end
