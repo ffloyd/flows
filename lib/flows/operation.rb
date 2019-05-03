@@ -12,10 +12,12 @@ module Flows
 
     include ::Flows::Result::Helpers
 
-    def call(**params)
+    def initialize
       @flows_flow ||= ::Flows::Operation::Builder.new(self).call
       @flows_executor ||= ::Flows::Operation::Executor.new(self, @flows_flow)
+    end
 
+    def call(**params)
       @flows_executor.call(**params)
     end
   end
