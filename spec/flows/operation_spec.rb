@@ -3,7 +3,7 @@ require 'spec_helper'
 require_relative '../support/operation_examples'
 
 RSpec.describe Flows::Operation do
-  let(:invoke) { operation.new.call(params) }
+  subject(:invoke) { operation.new.call(params) }
 
   describe 'simplest operation' do
     let(:operation) { OperationExamples::OneStep }
@@ -116,6 +116,138 @@ RSpec.describe Flows::Operation do
       it do
         expect(invoke.error).to eq(set: operation::GUNS, index: 100)
       end
+    end
+  end
+
+  describe 'when no success output configuration provided' do
+    let(:operation) do
+      Class.new do
+        include Flows::Operation
+
+        step :be_ok
+
+        failure :error
+
+        def be_ok(**)
+          ok(result: :ok)
+        end
+      end
+    end
+
+    it 'raises error on initialization' do
+      expect { operation.new }.to raise_error described_class::NoSuccessResultShapeError
+    end
+  end
+
+  describe 'when no failure output configuration provided' do
+    let(:operation) do
+      Class.new do
+        include Flows::Operation
+
+        step :be_ok
+
+        success :result
+
+        def be_ok(should_fail:, **)
+          if should_fail
+            err(wtf: :i_dont_know)
+          else
+            ok(result: :ok)
+          end
+        end
+      end
+    end
+
+    context 'when success result generated' do
+      let(:params) do
+        { should_fail: false }
+      end
+
+      it { expect(invoke).to be_success }
+    end
+
+    context 'when failure result generated' do
+      let(:params) do
+        { should_fail: false }
+      end
+
+      it do
+        expect { invoke }.to raise_error described_class::NoFailureResultShapeError
+      end
+    end
+  end
+
+  describe 'when no steps defined' do
+    let(:operation) do
+      Class.new do
+        include Flows::Operation
+
+        success :result
+        failure :error
+      end
+    end
+
+    it 'raises error on creation' do
+      expect { operation.new }.to raise_error described_class::NoStepsError
+    end
+  end
+
+  describe 'when step implementation missed' do
+    let(:operation) do
+      Class.new do
+        include Flows::Operation
+
+        step :without_implementation
+
+        success :result
+        failure :error
+      end
+    end
+
+    it 'raises error on creation' do
+      expect { operation.new }.to raise_error described_class::NoStepImplementationError
+    end
+  end
+
+  describe 'when some success output key not generated' do
+    let(:operation) do
+      Class.new do
+        include Flows::Operation
+
+        step :do_job
+
+        success :output_a, :output_b
+        failure :error
+
+        def do_job
+          ok(output_a: :ok)
+        end
+      end
+    end
+
+    it do
+      expect { invoke }.to raise_error described_class::MissingOutputError
+    end
+  end
+
+  describe 'when some failure output key not generated' do
+    let(:operation) do
+      Class.new do
+        include Flows::Operation
+
+        step :do_job
+
+        success :output_a, :output_b
+        failure :error
+
+        def do_job
+          err(wrong_key: :ok)
+        end
+      end
+    end
+
+    it do
+      expect { invoke }.to raise_error described_class::MissingOutputError
     end
   end
 end
