@@ -17,13 +17,13 @@ module Flows
     def initialize
       _flows_do_checks
 
-      @_flows_flow = ::Flows::Operation::Builder.new(
+      flow = ::Flows::Operation::Builder.new(
         steps: self.class.steps,
         method_source: self
       ).call
 
       @_flows_executor = ::Flows::Operation::Executor.new(
-        flow: @_flows_flow,
+        flow: flow,
         success_shapes: self.class.success_shapes,
         failure_shapes: self.class.failure_shapes
       )
