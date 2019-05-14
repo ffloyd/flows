@@ -27,7 +27,9 @@ module Flows
 
       def resolve_bodies!
         @steps.map! do |step|
-          raise ::Flows::Operation::NoStepImplementationError unless @method_source.respond_to?(step[:name])
+          unless @method_source.respond_to?(step[:name])
+            raise ::Flows::Operation::NoStepImplementationError, step[:name]
+          end
 
           step.merge(
             body: @method_source.method(step[:name])

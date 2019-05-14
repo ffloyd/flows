@@ -37,7 +37,7 @@ module Flows
 
     def _flows_do_checks
       raise NoStepsError if self.class.steps.empty?
-      raise NoSuccessShapeError if self.class.success_shapes.nil?
+      raise NoSuccessShapeError, self if self.class.success_shapes.nil?
     end
   end
 end

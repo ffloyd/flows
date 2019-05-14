@@ -38,7 +38,7 @@ module Flows
       end
 
       def extract_data(output, keys)
-        raise ::Flows::Operation::MissingOutputError unless keys.all? { |key| output.key?(key) }
+        raise ::Flows::Operation::MissingOutputError.new(keys, output.keys) unless keys.all? { |key| output.key?(key) }
 
         output.slice(*keys)
       end
