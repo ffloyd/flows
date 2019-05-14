@@ -25,13 +25,19 @@ module Flows
 
         case last_result
         when Flows::Result::Success
-          data = extract_data(context[:data], @success_shapes[status])
+          shape = @success_shapes[status]
+          raise ::Flows::Operation::UnexpectedSuccessStatusError.new(status, @success_shapes.keys) if shape.nil?
+
+          data = extract_data(context[:data], shape)
 
           ok(status, data)
         when Flows::Result::Failure
           raise ::Flows::Operation::NoFailureShapeError if @failure_shapes.nil?
 
-          data = extract_data(context[:data], @failure_shapes[status])
+          shape = @failure_shapes[status]
+          raise ::Flows::Operation::UnexpectedFailureStatusError.new(status, @failure_shapes.keys) if shape.nil?
+
+          data = extract_data(context[:data], shape)
 
           err(status, data)
         end

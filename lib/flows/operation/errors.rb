@@ -38,6 +38,28 @@ module Flows
         "Missing keys in output: #{@missing_keys.join(', ')}"
       end
     end
+
+    class UnexpectedSuccessStatusError < ::Flows::Error
+      def initialize(actual_status, supported_statuses)
+        @actual_status = actual_status.inspect
+        @supported_statuses = supported_statuses.map(&:inspect).join(', ')
+      end
+
+      def message
+        "Unexpeted success result status: `#{@actual_status}`, supported statuses: `#{@supported_statuses}`"
+      end
+    end
+
+    class UnexpectedFailureStatusError < ::Flows::Error
+      def initialize(actual_status, supported_statuses)
+        @actual_status = actual_status.inspect
+        @supported_statuses = supported_statuses.map(&:inspect).join(', ')
+      end
+
+      def message
+        "Unexpeted failure result status: `#{@actual_status}`, supported statuses: `#{@supported_statuses}`"
+      end
+    end
     # rubocop:enable Style/Documentation
   end
 end

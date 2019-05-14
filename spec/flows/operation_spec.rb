@@ -254,4 +254,49 @@ RSpec.describe Flows::Operation do
       expect { invoke }.to raise_error described_class::MissingOutputError
     end
   end
+
+  describe 'when success result has unexpected status' do
+    let(:operation) do
+      Class.new do
+        include Flows::Operation
+
+        step :do_job
+
+        success :a, :b
+
+        def do_job(**)
+          ok(:unexpected, some: :data)
+        end
+      end
+    end
+
+    let(:params) { {} }
+
+    it do
+      expect { invoke }.to raise_error described_class::UnexpectedSuccessStatusError
+    end
+  end
+
+  describe 'when failure result has unexpected status' do
+    let(:operation) do
+      Class.new do
+        include Flows::Operation
+
+        step :do_job
+
+        success :a, :b
+        failure :a, :b
+
+        def do_job(**)
+          err(:unexpected, some: :data)
+        end
+      end
+    end
+
+    let(:params) { {} }
+
+    it do
+      expect { invoke }.to raise_error described_class::UnexpectedFailureStatusError
+    end
+  end
 end
