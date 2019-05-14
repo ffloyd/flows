@@ -24,23 +24,29 @@ module Flows
         status = last_result.status
 
         case last_result
-        when Flows::Result::Success
-          shape = @success_shapes[status]
-          raise ::Flows::Operation::UnexpectedSuccessStatusError.new(status, @success_shapes.keys) if shape.nil?
-
-          data = extract_data(context[:data], shape)
-
-          ok(status, data)
-        when Flows::Result::Failure
-          raise ::Flows::Operation::NoFailureShapeError if @failure_shapes.nil?
-
-          shape = @failure_shapes[status]
-          raise ::Flows::Operation::UnexpectedFailureStatusError.new(status, @failure_shapes.keys) if shape.nil?
-
-          data = extract_data(context[:data], shape)
-
-          err(status, data)
+        when Flows::Result::Success then build_success_result(status, context)
+        when Flows::Result::Failure then build_failure_result(status, context)
         end
+      end
+
+      def build_success_result(status, context)
+        shape = @success_shapes[status]
+        raise ::Flows::Operation::UnexpectedSuccessStatusError.new(status, @success_shapes.keys) if shape.nil?
+
+        data = extract_data(context[:data], shape)
+
+        ok(status, data)
+      end
+
+      def build_failure_result(status, context)
+        raise ::Flows::Operation::NoFailureShapeError if @failure_shapes.nil?
+
+        shape = @failure_shapes[status]
+        raise ::Flows::Operation::UnexpectedFailureStatusError.new(status, @failure_shapes.keys) if shape.nil?
+
+        data = extract_data(context[:data], shape)
+
+        err(status, data)
       end
 
       def extract_data(output, keys)
