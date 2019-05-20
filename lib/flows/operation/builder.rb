@@ -44,7 +44,7 @@ module Flows
             body: step[:body],
             preprocessor: method(:node_preprocessor),
             postprocessor: method(:node_postprocessor),
-            router: standard_router(step)
+            router: make_router(step)
           )
         end
       end
@@ -60,11 +60,13 @@ module Flows
         output
       end
 
-      def standard_router(step_definition)
-        Flows::Router.new(
-          Flows::Result::Ok => step_definition[:next_step],
-          Flows::Result::Err => :term
-        )
+      def make_router(step_definition)
+        routes = step_definition[:custom_routes]
+
+        routes[Flows::Result::Ok] ||= step_definition[:next_step]
+        routes[Flows::Result::Err] ||= :term
+
+        Flows::Router.new(routes)
       end
     end
   end

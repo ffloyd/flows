@@ -55,4 +55,36 @@ module OperationExamples
       end
     end
   end
+
+  class CustomRouting
+    include Flows::Operation
+
+    step :init
+    step :skipper,
+         match_ok(:pass_fast) => :build_result
+    step :update_data
+    step :build_result
+
+    success :result
+
+    def init(**)
+      ok(data: :unmodified)
+    end
+
+    def skipper(skip:, **)
+      if skip
+        ok(:pass_fast)
+      else
+        ok
+      end
+    end
+
+    def update_data(**)
+      ok(data: :modified)
+    end
+
+    def build_result(data:, **)
+      ok(result: data)
+    end
+  end
 end

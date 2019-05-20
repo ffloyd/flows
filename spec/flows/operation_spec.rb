@@ -299,4 +299,24 @@ RSpec.describe Flows::Operation do
       expect { invoke }.to raise_error described_class::UnexpectedFailureStatusError
     end
   end
+
+  describe 'simple custom routing' do
+    let(:operation) { OperationExamples::CustomRouting }
+
+    context 'when standard route plays' do
+      let(:params) { { skip: false } }
+
+      it { expect(invoke).to be_ok }
+
+      it { expect(invoke.unwrap).to eq(result: :modified) }
+    end
+
+    context 'when sideroute plays' do
+      let(:params) { { skip: true } }
+
+      it { expect(invoke).to be_ok }
+
+      it { expect(invoke.unwrap).to eq(result: :unmodified) }
+    end
+  end
 end

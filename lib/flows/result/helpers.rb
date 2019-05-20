@@ -19,7 +19,7 @@ module Flows
               result.status == status
           end
         else
-          ->(result) { result.is_a?(Flows::Result::Ok) }
+          Flows::Result::Ok
         end
       end
 
@@ -30,7 +30,7 @@ module Flows
               result.status == status
           end
         else
-          ->(result) { result.is_a?(Flows::Result::Err) }
+          Flows::Result::Err
         end
       end
     end

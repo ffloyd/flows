@@ -4,9 +4,12 @@ module Flows
     module DSL
       attr_reader :steps, :success_shapes, :failure_shapes
 
-      def step(name)
+      include Flows::Result::Helpers
+
+      def step(name, custom_routes = {})
         @steps << {
-          name: name
+          name: name,
+          custom_routes: custom_routes
         }
       end
 
