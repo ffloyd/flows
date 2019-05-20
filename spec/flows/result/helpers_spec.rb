@@ -86,4 +86,78 @@ RSpec.describe Flows::Result::Helpers do
       end
     end
   end
+
+  # rubocop:disable Style/CaseEquality
+  describe '#match_ok' do
+    context 'without arguments' do
+      subject(:matcher) { match_ok }
+
+      it 'matches successful result with default status' do
+        expect(matcher === ok(some: :data)).to be true
+      end
+
+      it 'matches successful result with custom status' do
+        expect(matcher === ok(:hooray, some: :data)).to be true
+      end
+
+      it 'does not match failure result' do
+        expect(matcher === err(some: :error)).to be false
+      end
+    end
+
+    context 'with explicit status' do
+      subject(:matcher) { match_ok(status) }
+
+      let(:status) { :explicit_status }
+
+      it 'matches successful result with same status' do
+        expect(matcher === ok(status, some: :data)).to be true
+      end
+
+      it 'does not match successful result with different status' do
+        expect(matcher === ok(:ahother_status, some: :data)).to be false
+      end
+
+      it 'does not match failure result' do
+        expect(matcher === err(some: :error)).to be false
+      end
+    end
+  end
+
+  describe '#match_err' do
+    context 'without arguments' do
+      subject(:matcher) { match_err }
+
+      it 'matches failure result with default status' do
+        expect(matcher === err(some: :data)).to be true
+      end
+
+      it 'matches faiure result with custom status' do
+        expect(matcher === err(:hooray, some: :data)).to be true
+      end
+
+      it 'does not match successful result' do
+        expect(matcher === ok(some: :data)).to be false
+      end
+    end
+
+    context 'with explicit status' do
+      subject(:matcher) { match_err(status) }
+
+      let(:status) { :explicit_status }
+
+      it 'matches failure result with same status' do
+        expect(matcher === err(status, some: :data)).to be true
+      end
+
+      it 'does not match failure result with different status' do
+        expect(matcher === err(:ahother_status, some: :data)).to be false
+      end
+
+      it 'does not match successful result' do
+        expect(matcher === ok(some: :data)).to be false
+      end
+    end
+  end
+  # rubocop:enable Style/CaseEquality
 end
