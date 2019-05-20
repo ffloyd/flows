@@ -22,7 +22,7 @@ RSpec.describe Flows::Router do
       it 'calls predicate with output' do
         call
 
-        expect(predicate).to have_received(:call).with(output)
+        expect(predicate).to have_received(:===).with(output)
       end
 
       it 'returns route' do

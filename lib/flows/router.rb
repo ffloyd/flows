@@ -15,11 +15,7 @@ module Flows
       data = @preprocessor.call(output, context, meta)
 
       matched_entry = @route_def.find do |predicate, _|
-        if predicate.respond_to?(:call)
-          predicate.call(data)
-        else
-          predicate === data # rubocop:disable Style/CaseEquality
-        end
+        predicate === data # rubocop:disable Style/CaseEquality
       end
 
       raise NoRouteError, "no route found found for output: #{output.inspect}" unless matched_entry

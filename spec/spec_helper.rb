@@ -15,8 +15,9 @@ end
 
 RSpec.shared_context 'with helpers' do
   def proc_double(result)
-    double.tap do |dbl|
-      allow(dbl).to receive(:call).and_return(result)
+    ->(*) { result }.tap do |proc_obj|
+      allow(proc_obj).to receive(:call).and_call_original
+      allow(proc_obj).to receive(:===).and_call_original
     end
   end
 end
