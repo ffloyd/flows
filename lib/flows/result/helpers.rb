@@ -5,32 +5,32 @@ module Flows
       private
 
       def ok(status = :success, **data)
-        Flows::Result::Success.new(data, status: status)
+        Flows::Result::Ok.new(data, status: status)
       end
 
       def err(status = :failure, **data)
-        Flows::Result::Failure.new(data, status: status)
+        Flows::Result::Err.new(data, status: status)
       end
 
       def match_ok(status = nil)
         if status
           lambda do |result|
-            result.is_a?(Flows::Result::Success) &&
+            result.is_a?(Flows::Result::Ok) &&
               result.status == status
           end
         else
-          ->(result) { result.is_a?(Flows::Result::Success) }
+          ->(result) { result.is_a?(Flows::Result::Ok) }
         end
       end
 
       def match_err(status = nil)
         if status
           lambda do |result|
-            result.is_a?(Flows::Result::Failure) &&
+            result.is_a?(Flows::Result::Err) &&
               result.status == status
           end
         else
-          ->(result) { result.is_a?(Flows::Result::Failure) }
+          ->(result) { result.is_a?(Flows::Result::Err) }
         end
       end
     end

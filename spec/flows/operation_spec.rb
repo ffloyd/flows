@@ -16,7 +16,7 @@ RSpec.describe Flows::Operation do
         }
       end
 
-      it { expect(invoke).to be_success }
+      it { expect(invoke).to be_ok }
 
       it 'sets :result key in result' do
         expect(invoke.unwrap).to eq(result: 5)
@@ -31,7 +31,7 @@ RSpec.describe Flows::Operation do
         }
       end
 
-      it { expect(invoke).to be_failure }
+      it { expect(invoke).to be_err }
 
       it 'sets :result key in result' do
         expect(invoke.error).to eq(error: :division_by_zero)
@@ -50,7 +50,7 @@ RSpec.describe Flows::Operation do
         }
       end
 
-      it { expect(invoke).to be_success }
+      it { expect(invoke).to be_ok }
 
       it 'has status :team_red' do
         expect(invoke.status).to eq :team_red
@@ -69,7 +69,7 @@ RSpec.describe Flows::Operation do
         }
       end
 
-      it { expect(invoke).to be_success }
+      it { expect(invoke).to be_ok }
 
       it 'has status :team_red' do
         expect(invoke.status).to eq :team_blue
@@ -88,7 +88,7 @@ RSpec.describe Flows::Operation do
         }
       end
 
-      it { expect(invoke).to be_failure }
+      it { expect(invoke).to be_err }
 
       it 'has status :unexisting_team' do
         expect(invoke.status).to eq :unexisting_team
@@ -107,7 +107,7 @@ RSpec.describe Flows::Operation do
         }
       end
 
-      it { expect(invoke).to be_failure }
+      it { expect(invoke).to be_err }
 
       it 'has status :weapon_not_found' do
         expect(invoke.status).to eq :weapon_not_found
@@ -163,7 +163,7 @@ RSpec.describe Flows::Operation do
         { should_fail: false }
       end
 
-      it { expect(invoke).to be_success }
+      it { expect(invoke).to be_ok }
     end
 
     context 'when failure result generated' do

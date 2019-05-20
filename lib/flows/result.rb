@@ -1,7 +1,3 @@
-require_relative 'result/success'
-require_relative 'result/failure'
-require_relative 'result/helpers'
-
 module Flows
   # Result object with context
   class Result
@@ -12,7 +8,11 @@ module Flows
       @status = status
       @meta = meta
 
-      raise 'Use Flows::Result::Success or Flows::Result::Failure for build result objects' if self.class == Result
+      raise 'Use Flows::Result::Ok or Flows::Result::Err for build result objects' if self.class == Result
     end
   end
 end
+
+require_relative 'result/ok'
+require_relative 'result/err'
+require_relative 'result/helpers'

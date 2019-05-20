@@ -54,7 +54,7 @@ module Flows
       end
 
       def node_postprocessor(output, context, _meta)
-        output_data = output.success? ? output.unwrap : output.error
+        output_data = output.ok? ? output.unwrap : output.error
         context[:data].merge!(output_data)
 
         output
@@ -62,8 +62,8 @@ module Flows
 
       def standard_router(step_definition)
         Flows::Router.new(
-          Flows::Result::Success => step_definition[:next_step],
-          Flows::Result::Failure => :term
+          Flows::Result::Ok => step_definition[:next_step],
+          Flows::Result::Err => :term
         )
       end
     end

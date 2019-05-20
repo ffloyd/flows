@@ -13,7 +13,7 @@ RSpec.describe Flows::Result::Helpers do
         }
       end
 
-      it { is_expected.to be_a Flows::Result::Success }
+      it { is_expected.to be_a Flows::Result::Ok }
 
       it 'has :success status' do
         expect(result.status).to eq :success
@@ -55,7 +55,7 @@ RSpec.describe Flows::Result::Helpers do
         }
       end
 
-      it { is_expected.to be_a Flows::Result::Failure }
+      it { is_expected.to be_a Flows::Result::Err }
 
       it 'has :failure status' do
         expect(result.status).to eq :failure

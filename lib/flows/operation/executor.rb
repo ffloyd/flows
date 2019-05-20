@@ -24,8 +24,8 @@ module Flows
         status = last_result.status
 
         case last_result
-        when Flows::Result::Success then build_success_result(status, context)
-        when Flows::Result::Failure then build_failure_result(status, context)
+        when Flows::Result::Ok then build_success_result(status, context)
+        when Flows::Result::Err then build_failure_result(status, context)
         end
       end
 

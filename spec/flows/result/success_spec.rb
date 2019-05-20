@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe Flows::Result::Success do
+RSpec.describe Flows::Result::Ok do
   subject(:result) { described_class.new(data) }
 
   let(:data) { double }
@@ -11,12 +11,12 @@ RSpec.describe Flows::Result::Success do
     end
   end
 
-  describe '#success?' do
-    it { expect(result).to be_success }
+  describe '#ok?' do
+    it { expect(result).to be_ok }
   end
 
-  describe '#failure?' do
-    it { expect(result).not_to be_failure }
+  describe '#err?' do
+    it { expect(result).not_to be_err }
   end
 
   describe '#unwrap' do
