@@ -1,322 +1,414 @@
 require 'spec_helper'
 
-require_relative '../support/operation_examples'
-
 RSpec.describe Flows::Operation do
-  subject(:invoke) { operation.new.call(params) }
+  describe 'step definition by symbol' do
+    context 'when instance method with same name exists' do
+      subject(:invoke) { operation_class.new.call }
 
-  describe 'simplest operation' do
-    let(:operation) { OperationExamples::OneStep }
+      let(:operation_class) do
+        Class.new do
+          include Flows::Operation
 
-    context 'when success path' do
-      let(:params) do
-        {
-          first: 10,
-          second: 2
-        }
-      end
+          step :build_result
 
-      it { expect(invoke).to be_ok }
+          success :data
 
-      it 'sets :result key in result' do
-        expect(invoke.unwrap).to eq(result: 5)
-      end
-    end
-
-    context 'when failure path' do
-      let(:params) do
-        {
-          first: 10,
-          second: 0
-        }
-      end
-
-      it { expect(invoke).to be_err }
-
-      it 'sets :result key in result' do
-        expect(invoke.error).to eq(error: :division_by_zero)
-      end
-    end
-  end
-
-  describe 'two success result variants and two errors variants' do
-    let(:operation) { OperationExamples::DifferentOutputStatuses }
-
-    context 'when success :team_red path' do
-      let(:params) do
-        {
-          color: 'red',
-          weapon_index: 0
-        }
-      end
-
-      it { expect(invoke).to be_ok }
-
-      it 'has status :team_red' do
-        expect(invoke.status).to eq :team_red
-      end
-
-      it do
-        expect(invoke.unwrap).to eq(gun: 'rifle')
-      end
-    end
-
-    context 'when success :team_blue path' do
-      let(:params) do
-        {
-          color: 'blue',
-          weapon_index: 1
-        }
-      end
-
-      it { expect(invoke).to be_ok }
-
-      it 'has status :team_red' do
-        expect(invoke.status).to eq :team_blue
-      end
-
-      it do
-        expect(invoke.unwrap).to eq(blade: 'dagger')
-      end
-    end
-
-    context 'when failure :unexisting_team path' do
-      let(:params) do
-        {
-          color: 'black',
-          weapon_index: 1
-        }
-      end
-
-      it { expect(invoke).to be_err }
-
-      it 'has status :unexisting_team' do
-        expect(invoke.status).to eq :unexisting_team
-      end
-
-      it do
-        expect(invoke.error).to eq(color: 'black')
-      end
-    end
-
-    context 'when failure :weapon_not_found path' do
-      let(:params) do
-        {
-          color: 'red',
-          weapon_index: 100
-        }
-      end
-
-      it { expect(invoke).to be_err }
-
-      it 'has status :weapon_not_found' do
-        expect(invoke.status).to eq :weapon_not_found
-      end
-
-      it do
-        expect(invoke.error).to eq(set: operation::GUNS, index: 100)
-      end
-    end
-  end
-
-  describe 'when no success output configuration provided' do
-    let(:operation) do
-      Class.new do
-        include Flows::Operation
-
-        step :be_ok
-
-        failure :error
-
-        def be_ok(**)
-          ok(result: :ok)
-        end
-      end
-    end
-
-    it 'raises error on initialization' do
-      expect { operation.new }.to raise_error described_class::NoSuccessShapeError
-    end
-  end
-
-  describe 'when no failure output configuration provided' do
-    let(:operation) do
-      Class.new do
-        include Flows::Operation
-
-        step :be_ok
-
-        success :result
-
-        def be_ok(should_fail:, **)
-          if should_fail
-            err(wtf: :i_dont_know)
-          else
-            ok(result: :ok)
+          def build_result(**)
+            ok(data: 'some data')
           end
         end
       end
-    end
 
-    context 'when success result generated' do
-      let(:params) do
-        { should_fail: false }
-      end
-
-      it { expect(invoke).to be_ok }
-    end
-
-    context 'when failure result generated' do
-      let(:params) do
-        { should_fail: true }
-      end
-
-      it do
-        expect { invoke }.to raise_error described_class::NoFailureShapeError
-      end
-    end
-  end
-
-  describe 'when no steps defined' do
-    let(:operation) do
-      Class.new do
-        include Flows::Operation
-
-        success :result
-        failure :error
+      it 'uses this method as step body' do
+        expect(invoke.unwrap).to eq(data: 'some data')
       end
     end
 
-    it do
-      expect { operation.new }.to raise_error described_class::NoStepsError
-    end
-  end
+    context 'when no instance method with such name' do
+      subject(:build) { operation_class.new }
 
-  describe 'when step implementation missed' do
-    let(:operation) do
-      Class.new do
-        include Flows::Operation
+      let(:operation_class) do
+        Class.new do
+          include Flows::Operation
 
-        step :without_implementation
+          step :build_result
 
-        success :result
-        failure :error
-      end
-    end
-
-    it do
-      expect { operation.new }.to raise_error described_class::NoStepImplementationError
-    end
-  end
-
-  describe 'when some success output key not generated' do
-    let(:operation) do
-      Class.new do
-        include Flows::Operation
-
-        step :do_job
-
-        success :output_a, :output_b
-        failure :error
-
-        def do_job(**)
-          ok(output_a: :ok)
+          success :data
         end
       end
-    end
 
-    let(:params) { {} }
-
-    it do
-      expect { invoke }.to raise_error described_class::MissingOutputError
+      it 'raises error when building' do
+        expect { build }.to raise_error Flows::Operation::NoStepImplementationError, /build_result/
+      end
     end
   end
 
-  describe 'when some failure output key not generated' do
-    let(:operation) do
-      Class.new do
-        include Flows::Operation
+  describe 'success shape with implicit default status' do
+    context 'when defined, result has :success status and data conforms shape' do
+      subject(:invoke) { operation_class.new.call }
 
-        step :do_job
+      let(:operation_class) do
+        Class.new do
+          include Flows::Operation
 
-        success :output_a, :output_b
-        failure :error
+          step :build_result
 
-        def do_job(**)
-          err(wrong_key: :ok)
+          success :data
+
+          def build_result(**)
+            ok(data: 'data', not_a_data: 'not a data')
+          end
         end
+      end
+
+      it { is_expected.to be_ok }
+
+      it 'returns filtered data' do
+        expect(invoke.unwrap).to eq(data: 'data')
       end
     end
 
-    let(:params) { {} }
+    context 'when defined, result has :success status and data does not conform shape' do
+      subject(:invoke) { operation_class.new.call }
 
-    it do
-      expect { invoke }.to raise_error described_class::MissingOutputError
-    end
-  end
+      let(:operation_class) do
+        Class.new do
+          include Flows::Operation
 
-  describe 'when success result has unexpected status' do
-    let(:operation) do
-      Class.new do
-        include Flows::Operation
+          step :build_result
 
-        step :do_job
+          success :data
 
-        success :a, :b
-
-        def do_job(**)
-          ok(:unexpected, some: :data)
+          def build_result(**)
+            ok(out_of_shape: 'data', not_a_data: 'not a data')
+          end
         end
+      end
+
+      it 'raises exception on execution' do
+        expect { invoke }.to raise_error Flows::Operation::MissingOutputError, /data/
       end
     end
 
-    let(:params) { {} }
+    context 'when defined, result has non-standard status' do
+      subject(:invoke) { operation_class.new.call }
 
-    it do
-      expect { invoke }.to raise_error described_class::UnexpectedSuccessStatusError
-    end
-  end
+      let(:operation_class) do
+        Class.new do
+          include Flows::Operation
 
-  describe 'when failure result has unexpected status' do
-    let(:operation) do
-      Class.new do
-        include Flows::Operation
+          step :build_result
 
-        step :do_job
+          success :data
 
-        success :a, :b
-        failure :a, :b
-
-        def do_job(**)
-          err(:unexpected, some: :data)
+          def build_result(**)
+            ok(:custom_status, data: 'data', not_a_data: 'not a data')
+          end
         end
+      end
+
+      it 'raises exception on execution' do
+        expect { invoke }.to raise_error Flows::Operation::UnexpectedSuccessStatusError, /custom_status/
       end
     end
 
-    let(:params) { {} }
+    context 'when undefined' do
+      subject(:build) { operation_class.new }
 
-    it do
-      expect { invoke }.to raise_error described_class::UnexpectedFailureStatusError
+      let(:operation_class) do
+        Class.new do
+          include Flows::Operation
+
+          step :build_result
+
+          def build_result(**)
+            ok(data: 'data', not_a_data: 'not a data')
+          end
+        end
+      end
+
+      it 'raises exception when building' do
+        expect { build }.to raise_error Flows::Operation::NoSuccessShapeError
+      end
     end
   end
 
-  describe 'simple custom routing' do
-    let(:operation) { OperationExamples::CustomRouting }
+  describe 'success shapes with explicit statuses' do
+    context 'when result conforms status and shape' do
+      subject(:invoke) { operation_class.new.call }
 
-    context 'when standard route plays' do
-      let(:params) { { skip: false } }
+      let(:operation_class) do
+        Class.new do
+          include Flows::Operation
 
-      it { expect(invoke).to be_ok }
+          step :build_result
 
-      it { expect(invoke.unwrap).to eq(result: :modified) }
+          success type_a: %i[data],
+                  type_b: %i[value]
+
+          def build_result(**)
+            ok(:type_b, value: 'some value')
+          end
+        end
+      end
+
+      it { is_expected.to be_ok }
+
+      it 'returns expected status' do
+        expect(invoke.status).to eq :type_b
+      end
+
+      it 'returns expected data' do
+        expect(invoke.unwrap).to eq(value: 'some value')
+      end
     end
 
-    context 'when sideroute plays' do
-      let(:params) { { skip: true } }
+    context 'when result status mistmatches' do
+      subject(:invoke) { operation_class.new.call }
 
-      it { expect(invoke).to be_ok }
+      let(:operation_class) do
+        Class.new do
+          include Flows::Operation
 
-      it { expect(invoke.unwrap).to eq(result: :unmodified) }
+          step :build_result
+
+          success type_a: %i[data],
+                  type_b: %i[value]
+
+          def build_result(**)
+            ok(value: 'some value')
+          end
+        end
+      end
+
+      it 'raises exception on execution' do
+        expect { invoke }.to raise_error Flows::Operation::UnexpectedSuccessStatusError
+      end
+    end
+  end
+
+  describe 'failure shape with implicit default status' do
+    context 'when defined, result has :failure status and data conforms shape' do
+      subject(:invoke) { operation_class.new.call }
+
+      let(:operation_class) do
+        Class.new do
+          include Flows::Operation
+
+          step :build_result
+
+          success :data
+          failure :error
+
+          def build_result(**)
+            err(error: 'some error', data: 'data')
+          end
+        end
+      end
+
+      it { is_expected.to be_err }
+
+      it 'returns filtered data' do
+        expect(invoke.error).to eq(error: 'some error')
+      end
+    end
+
+    context 'when defined, result has :failure status and data does not conform shape' do
+      subject(:invoke) { operation_class.new.call }
+
+      let(:operation_class) do
+        Class.new do
+          include Flows::Operation
+
+          step :build_result
+
+          success :data
+          failure :error
+
+          def build_result(**)
+            err(data: 'some data')
+          end
+        end
+      end
+
+      it 'raises exception on execution' do
+        expect { invoke }.to raise_error Flows::Operation::MissingOutputError, /error/
+      end
+    end
+
+    context 'when defined, result has non-standard status' do
+      subject(:invoke) { operation_class.new.call }
+
+      let(:operation_class) do
+        Class.new do
+          include Flows::Operation
+
+          step :build_result
+
+          success :data
+          failure :error
+
+          def build_result(**)
+            err(:custom_status, error: 'some error')
+          end
+        end
+      end
+
+      it 'raises exception on execution' do
+        expect { invoke }.to raise_error Flows::Operation::UnexpectedFailureStatusError, /custom_status/
+      end
+    end
+
+    context 'when undefined' do
+      subject(:build) { operation_class.new.call }
+
+      let(:operation_class) do
+        Class.new do
+          include Flows::Operation
+
+          step :build_result
+
+          success :data
+
+          def build_result(**)
+            err(error: 'some error')
+          end
+        end
+      end
+
+      it 'raises exception on execution' do
+        expect { build }.to raise_error Flows::Operation::NoFailureShapeError
+      end
+    end
+  end
+
+  describe 'failure shapes with explicit statuses' do
+    context 'when result conforms status and shape' do
+      subject(:invoke) { operation_class.new.call }
+
+      let(:operation_class) do
+        Class.new do
+          include Flows::Operation
+
+          step :build_result
+
+          success :data
+          failure validation: %i[errors],
+                  exception: %i[exceptions]
+
+          def build_result(**)
+            err(:validation, errors: 'some errors')
+          end
+        end
+      end
+
+      it { is_expected.to be_err }
+
+      it 'returns expected status' do
+        expect(invoke.status).to eq :validation
+      end
+
+      it 'returns expected data' do
+        expect(invoke.error).to eq(errors: 'some errors')
+      end
+    end
+
+    context 'when result status mistmatches' do
+      subject(:invoke) { operation_class.new.call }
+
+      let(:operation_class) do
+        Class.new do
+          include Flows::Operation
+
+          step :build_result
+
+          success :data
+          failure validation: %i[errors],
+                  exception: %i[exceptions]
+
+          def build_result(**)
+            err(:unexpected, errors: 'some errors')
+          end
+        end
+      end
+
+      it 'raises exception on execution' do
+        expect { invoke }.to raise_error Flows::Operation::UnexpectedFailureStatusError
+      end
+    end
+  end
+
+  describe 'override standard routing' do
+    context 'when overrides default routing' do
+      subject(:operation) { operation_class.new }
+
+      let(:operation_class) do
+        Class.new do
+          include Flows::Operation
+
+          step :resolve,
+               match_ok => :term,
+               match_err => :last_step
+
+          step :last_step
+
+          success :data
+
+          def resolve(path:, **)
+            case path
+            when :ok then ok(data: 'ok path')
+            when :err then err(data: 'err path')
+            end
+          end
+
+          def last_step(**)
+            ok(data: 'from last step')
+          end
+        end
+      end
+
+      it 'overrides ok result routing' do
+        expect(operation.call(path: :ok).unwrap[:data]).to eq 'ok path'
+      end
+
+      it 'overrides err result routing' do
+        expect(operation.call(path: :err).unwrap[:data]).to eq 'from last step'
+      end
+    end
+
+    context 'when overrides status-specific routing' do
+      subject(:operation) { operation_class.new }
+
+      let(:operation_class) do
+        Class.new do
+          include Flows::Operation
+
+          step :resolve, match_ok(:end_now) => :term
+          step :last_step
+
+          success success: [:data],
+                  end_now: [:data]
+
+          def resolve(path:, **)
+            case path
+            when :ok then ok(data: 'ok path')
+            when :ok_end_now then ok(:end_now, data: 'ok short path')
+            end
+          end
+
+          def last_step(**)
+            ok(data: 'from last step')
+          end
+        end
+      end
+
+      it 'preserves standard roting for ok' do
+        expect(operation.call(path: :ok).unwrap[:data]).to eq 'from last step'
+      end
+
+      it 'adds status specific routing' do
+        expect(operation.call(path: :ok_end_now).unwrap[:data]).to eq 'ok short path'
+      end
     end
   end
 end
