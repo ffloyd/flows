@@ -1,5 +1,7 @@
 # Flows
 
+[![Build Status](https://travis-ci.com/ffloyd/flows.svg?branch=master)](https://travis-ci.com/ffloyd/flows)
+
 _TODO_
 
 ## Installation
