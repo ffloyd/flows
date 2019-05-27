@@ -1,4 +1,11 @@
 require 'bundler/setup'
+
+require 'simplecov'
+SimpleCov.minimum_coverage 95
+SimpleCov.start do
+  add_filter '/spec/'
+end
+
 require 'flows'
 
 RSpec.configure do |config|
