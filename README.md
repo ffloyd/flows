@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.com/ffloyd/flows.svg?branch=master)](https://travis-ci.com/ffloyd/flows)
 [![codecov](https://codecov.io/gh/ffloyd/flows/branch/master/graph/badge.svg)](https://codecov.io/gh/ffloyd/flows)
+[![Gem Version](https://badge.fury.io/rb/flows.svg)](https://badge.fury.io/rb/flows)
 
 _TODO_
 
