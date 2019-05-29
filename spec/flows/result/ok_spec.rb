@@ -31,7 +31,7 @@ RSpec.describe Flows::Result::Ok do
     subject(:error) { result.error }
 
     it 'raises exception' do
-      expect { error }.to raise_error described_class::NoErrorError
+      expect { error }.to raise_error Flows::Result::NoErrorError
     end
   end
 

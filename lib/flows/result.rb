@@ -13,6 +13,7 @@ module Flows
   end
 end
 
+require_relative 'result/errors'
 require_relative 'result/ok'
 require_relative 'result/err'
 require_relative 'result/helpers'

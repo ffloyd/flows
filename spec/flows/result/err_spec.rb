@@ -23,7 +23,7 @@ RSpec.describe Flows::Result::Err do
     subject(:unwrap) { result.unwrap }
 
     it 'raises exception' do
-      expect { unwrap }.to raise_error described_class::UnwrapError
+      expect { unwrap }.to raise_error Flows::Result::UnwrapError
     end
   end
 

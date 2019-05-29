@@ -2,8 +2,6 @@ module Flows
   class Result
     # Wrapper for successful results
     class Ok < Result
-      class NoErrorError < Flows::Error; end
-
       def initialize(data, status: :success, meta: {})
         super
       end
@@ -21,7 +19,7 @@ module Flows
       end
 
       def error
-        raise NoErrorError
+        raise NoErrorError.new(@status, @data)
       end
     end
   end

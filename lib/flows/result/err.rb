@@ -2,8 +2,6 @@ module Flows
   class Result
     # Wrapper for failure results
     class Err < Result
-      class UnwrapError < Flows::Error; end
-
       def initialize(data, status: :failure, meta: {})
         super
       end
@@ -17,7 +15,7 @@ module Flows
       end
 
       def unwrap
-        raise UnwrapError
+        raise UnwrapError.new(@status, @data)
       end
 
       def error
