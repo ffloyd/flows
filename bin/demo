@@ -1,0 +1,66 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'flows'
+
+# Helper for demonstrations
+module Demo
+  def self.run(name)
+    puts '-' * 60
+    puts name
+    puts '-' * 60
+    puts
+
+    begin
+      yield
+    rescue StandardError => e
+      puts "Exception raised:\n\n#{e.full_message}"
+    end
+    puts "\n" + '-' * 60 + "\n" * 2
+  end
+end
+
+# Simple division
+class DivisionOperation
+  include Flows::Operation
+
+  step :check_for_zero
+  step :divide
+
+  success :result
+  failure :error
+
+  def check_for_zero(denominator:, **)
+    if denominator.zero?
+      err(error: 'Denominator cannot be zero')
+    else
+      ok
+    end
+  end
+
+  def divide(numerator:, denominator:, **)
+    ok(result: numerator / denominator)
+  end
+end
+
+# Division in nested operation - we do division
+class NestedDivisionOperation
+  include Flows::Operation
+
+  step :do_division
+
+  success :result
+  failure :error
+
+  def do_division(**params)
+    DivisionOperation.new.call(**params)
+  end
+end
+
+Demo.run 'Unwrap Error verbosity' do
+  DivisionOperation.new.call(numerator: 1, denominator: 0).unwrap[:result]
+end
+
+Demo.run 'Unwrap Error verbosity when error happened in nested operation' do
+  NestedDivisionOperation.new.call(numerator: 1, denominator: 0).unwrap[:result]
+end

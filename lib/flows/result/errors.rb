@@ -2,13 +2,15 @@ module Flows
   class Result
     # Error for unwrapping non-successful result object
     class UnwrapError < Flows::Error
-      def initialize(status, data)
+      def initialize(status, data, meta)
         @status = status
         @data = data
+        @meta = meta
       end
 
       def message
-        "You're trying to unwrap non-successful result with status `#{@status.inspect}` and data `#{@data.inspect}`"
+        "You're trying to unwrap non-successful result with status `#{@status.inspect}` and data `#{@data.inspect}`\n\
+Result metadata: `#{@meta.inspect}`"
       end
     end
 

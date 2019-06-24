@@ -15,7 +15,7 @@ module Flows
       end
 
       def unwrap
-        raise UnwrapError.new(@status, @data)
+        raise UnwrapError.new(@status, @data, @meta)
       end
 
       def error

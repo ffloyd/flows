@@ -17,16 +17,7 @@ module Flows
     def initialize
       _flows_do_checks
 
-      flow = ::Flows::Operation::Builder.new(
-        steps: self.class.steps,
-        method_source: self
-      ).call
-
-      @_flows_executor = ::Flows::Operation::Executor.new(
-        flow: flow,
-        success_shapes: self.class.success_shapes,
-        failure_shapes: self.class.failure_shapes
-      )
+      @_flows_executor = _flows_make_executor(_flows_make_flow)
     end
 
     def call(**params)
@@ -38,6 +29,22 @@ module Flows
     def _flows_do_checks
       raise NoStepsError if self.class.steps.empty?
       raise NoSuccessShapeError, self if self.class.success_shapes.nil?
+    end
+
+    def _flows_make_flow
+      ::Flows::Operation::Builder.new(
+        steps: self.class.steps,
+        method_source: self
+      ).call
+    end
+
+    def _flows_make_executor(flow)
+      ::Flows::Operation::Executor.new(
+        flow: flow,
+        success_shapes: self.class.success_shapes,
+        failure_shapes: self.class.failure_shapes,
+        class_name: self.class.name
+      )
     end
   end
 end

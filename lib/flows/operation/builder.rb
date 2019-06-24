@@ -44,7 +44,8 @@ module Flows
             body: step[:body],
             preprocessor: method(:node_preprocessor),
             postprocessor: method(:node_postprocessor),
-            router: make_router(step)
+            router: make_router(step),
+            meta: { name: step[:name] }
           )
         end
       end
@@ -53,9 +54,10 @@ module Flows
         context[:data]
       end
 
-      def node_postprocessor(output, context, _meta)
+      def node_postprocessor(output, context, meta)
         output_data = output.ok? ? output.unwrap : output.error
         context[:data].merge!(output_data)
+        context[:last_step] = meta[:name]
 
         output
       end
