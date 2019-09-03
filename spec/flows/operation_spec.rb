@@ -614,4 +614,144 @@ RSpec.describe Flows::Operation do
       end
     end
   end
+
+  describe 'wrapping steps' do
+    context 'when wrap used on root level' do
+      subject(:invoke) { operation_class.new.call }
+
+      let(:operation_class) do
+        Class.new do
+          include Flows::Operation
+
+          step :init
+
+          wrap :wrapper do
+            step :first
+          end
+
+          step :last
+
+          success :path, :path_before_wrap
+
+          def init(**)
+            ok(path: [:init])
+          end
+
+          def wrapper(path:, **)
+            result = yield
+            ok(path_before_wrap: path, path: result.unwrap[:path] + [:wrapper])
+          end
+
+          def first(path:, **)
+            ok(path: path + [:first])
+          end
+
+          def last(path:, **)
+            ok(path: path + [:last])
+          end
+        end
+      end
+
+      it 'executes steps in a correct order' do
+        expect(invoke.unwrap[:path]).to eq %i[init first wrapper last]
+      end
+
+      it 'starts wrapping in a correct place' do
+        expect(invoke.unwrap[:path_before_wrap]).to eq %i[init]
+      end
+    end
+
+    context 'when wrap used inside track' do
+      subject(:invoke) { operation_class.new.call }
+
+      let(:operation_class) do
+        Class.new do
+          include Flows::Operation
+
+          step :init, match_ok => :wrapped_track
+
+          track :wrapped_track do
+            wrap :wrapper do
+              step :first
+            end
+          end
+
+          step :last
+
+          success :path, :path_before_wrap
+
+          def init(**)
+            ok(path: [:init])
+          end
+
+          def wrapper(path:, **)
+            result = yield
+            ok(path_before_wrap: path, path: result.unwrap[:path] + [:wrapper])
+          end
+
+          def first(path:, **)
+            ok(path: path + [:first])
+          end
+
+          def last(path:, **)
+            ok(path: path + [:last])
+          end
+        end
+      end
+
+      it 'executes steps in a correct order' do
+        expect(invoke.unwrap[:path]).to eq %i[init first wrapper last]
+      end
+
+      it 'starts wrapping in a correct place' do
+        expect(invoke.unwrap[:path_before_wrap]).to eq %i[init]
+      end
+    end
+
+    context 'when wrap used with lambda' do
+      subject(:invoke) { operation_class.new.call }
+
+      let(:operation_class) do
+        Class.new do
+          include Flows::Operation
+
+          step :init
+
+          wrap(
+            :wrapper,
+            lambda do |path:, **, &block|
+              result = block.call
+              ok(path_before_wrap: path, path: result.unwrap[:path] + [:wrapper])
+            end
+          ) do
+            step :first
+          end
+
+          step :last
+
+          success :path, :path_before_wrap
+
+          def init(**)
+            ok(path: [:init])
+          end
+
+          def first(path:, **)
+            ok(path: path + [:first])
+          end
+
+          def last(path:, **)
+            ok(path: path + [:last])
+          end
+        end
+      end
+
+      it 'executes steps in a correct order' do
+        expect(invoke.unwrap[:path]).to eq %i[init first wrapper last]
+      end
+
+      it 'starts wrapping in a correct place' do
+        expect(invoke.unwrap[:path_before_wrap]).to eq %i[init]
+      end
+    end
+  end
 end

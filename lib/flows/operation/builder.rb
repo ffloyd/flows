@@ -48,7 +48,7 @@ module Flows
         @nodes = @steps.map do |step|
           Flows::Node.new(
             name: step[:name],
-            body: step[:body],
+            body: build_final_body(step),
             preprocessor: method(:node_preprocessor),
             postprocessor: method(:node_postprocessor),
             router: make_router(step),
@@ -57,8 +57,33 @@ module Flows
         end
       end
 
+      def build_final_body(step)
+        case step[:type]
+        when :step
+          step[:body]
+        when :wrapper
+          build_wrapper_body(step[:body], step[:block])
+        end
+      end
+
+      def build_wrapper_body(wrapper, block)
+        suboperation_class = Class.new do
+          include ::Flows::Operation
+        end
+
+        suboperation_class.instance_exec(&block)
+        suboperation_class.no_shape_checks
+
+        suboperation = suboperation_class.new(method_source: @method_source)
+
+        lambda do |**options|
+          wrapper.call(**options) { suboperation.call(**options) }
+        end
+      end
+
       def build_meta(step)
         {
+          type: step[:type],
           name: step[:name],
           track_path: step[:track_path]
         }

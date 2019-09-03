@@ -30,6 +30,10 @@ module Flows
         @track_path = track_path_before
       end
 
+      def wrap(name, custom_body = nil, &block)
+        @steps << make_step(name, type: :wrapper, custom_body: custom_body, block: block)
+      end
+
       def success(*keys, **code_keys_map)
         @success_shapes = if keys.empty?
                             code_keys_map
@@ -53,11 +57,13 @@ module Flows
 
       private
 
-      def make_step(name, custom_routes: {}, custom_body: nil)
+      def make_step(name, type: :step, custom_routes: {}, custom_body: nil, block: nil)
         {
+          type: type,
           name: name,
           custom_routes: custom_routes,
           custom_body: custom_body,
+          block: block,
           track_path: @track_path
         }
       end
