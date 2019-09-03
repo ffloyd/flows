@@ -7,10 +7,16 @@ module Flows
       include Flows::Result::Helpers
 
       def step(name, custom_routes = {})
-        @steps << {
-          name: name,
-          custom_routes: custom_routes
+        @steps << make_step(name, custom_routes: custom_routes)
+      end
+
+      def track(name, &block)
+        @track = {
+          name: name
         }
+        @steps << make_step(name, custom_body: ->(**) { ok })
+        instance_exec(&block)
+        @track = nil
       end
 
       def success(*keys, **code_keys_map)
@@ -27,6 +33,17 @@ module Flows
                           else
                             { failure: keys }
                           end
+      end
+
+      private
+
+      def make_step(name, custom_routes: {}, custom_body: nil)
+        {
+          name: name,
+          custom_routes: custom_routes,
+          custom_body: custom_body,
+          track: @track ? @track[:name] : nil
+        }
       end
     end
   end

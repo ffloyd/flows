@@ -411,4 +411,52 @@ RSpec.describe Flows::Operation do
       end
     end
   end
+
+  describe 'using side track' do
+    context 'when simple track present' do
+      subject(:operation) { operation_class.new }
+
+      let(:operation_class) do
+        Class.new do
+          include Flows::Operation
+
+          step :first, match_ok(:track) => :side_track
+
+          track :side_track do
+            step :on_track
+          end
+
+          step :last
+
+          success success: [:data],
+                  on_track: [:data]
+
+          def first(route:, **)
+            case route
+            when :direct then ok
+            when :track then ok(:track)
+            end
+          end
+
+          def on_track(**)
+            ok(data: 'from track')
+          end
+
+          def last(data: false, **)
+            return ok(:on_track) if data
+
+            ok(data: 'from direct path')
+          end
+        end
+      end
+
+      it 'works in direct path case' do
+        expect(operation.call(route: :direct).status).to eq :success
+      end
+
+      it 'works in track path case' do
+        expect(operation.call(route: :track).status).to eq :on_track
+      end
+    end
+  end
 end

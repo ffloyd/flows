@@ -19,22 +19,28 @@ module Flows
 
       def resolve_wiring!
         @steps = @steps.map.with_index do |step, index|
+          next_step =
+            @steps[(index + 1)..-1]
+            .find { |s| !s[:track] || s[:track] == step[:track] }
+
           step.merge(
-            next_step: @steps.dig(index + 1, :name) || :term
+            next_step: next_step ? next_step[:name] : :term
           )
         end
       end
 
       def resolve_bodies!
         @steps.map! do |step|
-          unless @method_source.respond_to?(step[:name])
-            raise ::Flows::Operation::NoStepImplementationError, step[:name]
-          end
-
           step.merge(
-            body: @method_source.method(step[:name])
+            body: step[:custom_body] || resolve_body_from_source(step[:name])
           )
         end
+      end
+
+      def resolve_body_from_source(name)
+        raise(::Flows::Operation::NoStepImplementationError, name) unless @method_source.respond_to?(name)
+
+        @method_source.method(name)
       end
 
       def build_nodes
@@ -45,9 +51,16 @@ module Flows
             preprocessor: method(:node_preprocessor),
             postprocessor: method(:node_postprocessor),
             router: make_router(step),
-            meta: { name: step[:name] }
+            meta: build_meta(step)
           )
         end
+      end
+
+      def build_meta(step)
+        {
+          name: step[:name],
+          track: step[:track]
+        }
       end
 
       def node_preprocessor(_input, context, _meta)
@@ -64,11 +77,24 @@ module Flows
 
       def make_router(step_definition)
         routes = step_definition[:custom_routes]
+        check_custom_routes(routes)
 
         routes[Flows::Result::Ok] ||= step_definition[:next_step]
         routes[Flows::Result::Err] ||= :term
 
         Flows::Router.new(routes)
+      end
+
+      def check_custom_routes(custom_routes)
+        custom_routes.values.each do |target|
+          next if step_names.include?(target) || target == :term
+
+          raise(::Flows::Operation::NoStepDefinedError, target)
+        end
+      end
+
+      def step_names
+        @step_names ||= @steps.map { |s| s[:name] }
       end
     end
   end

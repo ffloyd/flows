@@ -29,6 +29,16 @@ module Flows
       end
     end
 
+    class NoStepDefinedError < ::Flows::Error
+      def initialize(step_name)
+        @step_name = step_name
+      end
+
+      def message
+        "Missing step or track definition: #{@step_name}"
+      end
+    end
+
     class MissingOutputError < ::Flows::Error
       def initialize(required_keys, actual_keys)
         @missing_keys = required_keys - actual_keys
