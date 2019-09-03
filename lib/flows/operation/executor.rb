@@ -31,6 +31,8 @@ module Flows
       end
 
       def build_success_result(status, context)
+        return ok(status, context[:data]) if @success_shapes == :no_check
+
         shape = @success_shapes[status]
         raise ::Flows::Operation::UnexpectedSuccessStatusError.new(status, @success_shapes.keys) if shape.nil?
 
@@ -42,11 +44,14 @@ module Flows
       def build_failure_result(status, context, last_result)
         raise ::Flows::Operation::NoFailureShapeError if @failure_shapes.nil?
 
+        meta = build_meta(context, last_result)
+
+        return Flows::Result::Err.new(context[:data], status: status, meta: meta) if @failure_shapes == :no_check
+
         shape = @failure_shapes[status]
         raise ::Flows::Operation::UnexpectedFailureStatusError.new(status, @failure_shapes.keys) if shape.nil?
 
         data = extract_data(context[:data], shape)
-        meta = build_meta(context, last_result)
 
         Flows::Result::Err.new(data, status: status, meta: meta)
       end

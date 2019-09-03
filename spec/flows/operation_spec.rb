@@ -402,6 +402,28 @@ RSpec.describe Flows::Operation do
     end
   end
 
+  describe 'with disabled shape checks' do
+    subject(:invoke) { operation_class.new.call }
+
+    let(:operation_class) do
+      Class.new do
+        include Flows::Operation
+
+        step :do_job
+
+        no_shape_checks
+
+        def do_job(**)
+          ok(data: :any_shape)
+        end
+      end
+    end
+
+    it 'successfuly executes' do
+      expect(invoke.unwrap[:data]).to eq(:any_shape)
+    end
+  end
+
   describe 'override standard routing' do
     context 'when overrides default routing' do
       subject(:operation) { operation_class.new }

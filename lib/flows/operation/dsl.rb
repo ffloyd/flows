@@ -46,6 +46,11 @@ module Flows
                           end
       end
 
+      def no_shape_checks
+        @success_shapes = :no_check
+        @failure_shapes = :no_check
+      end
+
       private
 
       def make_step(name, custom_routes: {}, custom_body: nil)
