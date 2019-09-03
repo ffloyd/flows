@@ -19,9 +19,10 @@ module Flows
 
       def resolve_wiring!
         @steps = @steps.map.with_index do |step, index|
-          next_step =
-            @steps[(index + 1)..-1]
-            .find { |s| !s[:track] || s[:track] == step[:track] }
+          next_step = @steps[(index + 1)..-1].find do |candidate|
+            candidate[:track_path] == [] ||
+              step[:track_path].include?(candidate[:track_path].last)
+          end
 
           step.merge(
             next_step: next_step ? next_step[:name] : :term
@@ -59,7 +60,7 @@ module Flows
       def build_meta(step)
         {
           name: step[:name],
-          track: step[:track]
+          track_path: step[:track_path]
         }
       end
 

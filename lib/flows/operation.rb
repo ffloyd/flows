@@ -9,7 +9,7 @@ module Flows
   module Operation
     def self.included(mod)
       mod.instance_variable_set(:@steps, [])
-      mod.instance_variable_set(:@track, nil)
+      mod.instance_variable_set(:@track_path, [])
       mod.extend ::Flows::Operation::DSL
     end
 

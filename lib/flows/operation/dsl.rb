@@ -11,12 +11,13 @@ module Flows
       end
 
       def track(name, &block)
-        @track = {
-          name: name
-        }
+        track_path_before = @track_path
+        @track_path += [name]
+
         @steps << make_step(name, custom_body: ->(**) { ok })
         instance_exec(&block)
-        @track = nil
+
+        @track_path = track_path_before
       end
 
       def success(*keys, **code_keys_map)
@@ -42,7 +43,7 @@ module Flows
           name: name,
           custom_routes: custom_routes,
           custom_body: custom_body,
-          track: @track ? @track[:name] : nil
+          track_path: @track_path
         }
       end
     end

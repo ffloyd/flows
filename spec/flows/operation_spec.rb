@@ -458,5 +458,74 @@ RSpec.describe Flows::Operation do
         expect(operation.call(route: :track).status).to eq :on_track
       end
     end
+
+    context 'when nested track present' do
+      subject(:operation) { operation_class.new }
+
+      let(:operation_class) do
+        Class.new do
+          include Flows::Operation
+
+          step :first, match_ok(:track) => :side_track
+
+          track :side_track do
+            step :side_track_begin, match_ok(:inner) => :inner_track
+            track :inner_track do
+              step :on_inner_track
+            end
+            step :side_track_end
+          end
+
+          step :last
+
+          success success: [:path]
+
+          def first(route:, **)
+            path = [:first]
+
+            case route
+            when :direct then ok(path: path)
+            when :track, :inner then ok(:track, path: path)
+            end
+          end
+
+          def side_track_begin(route:, path:, **)
+            path += [:side_track_begin]
+
+            if route == :inner
+              ok(:inner, path: path)
+            else
+              ok(path: path)
+            end
+          end
+
+          def on_inner_track(path:, **)
+            ok(path: path + [:on_inner_track])
+          end
+
+          def side_track_end(path:, **)
+            ok(path: path + [:side_track_end])
+          end
+
+          def last(path:, **)
+            ok(path: path + [:last])
+          end
+        end
+      end
+
+      it 'works in direct path case' do
+        expect(operation.call(route: :direct).unwrap[:path]).to eq %i[first last]
+      end
+
+      it 'works in track path case' do
+        expect(operation.call(route: :track).unwrap[:path]).to eq %i[first side_track_begin side_track_end last]
+      end
+
+      it 'works in inner track path case' do
+        expect(operation.call(route: :inner).unwrap[:path]).to(
+          eq %i[first side_track_begin on_inner_track side_track_end last]
+        )
+      end
+    end
   end
 end
