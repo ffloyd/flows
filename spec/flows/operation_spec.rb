@@ -43,6 +43,70 @@ RSpec.describe Flows::Operation do
     end
   end
 
+  describe 'step definition by symbol & lambda' do
+    context 'when no instance method with same name exists' do
+      subject(:invoke) { operation_class.new.call }
+
+      let(:operation_class) do
+        Class.new do
+          include Flows::Operation
+
+          step :do_job, ->(**) { ok(data: 'from lambda') }
+
+          success :data
+        end
+      end
+
+      it 'executes lambda' do
+        expect(invoke.unwrap[:data]).to eq 'from lambda'
+      end
+    end
+
+    context 'when instance method with same name exists' do
+      subject(:invoke) { operation_class.new.call }
+
+      let(:operation_class) do
+        Class.new do
+          include Flows::Operation
+
+          step :do_job, ->(**) { ok(data: 'from lambda') }
+
+          success :data
+
+          def do_job(**)
+            ok(data: 'from method')
+          end
+        end
+      end
+
+      it 'executes lambda' do
+        expect(invoke.unwrap[:data]).to eq 'from lambda'
+      end
+    end
+
+    context 'with routing' do
+      subject(:invoke) { operation_class.new.call }
+
+      let(:operation_class) do
+        Class.new do
+          include Flows::Operation
+
+          step :do_job,
+               ->(**) { ok(data: 'from lambda') },
+               match_ok => :term
+
+          step :panic, ->(**) { raise 'should not be here' }
+
+          success :data
+        end
+      end
+
+      it 'uses routing' do
+        expect { invoke }.not_to raise_error
+      end
+    end
+  end
+
   describe 'success shape with implicit default status' do
     context 'when defined, result has :success status and data conforms shape' do
       subject(:invoke) { operation_class.new.call }

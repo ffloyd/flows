@@ -6,8 +6,18 @@ module Flows
 
       include Flows::Result::Helpers
 
-      def step(name, custom_routes = {})
-        @steps << make_step(name, custom_routes: custom_routes)
+      def step(name, custom_body_or_routes = nil, custom_routes = nil)
+        if custom_routes
+          custom_body = custom_body_or_routes
+        elsif custom_body_or_routes.is_a? Hash
+          custom_routes = custom_body_or_routes
+          custom_body = nil
+        else
+          custom_routes = {}
+          custom_body = custom_body_or_routes
+        end
+
+        @steps << make_step(name, custom_routes: custom_routes, custom_body: custom_body)
       end
 
       def track(name, &block)
