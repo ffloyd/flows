@@ -413,7 +413,7 @@ RSpec.describe Flows::Operation do
 
         step :do_job
 
-        no_shape_checks
+        no_shape
 
         def do_job(**)
           ok(data: :any_shape)

@@ -77,7 +77,7 @@ module Flows
         end
 
         suboperation_class.instance_exec(&block)
-        suboperation_class.no_shape_checks
+        suboperation_class.no_shape
 
         suboperation = suboperation_class.new(method_source: @method_source, deps: @deps)
 
