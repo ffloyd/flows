@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+# rubocop:disable all
+
+require 'bundler/setup'
+require 'benchmark/ips'
+
+puts '-' * 50
+puts '- method execution'
+puts '-' * 50
+
+class OneMethod
+  def meth
+    :ok
+  end
+end
+
+one_method = OneMethod.new
+method_obj = one_method.method(:meth)
+
+Benchmark.ips do |b|
+  b.report('native call') { one_method.meth }
+  b.report('send(...)') { one_method.send(:meth) }
+  b.report('Method#call') { method_obj.call }
+
+  b.compare!
+end

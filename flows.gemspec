@@ -33,4 +33,12 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency 'codecov'
   spec.add_development_dependency 'simplecov'
+
+  # benchmarking tools
+  spec.add_development_dependency 'benchmark-ips'
+  spec.add_development_dependency 'ruby-prof'
+
+  # benchmarking
+  spec.add_development_dependency 'dry-transaction'
+  spec.add_development_dependency 'trailblazer-operation'
 end

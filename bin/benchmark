@@ -1,0 +1,88 @@
+#!/usr/bin/env ruby
+# rubocop:disable all
+
+require 'bundler/setup'
+require 'benchmark/ips'
+
+require_relative './examples'
+
+puts '-' * 50
+puts '- task: A + B, one step implementation'
+puts '-' * 50
+
+flows_summator = FlowsSummator.new
+dry_summator = DrySummator.new
+
+Benchmark.ips do |b|
+  b.report 'Flows::Operation (build each time)' do
+    FlowsSummator.new.call(a: 1, b: 2)
+  end
+
+  b.report 'Flows::Operation (build once)' do
+    flows_summator.call(a: 1, b: 2)
+  end
+
+  unless ENV['FLOWS_ONLY']
+    b.report 'Dry::Transaction (build each time)' do
+      DrySummator.new.call(a: 1, b: 2)
+    end
+
+    b.report 'Dry::Transaction (build once)' do
+      dry_summator.call(a: 1, b: 2)
+    end
+
+    b.report 'Trailblazer::Operation' do
+      TBSummator.call(a: 1, b: 2)
+    end
+  end
+
+  if ENV['WITH_PORO']
+    b.report 'PORO' do
+      POROSummator.call(a: 1, b: 2)
+    end
+  end
+
+  b.compare!
+end unless ENV['SKIP_SUM']
+puts
+
+
+puts '-' * 50
+puts '- task: ten steps returns successful result'
+puts '-' * 50
+
+flows_ten_steps = FlowsTenSteps.new
+dry_ten_steps = DryTenSteps.new
+
+Benchmark.ips do |b|
+  b.report 'Flows::Operation (build each time)' do
+    FlowsTenSteps.new.call(a: 1, b: 2)
+  end
+
+  b.report 'Flows::Operation (build once)' do
+    flows_ten_steps.call(a: 1, b: 2)
+  end
+
+  unless ENV['FLOWS_ONLY']
+    b.report 'Dry::Transaction (build each time)' do
+      DryTenSteps.new.call(a: 1, b: 2)
+    end
+
+    b.report 'Dry::Transaction (build once)' do
+      dry_ten_steps.call(a: 1, b: 2)
+    end
+
+    b.report 'Trailblazer::Operation' do
+      TBTenSteps.call(a: 1, b: 2)
+    end
+  end
+
+  if ENV['WITH_PORO']
+    b.report 'PORO' do
+      POROTenSteps.call
+    end
+  end
+
+  b.compare!
+end unless ENV['SKIP_10']
+puts

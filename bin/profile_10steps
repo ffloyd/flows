@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+# rubocop:disable all
+
+require 'bundler/setup'
+require 'ruby-prof'
+
+require_relative './examples'
+
+puts 'Profile building...'
+result = RubyProf.profile do
+  10_000.times do
+    FlowsTenSteps.new
+  end
+end
+printer = RubyProf::MultiPrinter.new(result)
+printer.print(path: 'profile', profile: '10steps_build_10k_times')
+
+
+flows_ten_steps = FlowsTenSteps.new
+
+puts 'Profile execution...'
+result = RubyProf.profile do
+  10_000.times {
+    flows_ten_steps.call
+  }
+end
+printer = RubyProf::MultiPrinter.new(result)
+printer.print(path: 'profile', profile: '10steps_execution_10k_times')
