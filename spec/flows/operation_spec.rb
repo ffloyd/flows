@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 RSpec.describe Flows::Operation do
+  include ::Flows::Result::Helpers
+
   describe 'step definition by symbol' do
     context 'when instance method with same name exists' do
       subject(:invoke) { operation_class.new.call }
@@ -751,6 +753,110 @@ RSpec.describe Flows::Operation do
 
       it 'starts wrapping in a correct place' do
         expect(invoke.unwrap[:path_before_wrap]).to eq %i[init]
+      end
+    end
+  end
+
+  describe 'override step implementation with deps' do
+    context 'when there is no step implementation' do
+      subject(:invoke) do
+        operation_class.new(deps: {
+                              do_job: ->(**) { ok(data: 'from deps') }
+                            }).call
+      end
+
+      let(:operation_class) do
+        Class.new do
+          include Flows::Operation
+
+          step :do_job
+
+          success :data
+        end
+      end
+
+      it 'uses step implementation from deps' do
+        expect(invoke.unwrap[:data]).to eq 'from deps'
+      end
+    end
+
+    context 'when step implementation presents in operation' do
+      subject(:invoke) do
+        operation_class.new(deps: {
+                              do_job: ->(**) { ok(data: 'from deps') }
+                            }).call
+      end
+
+      let(:operation_class) do
+        Class.new do
+          include Flows::Operation
+
+          step :do_job
+
+          success :data
+
+          def do_job(**)
+            ok(data: 'from class')
+          end
+        end
+      end
+
+      it 'uses step implementation from deps' do
+        expect(invoke.unwrap[:data]).to eq 'from deps'
+      end
+    end
+
+    context 'when step inside wrap' do
+      subject(:invoke) do
+        operation_class.new(deps: {
+                              do_job: ->(**) { ok(data: 'from deps') }
+                            }).call
+      end
+
+      let(:operation_class) do
+        Class.new do
+          include Flows::Operation
+
+          wrap :wrapper do
+            step :do_job
+          end
+
+          success :data
+
+          def wrapper(**)
+            yield
+          end
+        end
+      end
+
+      it 'uses step implementation from deps' do
+        expect(invoke.unwrap[:data]).to eq 'from deps'
+      end
+    end
+
+    context 'when step in side track' do
+      subject(:invoke) do
+        operation_class.new(deps: {
+                              do_job: ->(**) { ok(data: 'from deps') }
+                            }).call
+      end
+
+      let(:operation_class) do
+        Class.new do
+          include Flows::Operation
+
+          step :to_track, ->(**) { ok }, match_ok => :side_track
+
+          track :side_track do
+            step :do_job
+          end
+
+          success :data
+        end
+      end
+
+      it 'uses step implementation from deps' do
+        expect(invoke.unwrap[:data]).to eq 'from deps'
       end
     end
   end

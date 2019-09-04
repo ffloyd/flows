@@ -15,10 +15,10 @@ module Flows
 
     include ::Flows::Result::Helpers
 
-    def initialize(method_source: nil)
+    def initialize(method_source: nil, deps: {})
       _flows_do_checks
 
-      flow = _flows_make_flow(method_source || self)
+      flow = _flows_make_flow(method_source || self, deps)
 
       @_flows_executor = _flows_make_executor(flow)
     end
@@ -34,10 +34,11 @@ module Flows
       raise NoSuccessShapeError, self if self.class.success_shapes.nil?
     end
 
-    def _flows_make_flow(method_source)
+    def _flows_make_flow(method_source, deps)
       ::Flows::Operation::Builder.new(
         steps: self.class.steps,
-        method_source: method_source
+        method_source: method_source,
+        deps: deps
       ).call
     end
 

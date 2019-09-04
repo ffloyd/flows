@@ -2,9 +2,12 @@ module Flows
   module Operation
     # Flow builder
     class Builder
-      def initialize(steps:, method_source:)
+      attr_reader :steps, :method_source, :deps
+
+      def initialize(steps:, method_source:, deps:)
         @method_source = method_source
         @steps = steps
+        @deps = deps
       end
 
       def call
@@ -39,6 +42,8 @@ module Flows
       end
 
       def resolve_body_from_source(name)
+        return @deps[name] if @deps.key?(name)
+
         raise(::Flows::Operation::NoStepImplementationError, name) unless @method_source.respond_to?(name)
 
         @method_source.method(name)
@@ -74,7 +79,7 @@ module Flows
         suboperation_class.instance_exec(&block)
         suboperation_class.no_shape_checks
 
-        suboperation = suboperation_class.new(method_source: @method_source)
+        suboperation = suboperation_class.new(method_source: @method_source, deps: @deps)
 
         lambda do |**options|
           wrapper.call(**options) { suboperation.call(**options) }
