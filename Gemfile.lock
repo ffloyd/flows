@@ -84,6 +84,7 @@ GEM
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.2)
+    stackprof (0.2.12)
     trailblazer-activity (0.8.4)
       trailblazer-context (>= 0.1.4)
     trailblazer-activity-dsl-linear (0.1.8)
@@ -111,6 +112,7 @@ DEPENDENCIES
   rubocop-rspec
   ruby-prof
   simplecov
+  stackprof
   trailblazer-operation
 
 BUNDLED WITH

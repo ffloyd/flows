@@ -37,8 +37,9 @@ Gem::Specification.new do |spec|
   # benchmarking tools
   spec.add_development_dependency 'benchmark-ips'
   spec.add_development_dependency 'ruby-prof'
+  spec.add_development_dependency 'stackprof'
 
-  # benchmarking
+  # alternatives for comparison in benchmarking
   spec.add_development_dependency 'dry-transaction'
   spec.add_development_dependency 'trailblazer-operation'
 end
