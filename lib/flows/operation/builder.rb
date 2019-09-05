@@ -10,6 +10,8 @@ module Flows
         @method_source = method_source
         @steps = steps
         @deps = deps
+
+        @step_names = @steps.map { |s| s[:name] }
       end
 
       def call
@@ -22,16 +24,32 @@ module Flows
 
       private
 
-      def resolve_wiring!
-        @steps = @steps.map.with_index do |step, index|
-          next_step = @steps[(index + 1)..-1].find do |candidate|
-            candidate[:track_path] == [] ||
-              step[:track_path].include?(candidate[:track_path].last)
+      def resolve_wiring! # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+        # we have to disable some linters for performance reasons
+        # this method can be simplified using `map.with_index`, but while loops is about
+        # 2x faster for such cases.
+        index = 0
+
+        while index < @steps.length
+          current_step = @steps[index]
+          next_step_name = nil
+
+          inner_index = index + 1
+          while inner_index < @steps.length
+            candidate = @steps[inner_index]
+            candidate_last_track = candidate[:track_path].last
+
+            if candidate[:track_path] == [] || current_step[:track_path].include?(candidate_last_track)
+              next_step_name = candidate[:name]
+              break
+            end
+
+            inner_index += 1
           end
 
-          step.merge(
-            next_step: next_step ? next_step[:name] : :term
-          )
+          current_step[:next_step] = next_step_name || :term
+
+          index += 1
         end
       end
 
@@ -58,7 +76,7 @@ module Flows
             body: build_final_body(step),
             preprocessor: method(:node_preprocessor),
             postprocessor: method(:node_postprocessor),
-            router: BuildRouter.call(step[:custom_routes], step[:next_step], step_names),
+            router: BuildRouter.call(step[:custom_routes], step[:next_step], @step_names),
             meta: build_meta(step)
           )
         end
@@ -106,10 +124,6 @@ module Flows
         context[:last_step] = meta[:name]
 
         output
-      end
-
-      def step_names
-        @step_names ||= @steps.map { |s| s[:name] }
       end
     end
   end
