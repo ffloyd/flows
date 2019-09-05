@@ -4,15 +4,13 @@ module Flows
     class Error < Flows::Error; end
     class NoRouteError < Error; end
 
-    DEFAULT_PREPROCESSOR = ->(output, _context, _meta) { output }
-
-    def initialize(route_hash, preprocessor: DEFAULT_PREPROCESSOR)
+    def initialize(route_hash, preprocessor: nil)
       @route_def = route_hash
       @preprocessor = preprocessor
     end
 
     def call(output, context:, meta:)
-      data = @preprocessor.call(output, context, meta)
+      data = @preprocessor ? @preprocessor.call(output, context, meta) : output
 
       @route_def.each_pair do |predicate, route|
         return route if predicate === data # rubocop:disable Style/CaseEquality

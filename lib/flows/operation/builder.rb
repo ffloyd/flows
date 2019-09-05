@@ -1,3 +1,5 @@
+require_relative './builder/build_router'
+
 module Flows
   module Operation
     # Flow builder
@@ -56,7 +58,7 @@ module Flows
             body: build_final_body(step),
             preprocessor: method(:node_preprocessor),
             postprocessor: method(:node_postprocessor),
-            router: make_router(step),
+            router: BuildRouter.call(step[:custom_routes], step[:next_step], step_names),
             meta: build_meta(step)
           )
         end
@@ -104,24 +106,6 @@ module Flows
         context[:last_step] = meta[:name]
 
         output
-      end
-
-      def make_router(step_definition)
-        routes = step_definition[:custom_routes]
-        check_custom_routes(routes)
-
-        routes[Flows::Result::Ok] ||= step_definition[:next_step]
-        routes[Flows::Result::Err] ||= :term
-
-        Flows::Router.new(routes)
-      end
-
-      def check_custom_routes(custom_routes)
-        custom_routes.values.each do |target|
-          next if step_names.include?(target) || target == :term
-
-          raise(::Flows::Operation::NoStepDefinedError, target)
-        end
       end
 
       def step_names

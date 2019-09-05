@@ -13,7 +13,7 @@ module Flows
           custom_routes = custom_body_or_routes
           custom_body = nil
         else
-          custom_routes = {}
+          custom_routes = nil
           custom_body = custom_body_or_routes
         end
 
