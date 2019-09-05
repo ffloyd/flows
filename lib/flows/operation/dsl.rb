@@ -2,7 +2,7 @@ module Flows
   module Operation
     # DSL methods for operation
     module DSL
-      attr_reader :steps, :success_shapes, :failure_shapes
+      attr_reader :steps, :ok_shapes, :err_shapes
 
       include Flows::Result::Helpers
 
@@ -34,25 +34,25 @@ module Flows
         @steps << make_step(name, type: :wrapper, custom_body: custom_body, block: block)
       end
 
-      def success(*keys, **code_keys_map)
-        @success_shapes = if keys.empty?
-                            code_keys_map
-                          else
-                            { success: keys }
-                          end
+      def ok_shape(*keys, **code_keys_map)
+        @ok_shapes = if keys.empty?
+                       code_keys_map
+                     else
+                       { success: keys }
+                     end
       end
 
-      def failure(*keys, **code_keys_map)
-        @failure_shapes = if keys.empty?
-                            code_keys_map
-                          else
-                            { failure: keys }
-                          end
+      def err_shape(*keys, **code_keys_map)
+        @err_shapes = if keys.empty?
+                        code_keys_map
+                      else
+                        { failure: keys }
+                      end
       end
 
       def no_shape
-        @success_shapes = :no_check
-        @failure_shapes = :no_check
+        @ok_shapes = :no_shapes
+        @err_shapes = :no_shapes
       end
 
       private

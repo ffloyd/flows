@@ -12,7 +12,7 @@ class FlowsSummator
 
   step :sum
 
-  success :sum
+  ok_shape :sum
 
   def sum(a:, b:, **)
     ok(sum: a + b)
@@ -63,7 +63,7 @@ class FlowsTenSteps
   step :s9
   step :s10
 
-  success :data
+  ok_shape :data
 
   def s1(**); ok(s1: true); end
   def s2(**); ok(s2: true); end

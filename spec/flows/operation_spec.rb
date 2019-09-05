@@ -13,7 +13,7 @@ RSpec.describe Flows::Operation do
 
           step :build_result
 
-          success :data
+          ok_shape :data
 
           def build_result(**)
             ok(data: 'some data')
@@ -35,7 +35,7 @@ RSpec.describe Flows::Operation do
 
           step :build_result
 
-          success :data
+          ok_shape :data
         end
       end
 
@@ -55,7 +55,7 @@ RSpec.describe Flows::Operation do
 
           step :do_job, ->(**) { ok(data: 'from lambda') }
 
-          success :data
+          ok_shape :data
         end
       end
 
@@ -73,7 +73,7 @@ RSpec.describe Flows::Operation do
 
           step :do_job, ->(**) { ok(data: 'from lambda') }
 
-          success :data
+          ok_shape :data
 
           def do_job(**)
             ok(data: 'from method')
@@ -99,7 +99,7 @@ RSpec.describe Flows::Operation do
 
           step :panic, ->(**) { raise 'should not be here' }
 
-          success :data
+          ok_shape :data
         end
       end
 
@@ -119,7 +119,7 @@ RSpec.describe Flows::Operation do
 
           step :build_result
 
-          success :data
+          ok_shape :data
 
           def build_result(**)
             ok(data: 'data', not_a_data: 'not a data')
@@ -143,7 +143,7 @@ RSpec.describe Flows::Operation do
 
           step :build_result
 
-          success :data
+          ok_shape :data
 
           def build_result(**)
             ok(out_of_shape: 'data', not_a_data: 'not a data')
@@ -165,7 +165,7 @@ RSpec.describe Flows::Operation do
 
           step :build_result
 
-          success :data
+          ok_shape :data
 
           def build_result(**)
             ok(:custom_status, data: 'data', not_a_data: 'not a data')
@@ -209,8 +209,8 @@ RSpec.describe Flows::Operation do
 
           step :build_result
 
-          success type_a: %i[data],
-                  type_b: %i[value]
+          ok_shape type_a: %i[data],
+                   type_b: %i[value]
 
           def build_result(**)
             ok(:type_b, value: 'some value')
@@ -238,8 +238,8 @@ RSpec.describe Flows::Operation do
 
           step :build_result
 
-          success type_a: %i[data],
-                  type_b: %i[value]
+          ok_shape type_a: %i[data],
+                   type_b: %i[value]
 
           def build_result(**)
             ok(value: 'some value')
@@ -263,8 +263,8 @@ RSpec.describe Flows::Operation do
 
           step :build_result
 
-          success :data
-          failure :error
+          ok_shape :data
+          err_shape :error
 
           def build_result(**)
             err(error: 'some error', data: 'data')
@@ -288,8 +288,8 @@ RSpec.describe Flows::Operation do
 
           step :build_result
 
-          success :data
-          failure :error
+          ok_shape :data
+          err_shape :error
 
           def build_result(**)
             err(data: 'some data')
@@ -311,8 +311,8 @@ RSpec.describe Flows::Operation do
 
           step :build_result
 
-          success :data
-          failure :error
+          ok_shape :data
+          err_shape :error
 
           def build_result(**)
             err(:custom_status, error: 'some error')
@@ -334,7 +334,7 @@ RSpec.describe Flows::Operation do
 
           step :build_result
 
-          success :data
+          ok_shape :data
 
           def build_result(**)
             err(error: 'some error')
@@ -358,9 +358,9 @@ RSpec.describe Flows::Operation do
 
           step :build_result
 
-          success :data
-          failure validation: %i[errors],
-                  exception: %i[exceptions]
+          ok_shape :data
+          err_shape validation: %i[errors],
+                    exception: %i[exceptions]
 
           def build_result(**)
             err(:validation, errors: 'some errors')
@@ -388,9 +388,9 @@ RSpec.describe Flows::Operation do
 
           step :build_result
 
-          success :data
-          failure validation: %i[errors],
-                  exception: %i[exceptions]
+          ok_shape :data
+          err_shape validation: %i[errors],
+                    exception: %i[exceptions]
 
           def build_result(**)
             err(:unexpected, errors: 'some errors')
@@ -440,7 +440,7 @@ RSpec.describe Flows::Operation do
 
           step :last_step
 
-          success :data
+          ok_shape :data
 
           def resolve(path:, **)
             case path
@@ -474,8 +474,8 @@ RSpec.describe Flows::Operation do
           step :resolve, match_ok(:end_now) => :term
           step :last_step
 
-          success success: [:data],
-                  end_now: [:data]
+          ok_shape success: [:data],
+                   end_now: [:data]
 
           def resolve(path:, **)
             case path
@@ -516,8 +516,8 @@ RSpec.describe Flows::Operation do
 
           step :last
 
-          success success: [:data],
-                  on_track: [:data]
+          ok_shape success: [:data],
+                   on_track: [:data]
 
           def first(route:, **)
             case route
@@ -566,7 +566,7 @@ RSpec.describe Flows::Operation do
 
           step :last
 
-          success success: [:path]
+          ok_shape success: [:path]
 
           def first(route:, **)
             path = [:first]
@@ -633,7 +633,7 @@ RSpec.describe Flows::Operation do
 
           step :last
 
-          success :path, :path_before_wrap
+          ok_shape :path, :path_before_wrap
 
           def init(**)
             ok(path: [:init])
@@ -680,7 +680,7 @@ RSpec.describe Flows::Operation do
 
           step :last
 
-          success :path, :path_before_wrap
+          ok_shape :path, :path_before_wrap
 
           def init(**)
             ok(path: [:init])
@@ -731,7 +731,7 @@ RSpec.describe Flows::Operation do
 
           step :last
 
-          success :path, :path_before_wrap
+          ok_shape :path, :path_before_wrap
 
           def init(**)
             ok(path: [:init])
@@ -771,7 +771,7 @@ RSpec.describe Flows::Operation do
 
           step :do_job
 
-          success :data
+          ok_shape :data
         end
       end
 
@@ -793,7 +793,7 @@ RSpec.describe Flows::Operation do
 
           step :do_job
 
-          success :data
+          ok_shape :data
 
           def do_job(**)
             ok(data: 'from class')
@@ -821,7 +821,7 @@ RSpec.describe Flows::Operation do
             step :do_job
           end
 
-          success :data
+          ok_shape :data
 
           def wrapper(**)
             yield
@@ -851,7 +851,7 @@ RSpec.describe Flows::Operation do
             step :do_job
           end
 
-          success :data
+          ok_shape :data
         end
       end
 

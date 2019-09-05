@@ -31,7 +31,7 @@ module Flows
 
     def _flows_do_checks
       raise NoStepsError if self.class.steps.empty?
-      raise NoSuccessShapeError, self if self.class.success_shapes.nil?
+      raise NoSuccessShapeError, self if self.class.ok_shapes.nil?
     end
 
     def _flows_make_flow(method_source, deps)
@@ -45,8 +45,8 @@ module Flows
     def _flows_make_executor(flow)
       ::Flows::Operation::Executor.new(
         flow: flow,
-        success_shapes: self.class.success_shapes,
-        failure_shapes: self.class.failure_shapes,
+        ok_shapes: self.class.ok_shapes,
+        err_shapes: self.class.err_shapes,
         class_name: self.class.name
       )
     end

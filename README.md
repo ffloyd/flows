@@ -153,10 +153,10 @@ class Summator
   step :calc_square
   
   # Which keys of operation data we want to expose on success
-  success :sum, :sum_square
+  ok_shape :sum, :sum_square
   
   # Which keys of operation data we want to expose on failure 
-  failure :message
+  err_shape :message
   
   # Step implementation receives execution context as keyword arguments.
   # For the first step context equals to operation arguments.
@@ -202,8 +202,8 @@ result.error # { message: 'a is not a number' } - only keys from error shape pre
 
 #### Result Shapes
 
-You may limit list of exposed fields by defining success and failure shapes. _After_ step definitions use `success` to define shapes of success result,
-and `failure` to define shapes of failure result. Examples:
+You may limit list of exposed fields by defining success and failure shapes. _After_ step definitions use `ok_shape` to define shapes of success result,
+and `err_shape` to define shapes of failure result. Examples:
 
 ```ruby
 # Set exposed keys for :success status of successful result.
@@ -211,21 +211,21 @@ and `failure` to define shapes of failure result. Examples:
 # Success result will have shape like { key1: ..., key2: ... }
 #
 # If one of keys is missing in the final operation context an exception will be raised.
-success :key1, :key2
+ok_shape :key1, :key2
 
 # Set different exposed keys for different statuses.
 #
 # Operation result status is a status of last executed step result.
-success status1: [:key1, :key2],
+ok_shape status1: [:key1, :key2],
         status2: [:key3]
         
 # Failure shapes defined in the same way:
-failure :key1, :key2
-failure status1: [:key1, :key2],
+err_shape :key1, :key2
+err_shape status1: [:key1, :key2],
         status2: [:key3]
 ```
 
-Operation definition should have exact one `success` DSL-call and zero or one `failure` DSL-call. If you want to disable shaping
+Operation definition should have exact one `ok_shape` DSL-call and zero or one `err_shape` DSL-call. If you want to disable shaping
 you can write `no_shape` DSL-call instead of shape definitions.
 
 #### Routing & Tracks
@@ -285,7 +285,7 @@ class Summator
   
   step :sum
   
-  success :sum
+  ok_shape :sum
 end
 
 summator = Summator.new(deps: {

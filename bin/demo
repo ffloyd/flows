@@ -27,8 +27,8 @@ class DivisionOperation
   step :check_for_zero
   step :divide
 
-  success :result
-  failure :error
+  ok_shape :result
+  err_shape :error
 
   def check_for_zero(denominator:, **)
     if denominator.zero?
@@ -49,8 +49,8 @@ class NestedDivisionOperation
 
   step :do_division
 
-  success :result
-  failure :error
+  ok_shape :result
+  err_shape :error
 
   def do_division(**params)
     DivisionOperation.new.call(**params)

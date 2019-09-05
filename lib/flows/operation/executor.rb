@@ -4,11 +4,11 @@ module Flows
     class Executor
       include ::Flows::Result::Helpers
 
-      def initialize(flow:, success_shapes:, failure_shapes:, class_name:)
+      def initialize(flow:, ok_shapes:, err_shapes:, class_name:)
         @flow = flow
 
-        @success_shapes = success_shapes
-        @failure_shapes = failure_shapes
+        @ok_shapes = ok_shapes
+        @err_shapes = err_shapes
         @operation_class_name = class_name
       end
 
@@ -31,10 +31,10 @@ module Flows
       end
 
       def build_success_result(status, context)
-        return ok(status, context[:data]) if @success_shapes == :no_check
+        return ok(status, context[:data]) if @ok_shapes == :no_shapes
 
-        shape = @success_shapes[status]
-        raise ::Flows::Operation::UnexpectedSuccessStatusError.new(status, @success_shapes.keys) if shape.nil?
+        shape = @ok_shapes[status]
+        raise ::Flows::Operation::UnexpectedSuccessStatusError.new(status, @ok_shapes.keys) if shape.nil?
 
         data = extract_data(context[:data], shape)
 
@@ -42,14 +42,14 @@ module Flows
       end
 
       def build_failure_result(status, context, last_result)
-        raise ::Flows::Operation::NoFailureShapeError if @failure_shapes.nil?
+        raise ::Flows::Operation::NoFailureShapeError if @err_shapes.nil?
 
         meta = build_meta(context, last_result)
 
-        return Flows::Result::Err.new(context[:data], status: status, meta: meta) if @failure_shapes == :no_check
+        return Flows::Result::Err.new(context[:data], status: status, meta: meta) if @err_shapes == :no_shapes
 
-        shape = @failure_shapes[status]
-        raise ::Flows::Operation::UnexpectedFailureStatusError.new(status, @failure_shapes.keys) if shape.nil?
+        shape = @err_shapes[status]
+        raise ::Flows::Operation::UnexpectedFailureStatusError.new(status, @err_shapes.keys) if shape.nil?
 
         data = extract_data(context[:data], shape)
 
