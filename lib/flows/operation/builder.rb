@@ -54,8 +54,8 @@ module Flows
       end
 
       def resolve_bodies!
-        @steps.map! do |step|
-          step.merge(
+        @steps.each do |step|
+          step.merge!(
             body: step[:custom_body] || resolve_body_from_source(step[:name])
           )
         end
