@@ -3,12 +3,8 @@ module Flows
   class Result
     attr_reader :status, :meta
 
-    def initialize(data, status:, meta: {})
-      @data = data
-      @status = status
-      @meta = meta
-
-      raise 'Use Flows::Result::Ok or Flows::Result::Err for build result objects' if self.class == Result
+    def initialize(**)
+      raise 'Use Flows::Result::Ok or Flows::Result::Err for build result objects'
     end
   end
 end

@@ -2,8 +2,12 @@ module Flows
   class Result
     # Wrapper for successful results
     class Ok < Result
+      attr_reader :unwrap
+
       def initialize(data, status: :success, meta: {})
-        super
+        @unwrap = data
+        @status = status
+        @meta = meta
       end
 
       def ok?
@@ -12,10 +16,6 @@ module Flows
 
       def err?
         false
-      end
-
-      def unwrap
-        @data
       end
 
       def error
