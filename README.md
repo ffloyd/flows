@@ -251,13 +251,14 @@ In definition above tracks will not be used because there is no routes to this t
 ```ruby
 # if result is successful and has status :to_some_track - next step will be inner_1 
 # for any other successful results - outer_2
-step :outer_1,
-  match_ok(:to_some_track) => :some_track
+step :outer_1, routes(
+  when_ok(:to_some_track) => :some_track
+)
 
 track :some_track do
-  step :inner_1, match_err => :inner_track # redirect to inner_track on failure result
+  step :inner*1, routes(when_err => :inner_track) # redirect to inner_track on any failure result
   track :inner_track do
-    step :deep_1, match_ok(:some_status) => :outer_2 # you may redirect to steps too
+    step :deep_1, routes(when_ok(:some_status) => :outer_2) # you may redirect to steps too
     step :deep_2
   end
   step :inner_2
@@ -265,6 +266,25 @@ end
 
 step :outer_2
 ```
+
+You also can use less verbose, but shorter form of definition:
+
+```ruby
+step :name,
+  match_ok(:status) => :track_name,
+  match_ok => :track_name
+```
+
+Step has default routes:
+
+```ruby
+routes(
+  when_ok => next_step_name,
+  when_err => :term
+)
+```
+
+Custom routes have bigger priority than default ones. Moreover, default routes can be overriden.
 
 #### Lambda Steps
 

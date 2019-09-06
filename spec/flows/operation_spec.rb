@@ -845,7 +845,11 @@ RSpec.describe Flows::Operation do
         Class.new do
           include Flows::Operation
 
-          step :to_track, ->(**) { ok }, match_ok => :side_track
+          step :to_track,
+               ->(**) { ok },
+               routes(
+                 when_ok => :side_track
+               )
 
           track :side_track do
             step :do_job

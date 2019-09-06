@@ -30,6 +30,13 @@ module Flows
         @track_path = track_path_before
       end
 
+      def routes(routes_hash)
+        routes_hash
+      end
+
+      alias when_ok match_ok
+      alias when_err match_err
+
       def wrap(name, custom_body = nil, &block)
         @steps << make_step(name, type: :wrapper, custom_body: custom_body, block: block)
       end
