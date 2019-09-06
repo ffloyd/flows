@@ -5,10 +5,10 @@
 [![Gem Version](https://badge.fury.io/rb/flows.svg)](https://badge.fury.io/rb/flows)
 
 Small and fast ruby framework for implementing railway-like operations.
-By design it close to [Trailblazer::Operation](http://trailblazer.to/gems/operation/2.0/) and [Dry::Transaction](https://dry-rb.org/gems/dry-transaction/),
-but has more simpler and flexible DSL for defining operations and matching results. Also `flows` is faster.
+By design it is close to [Trailblazer::Operation](http://trailblazer.to/gems/operation/2.0/) and [Dry::Transaction](https://dry-rb.org/gems/dry-transaction/),
+but has simpler and flexible DSL for defining operations and matching results. Also `flows` is faster, see [Performance](#performance).
 
-`flows` has no production dependencies so you can use it with any framework.
+`flows` has no production dependencies so it can be used with any framework.
 
 ## Installation
 
@@ -51,7 +51,7 @@ Basic usage:
 
 ```ruby
 # create successful result with data {a: 1, b: 2}
-result_ok = Flows::Result::Ok.new(a:1, b: 2)
+result_ok = Flows::Result::Ok.new(a: 1, b: 2)
 
 # get `:a` from result
 result_ok.unwrap[:a] # 1
@@ -73,7 +73,7 @@ result_ok_custom = Flows::Result::Ok.new({ a: 1, b: 2 }, status: :custom)
 result_ok_custom.status # :custom
 
 # create failure result with data {a: 1, b: 2}
-result_err = Flows::Result::Err.new(a:1, b: 2)
+result_err = Flows::Result::Err.new(a: 1, b: 2)
 
 # get `:a` from result
 result_err.unwrap[:a] # raises exception
@@ -101,13 +101,13 @@ Mixin `Flows::Result::Helpers` contains tools for simpler generating and matchin
 include Flows::Result::Helpers
 
 # create successful result with data {a: 1, b: 2}
-result_ok = ok(a:1, b: 2)
+result_ok = ok(a: 1, b: 2)
 
 # create successful result with data {a: 1, b: 2} and status `:custom`
 result_ok_custom = ok(:custom, a: 1, b: 2)
 
 # create failure result with data {a: 1, b: 2}
-result_err = err(a:1, b: 2)
+result_err = err(a: 1, b: 2)
 
 # create failure result with data {a: 1, b: 2} and status `:custom`
 result_err_custom = err(:custom, a: 1, b: 2)
@@ -202,8 +202,7 @@ result.error # { message: 'a is not a number' } - only keys from error shape pre
 
 #### Result Shapes
 
-You may limit list of exposed fields by defining success and failure shapes. _After_ step definitions use `ok_shape` to define shapes of success result,
-and `err_shape` to define shapes of failure result. Examples:
+You may limit list of exposed fields by defining success and failure shapes. _After_ step definitions use `ok_shape` to define shapes of success result, and `err_shape` to define shapes of failure result. Examples:
 
 ```ruby
 # Set exposed keys for :success status of successful result.
