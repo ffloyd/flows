@@ -1,6 +1,7 @@
 require:
   - rubocop-rspec
   - rubocop-performance
+  - rubocop-md
 
 AllCops:
   TargetRubyVersion: 2.6
@@ -20,3 +21,11 @@ Metrics/ParameterLists:
 
 Style/WhileUntilModifier:
   Enabled: false
+
+Naming/UncommunicativeMethodParamName:
+  Exclude:
+    - '**/*.md'
+
+Style/MixinUsage:
+  Exclude:
+    - '**/*.md'

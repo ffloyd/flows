@@ -20,11 +20,15 @@ gem 'flows'
 
 And then execute:
 
-    $ bundle
+```sh
+bundle
+```
 
 Or install it yourself as:
 
-    $ gem install flows
+```sh
+gem install flows
+```
 
 ## Usage
 
@@ -113,17 +117,21 @@ result_err = err(a: 1, b: 2)
 result_err_custom = err(:custom, a: 1, b: 2)
 
 # matching helpers
-result = ...
+result = SomeOperation.new.call
 
 case result
 when match_ok(:custom)
   # matches only successful results with status :custom
+  do_something
 when match_ok
   # matches only successful results with any status
+  do_something
 when match_err(:custom)
   # matches only failure results with status :custom
+  do_something
 when match_err
   # matches only failure results with any status
+  do_something
 end
 ```
 
@@ -141,7 +149,7 @@ class Summator
   # It adds DSL, initializer and call method.
   # Also it includes Flows::Result::Helper both on DSL and instance level.
   include Flows::Operation
-  
+
   # This is step definitions.
   # In simplest form step defined by its name and
   # step implementation expected to be in a method
@@ -151,38 +159,37 @@ class Summator
   step :validate
   step :calc_sum
   step :calc_square
-  
+
   # Which keys of operation data we want to expose on success
   ok_shape :sum, :sum_square
-  
-  # Which keys of operation data we want to expose on failure 
+
+  # Which keys of operation data we want to expose on failure
   err_shape :message
-  
+
   # Step implementation receives execution context as keyword arguments.
   # For the first step context equals to operation arguments.
   #
   # Step implementation must return Result Object.
   # Result Objects's data will be merged into operation context.
-  # 
+  #
   # If result is successful - next step will be executed.
   # If not - operation terminates and returns failure.
   def validate(a:, b:, **)
-    err(message: 'a is not a number') if !a.is_a?(Number)
-    err(message: 'b is not a number') if !b.is_a?(Number)
-    
+    err(message: 'a is not a number') unless a.is_a?(Number)
+    err(message: 'b is not a number') unless b.is_a?(Number)
+
     ok
   end
-  
+
   def calc_sum(a:, b:, **)
     ok(sum: a + b)
   end
-  
+
   # We may get data from previous steps because all results' data are merged to context.
   def calc_square(sum:, **)
-    ok(sum_square: a * b)
+    ok(sum_square: sum * sum)
   end
 end
-
 
 # prepare operation
 operation = Summator.new
@@ -192,7 +199,6 @@ result = operation.call(a: 1, b: 2)
 
 result.ok? # true
 result.unwrap # { sum: 3, sum_square: 9 } - only keys from success shape present
-
 
 result = operation.call(a: nil, b: nil)
 
@@ -215,12 +221,12 @@ ok_shape :key1, :key2
 # Set different exposed keys for different statuses.
 #
 # Operation result status is a status of last executed step result.
-ok_shape status1: [:key1, :key2],
+ok_shape status1: %i[key1 key2],
          status2: [:key3]
-        
+
 # Failure shapes defined in the same way:
 err_shape :key1, :key2
-err_shape status1: [:key1, :key2],
+err_shape status1: %i[key1 key2],
           status2: [:key3]
 ```
 
@@ -246,17 +252,17 @@ end
 step :outer_2
 ```
 
-In definition above tracks will not be used because there is no routes to this tracks. You may define routing like this: 
+In definition above tracks will not be used because there is no routes to this tracks. You may define routing like this:
 
 ```ruby
-# if result is successful and has status :to_some_track - next step will be inner_1 
+# if result is successful and has status :to_some_track - next step will be inner_1
 # for any other successful results - outer_2
 step :outer_1, routes(
   when_ok(:to_some_track) => :some_track
 )
 
 track :some_track do
-  step :inner*1, routes(when_err => :inner_track) # redirect to inner_track on any failure result
+  step :inner * 1, routes(when_err => :inner_track) # redirect to inner_track on any failure result
   track :inner_track do
     step :deep_1, routes(when_ok(:some_status) => :outer_2) # you may redirect to steps too
     step :deep_2
@@ -271,8 +277,8 @@ You also can use less verbose, but shorter form of definition:
 
 ```ruby
 step :name,
-  match_ok(:status) => :track_name,
-  match_ok => :track_name
+     match_ok(:status) => :track_name,
+     match_ok => :track_name
 ```
 
 Step has default routes:
@@ -301,15 +307,15 @@ You can override or inject step implementation on initialization:
 ```ruby
 class Summator
   include Flows::Operation
-  
+
   step :sum
-  
+
   ok_shape :sum
 end
 
 summator = Summator.new(deps: {
-  sum: ->(a:, b:, **) { ok(sum: a + b) }
-})
+                          sum: ->(a:, b:, **) { ok(sum: a + b) }
+                        })
 
 summator.call(a: 1, b: 2).unwrap[:sum] # 3
 ```
@@ -325,7 +331,7 @@ wrap :wrapper do
   step :wrapped
 end
 
-def wrapper(**context)
+def wrapper(**_context)
   # do smth
   result = yield # execute wrapped steps
   # do smth or modify result
@@ -371,7 +377,7 @@ Host:
 
 Results:
 
-```
+```text
 --------------------------------------------------
 - task: A + B, one step implementation
 --------------------------------------------------
@@ -448,7 +454,7 @@ To install this gem onto your local machine, run `bundle exec rake install`.
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/ffloyd/flows. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at [ffloyd/fflows](https://github.com/ffloyd/flows). This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 ## License
 

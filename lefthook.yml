@@ -1,0 +1,9 @@
+pre-commit:
+  parallel: true
+  commands:
+    rubocop:
+      glob: "{*.rb,*.md,*.gemspec,Gemfile,Rakefile}"
+      run: bundle exec rubocop {staged_files}
+    markdownlinter:
+      glob: "*.md"
+      run: bundle exec mdl {staged_files}
