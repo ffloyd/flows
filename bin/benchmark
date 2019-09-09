@@ -11,6 +11,7 @@ puts '- task: A + B, one step implementation'
 puts '-' * 50
 
 flows_summator = FlowsSummator.new
+flows_railway_summator = FlowsRailwaySummator.new
 dry_summator = DrySummator.new
 
 Benchmark.ips do |b|
@@ -20,6 +21,14 @@ Benchmark.ips do |b|
 
   b.report 'Flows::Operation (build once)' do
     flows_summator.call(a: 1, b: 2)
+  end
+
+  b.report 'Flows::Railway (build each time)' do
+    FlowsRailwaySummator.new.call(a: 1, b: 2)
+  end
+
+  b.report 'Flows::Railway (build once)' do
+    flows_railway_summator.call(a: 1, b: 2)
   end
 
   unless ENV['FLOWS_ONLY']
@@ -52,6 +61,7 @@ puts '- task: ten steps returns successful result'
 puts '-' * 50
 
 flows_ten_steps = FlowsTenSteps.new
+flows_railway_ten_steps = FlowsRailwayTenSteps.new
 dry_ten_steps = DryTenSteps.new
 
 Benchmark.ips do |b|
@@ -61,6 +71,14 @@ Benchmark.ips do |b|
 
   b.report 'Flows::Operation (build once)' do
     flows_ten_steps.call(a: 1, b: 2)
+  end
+
+  b.report 'Flows::Railway (build each time)' do
+    FlowsRailwayTenSteps.new.call(a: 1, b: 2)
+  end
+
+  b.report 'Flows::Railway (build once)' do
+    flows_railway_ten_steps.call(a: 1, b: 2)
   end
 
   unless ENV['FLOWS_ONLY']

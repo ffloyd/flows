@@ -19,6 +19,16 @@ class FlowsSummator
   end
 end
 
+class FlowsRailwaySummator
+  include Flows::Railway
+
+  step :sum
+
+  def sum(a:, b:)
+    ok(sum: a + b)
+  end
+end
+
 class POROSummator
   def self.call(a:, b:)
     a + b
@@ -76,6 +86,32 @@ class FlowsTenSteps
   def s8(**); ok(s8: true); end
   def s9(**); ok(s9: true); end
   def s10(**); ok(data: :ok); end
+end
+
+class FlowsRailwayTenSteps
+  include Flows::Railway
+
+  step :s1
+  step :s2
+  step :s3
+  step :s4
+  step :s5
+  step :s6
+  step :s7
+  step :s8
+  step :s9
+  step :s10
+
+  def s1(**); ok(s1: true); end
+  def s2(s1:); ok(s2: s1); end
+  def s3(s2:); ok(s3: s2); end
+  def s4(s3:); ok(s4: s3); end
+  def s5(s4:); ok(s5: s4); end
+  def s6(s5:); ok(s6: s5); end
+  def s7(s6:); ok(s7: s6); end
+  def s8(s7:); ok(s8: s7); end
+  def s9(s8:); ok(s9: s8); end
+  def s10(s9:); ok(data: :ok); end
 end
 
 class POROTenSteps
