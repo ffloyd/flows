@@ -4,6 +4,17 @@ module Flows
     module DSL
       attr_reader :steps
 
+      def self.extended(mod, steps = nil)
+        mod.instance_variable_set(:@steps, steps || [])
+
+        mod.class_exec do
+          def self.inherited(subclass)
+            ::Flows::Railway::DSL.extended(subclass, steps.map(&:dup))
+            super
+          end
+        end
+      end
+
       include Flows::Result::Helpers
 
       def step(name, custom_body = nil)

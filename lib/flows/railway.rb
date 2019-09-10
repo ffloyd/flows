@@ -8,7 +8,6 @@ module Flows
   # Railway DSL
   module Railway
     def self.included(mod)
-      mod.instance_variable_set(:@steps, [])
       mod.extend ::Flows::Railway::DSL
     end
 
