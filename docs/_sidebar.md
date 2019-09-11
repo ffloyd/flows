@@ -3,11 +3,15 @@
   * [Performance](overview/performance.md)
 
 * Result Objects
-  * [Direct Usage](result_objects/direct_usage.md)
-  * [Helpers](result_objects/helpers.md)
+  * [Basic Usage](result_objects/basic_usage.md)
+  * [Do Notation](result_objects/do_notation.md)
   * [Metadata](result_objects/metadata.md)
 
+* Railway
+  * [Basic Usage](railway/basic_usage.md)
+
 * Operation
+  * [Basics](operation/basic_usage.md)
   * [Result Shapes](operation/result_shapes.md)
   * [Routing & Tracks](operation/routing_tracks.md)
   * [Lambda Steps](operation/lambda_steps.md)
