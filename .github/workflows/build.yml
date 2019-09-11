@@ -36,4 +36,4 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         run: bundle exec rspec
       - name: Markdown Linter (docs)
-        run: bundle exec mdl docs/**/*.md 
+        run: bundle exec mdl docs/**/*.md README.md
