@@ -864,4 +864,78 @@ RSpec.describe Flows::Operation do
       end
     end
   end
+
+  describe 'inheritance support' do
+    subject(:invoke_parent) { base_class.new.call }
+
+    let(:base_class) do
+      Class.new do
+        include Flows::Operation
+
+        step :do_job
+
+        ok_shape parent: [:result], child: [:result]
+
+        def do_job(**)
+          ok(:parent, result: :good)
+        end
+      end
+    end
+
+    context 'when child class empty' do
+      subject(:invoke) { railway_class.new.call }
+
+      let(:railway_class) do
+        Class.new(base_class)
+      end
+
+      it 'child works' do
+        expect(invoke.status).to eq :parent
+      end
+
+      it 'parent works' do
+        expect(invoke_parent.status).to eq :parent
+      end
+    end
+
+    context 'when child class redefines step using method' do
+      subject(:invoke) { railway_class.new.call }
+
+      let(:railway_class) do
+        Class.new(base_class) do
+          def do_job(**)
+            ok(:child, result: :good)
+          end
+        end
+      end
+
+      it 'child works' do
+        expect(invoke.status).to eq :child
+      end
+
+      it 'parent works' do
+        expect(invoke_parent.status).to eq :parent
+      end
+    end
+
+    context 'when child class redefines step using deps' do
+      subject(:invoke) do
+        railway_class.new(deps: {
+                            do_job: ->(**) { ok(:child, result: :good) }
+                          }).call
+      end
+
+      let(:railway_class) do
+        Class.new(base_class)
+      end
+
+      it 'child works' do
+        expect(invoke.status).to eq :child
+      end
+
+      it 'parent works' do
+        expect(invoke_parent.status).to eq :parent
+      end
+    end
+  end
 end

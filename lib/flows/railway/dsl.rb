@@ -1,6 +1,6 @@
 module Flows
   module Railway
-    # DSL methoda for Railway
+    # DSL methods for Railway
     module DSL
       attr_reader :steps
 

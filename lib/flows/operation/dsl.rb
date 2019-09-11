@@ -4,6 +4,20 @@ module Flows
     module DSL
       attr_reader :steps, :ok_shapes, :err_shapes
 
+      def self.extended(mod, steps = nil, ok_shapes = nil, err_shapes = nil)
+        mod.instance_variable_set(:@steps, steps || [])
+        mod.instance_variable_set(:@track_path, [])
+        mod.instance_variable_set(:@ok_shapes, ok_shapes)
+        mod.instance_variable_set(:@err_shapes, err_shapes)
+
+        mod.class_exec do
+          def self.inherited(subclass)
+            ::Flows::Operation::DSL.extended(subclass, steps.map(&:dup), ok_shapes, err_shapes)
+            super
+          end
+        end
+      end
+
       include Flows::Result::Helpers
 
       def step(name, custom_body_or_routes = nil, custom_routes = nil)
