@@ -5,7 +5,6 @@
 * Result Objects
   * [Basic Usage](result_objects/basic_usage.md)
   * [Do Notation](result_objects/do_notation.md)
-  * [Metadata](result_objects/metadata.md)
 
 * Railway
   * [Basic Usage](railway/basic_usage.md)
