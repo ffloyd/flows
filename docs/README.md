@@ -54,7 +54,7 @@ Features:
 * different classes for successful and failure results (`Flows::Result::Ok` and `Flows::Result::Err`)
 * each result has status (`:positive`, `:negative` and `:zero_division` in the provided example are result statuses)
 * convinient helpers for creating and matching Result Objects (`#ok`, `#err`, `#math_ok`, `#match_err`)
-* defferent data accessor for successful (`#unwrap`) and failure (`#error`) results (prevents traiting failure objects as successful ones)
+* different data accessor for successful (`#unwrap`) and failure (`#error`) results (prevents traiting failure objects as successful ones)
 * Do-notation (like [this one](https://dry-rb.org/gems/dry-monads/1.0/do-notation/) but with a bit [richer API](result_objects/do_notation.md))
 * result has metadata - this may be used for storing execution metadata (execution time, for example, or something for good error reporting)
 
@@ -165,7 +165,7 @@ Features:
 * Superset of `Railway` - any Railway can be converted into Operation in a seconds
 * Result Shaping - return only data you need
 * Branching and Tracks - you may do even loops if you brave enough
-* Good Composition - cause everything here returns Result Objects and receives keyword argumets (or hash) you may compose Operations and Railways without any additional effort. Generally speaking - Railway is an simplified operation.
+* Good Composition - cause everything here returns Result Objects and receives keyword argumets (or hash) you may compose Operations and Railways without any additional effort. Generally speaking - Railway is a simplified operation.
 
 More details in a [Operation Basic Usage Guide](operation/basic_usage.md).
 
