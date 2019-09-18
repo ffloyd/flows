@@ -27,6 +27,8 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
       - name: Install Bundler
         run: gem install bundler
+      - name: Install Hunspell
+        run: sudo apt-get install hunspell
       - name: Install Deps
         run: bundle install --jobs 4 --retry 3
       - name: Rubocop
@@ -37,3 +39,5 @@ jobs:
         run: bundle exec rspec
       - name: Markdown Linter (docs)
         run: bundle exec mdl docs/**/*.md README.md
+      - name: Spelling Check (docs & code)
+        run: bundle exec forspell

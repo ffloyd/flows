@@ -1,6 +1,6 @@
 # Performance
 
-TODO: add comments abount benchmark purpose. Which goals we want to achieve when working on performance.
+TODO: add comments about benchmark purpose. Which goals we want to achieve when working on performance.
 
 ## Benchmark Results
 

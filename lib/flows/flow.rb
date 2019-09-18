@@ -1,5 +1,5 @@
 module Flows
-  # Simple sequentional flow
+  # Simple sequential flow
   class Flow
     def initialize(start_node:, nodes:)
       @start_node = start_node

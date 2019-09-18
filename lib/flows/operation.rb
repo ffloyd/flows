@@ -5,7 +5,7 @@ require_relative 'operation/builder'
 require_relative 'operation/executor'
 
 module Flows
-  # Operaion DSL
+  # Operation DSL
   module Operation
     def self.included(mod)
       mod.extend ::Flows::Operation::DSL

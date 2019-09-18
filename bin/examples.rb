@@ -56,7 +56,7 @@ class TBSummator < Trailblazer::Operation
 end
 
 #
-# Task: 10 steps which returs simple value
+# Task: 10 steps which returns simple value
 #
 
 class FlowsTenSteps

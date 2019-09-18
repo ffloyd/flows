@@ -12,7 +12,7 @@ but has simpler and flexible DSLs for defining operations and matching results. 
 
 ## Flows::Result
 
-Wrap your data into Result Objects and use convinient matchers for making decisions:
+Wrap your data into Result Objects and use convenient matchers for making decisions:
 
 ```ruby
 class Example
@@ -53,8 +53,8 @@ Features:
 
 * different classes for successful and failure results (`Flows::Result::Ok` and `Flows::Result::Err`)
 * each result has status (`:positive`, `:negative` and `:zero_division` in the provided example are result statuses)
-* convinient helpers for creating and matching Result Objects (`#ok`, `#err`, `#math_ok`, `#match_err`)
-* different data accessor for successful (`#unwrap`) and failure (`#error`) results (prevents traiting failure objects as successful ones)
+* convenient helpers for creating and matching Result Objects (`#ok`, `#err`, `#math_ok`, `#match_err`)
+* different data accessor for successful (`#unwrap`) and failure (`#error`) results (prevents using failure objects as successful ones)
 * Do-notation (like [this one](https://dry-rb.org/gems/dry-monads/1.0/do-notation/) but with a bit [richer API](result_objects/do_notation.md))
 * result has metadata - this may be used for storing execution metadata (execution time, for example, or something for good error reporting)
 
@@ -62,7 +62,7 @@ More details in a [Result Object Basic Usage Guide](result_objects/basic_usage.m
 
 ## Flows::Railway
 
-Organize subsequent data tranformations (result of a step becomes input for a next step or a final result):
+Organize subsequent data transformations (result of a step becomes input for a next step or a final result):
 
 ```ruby
 class ExampleRailway
@@ -165,7 +165,7 @@ Features:
 * Superset of `Railway` - any Railway can be converted into Operation in a seconds
 * Result Shaping - return only data you need
 * Branching and Tracks - you may do even loops if you brave enough
-* Good Composition - cause everything here returns Result Objects and receives keyword argumets (or hash) you may compose Operations and Railways without any additional effort. Generally speaking - Railway is a simplified operation.
+* Good Composition - cause everything here returns Result Objects and receives keyword arguments (or hash) you may compose Operations and Railways without any additional effort. Generally speaking - Railway is a simplified operation.
 
 More details in a [Operation Basic Usage Guide](operation/basic_usage.md).
 

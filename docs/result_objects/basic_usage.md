@@ -15,17 +15,17 @@ Examples of such approach may be found in other libraries and languages:
 
 So, why you need Result Object? Why not just return `nil` on failure or raise an error (like in standard library)? There are some reasons:
 
-* raising errors and exceptions isn't very convinient and explicit way to handle errors. Moreover it's slow and feels like `goto`. But it's still a good way to abort execution when unexpected error happens.
+* raising errors and exceptions isn't very convenient and explicit way to handle errors. Moreover it's slow and feels like `goto`. But it's still a good way to abort execution when unexpected error happens.
 * returning `nil` does not work when you have to deal with different type of errors or error has some data payload.
 * using specific Result Objects (like `Faraday::Response`) brings inconsistency - you have to learn how to deal with each new type of Result.
 
-Thats why `Flows` should have Result Object implementation. If any executable Flows entity will return Result Object with same API - wiring between your app components becomes trivial. Also, Result Objects should be fast and lightweight as possible.
+That's why `Flows` should have Result Object implementation. If any executable Flows entity will return Result Object with same API - wiring between your app components becomes trivial. Also, Result Objects should be fast and lightweight as possible.
 
 Flows' implementation inspired mainly by [Rust Result Type](https://doc.rust-lang.org/std/result/enum.Result.html) and focused on following features:
 
 * use idiomatic Ruby: no methods named with first capital letter (`Name(1, 2)`), etc.
-* provide convinient helpers for `case` and `===` (case equality) for matching results and writing routing logic
-* provide helpers for convinient creation of Result Objects
+* provide convenient helpers for `case` and `===` (case equality) for matching results and writing routing logic
+* provide helpers for convenient creation of Result Objects
 * Result Object may be successful (`Ok`) or failure (`Err`)
 * Result Object has an status (some symbol: `:saved`, `:zero_division_error`)
 * status usage is optional. Default statuses for successful and failure results are `:success` and `:failure`
@@ -97,7 +97,7 @@ Flows::Result::Ok.new({ a: 1 }, meta: { time: 123 })
 Flows::Result::Err.new({ msg: 'error' }, meta: { time: 123 })
 ```
 
-More convinient and short way is to use helpers:
+More convenient and short way is to use helpers:
 
 ```ruby
 include Flows::Result::Helpers
@@ -115,8 +115,8 @@ ok(:done, a: 1)
 err(:http_error, msg: 'error')
 ```
 
-You cannot provide metadata using helpers and it's ok: you shoudn't populate metadata in your business code.
-Metadata is designed to use in library code and when you have to provide some metada from your library - just use `.new` instead of helpers.
+You cannot provide metadata using helpers and it's ok: you shouldn't populate metadata in your business code.
+Metadata is designed to use in library code and when you have to provide some metadata from your library - just use `.new` instead of helpers.
 
 ## Inspecting Results
 

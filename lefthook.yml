@@ -7,3 +7,6 @@ pre-commit:
     markdownlinter:
       glob: "*.md"
       run: bundle exec mdl {staged_files}
+    forspell:
+      glob: "*.md,*.rb"
+      run: bundle exec forspell {staged_files}

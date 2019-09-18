@@ -347,7 +347,7 @@ There is routing limitation when you use wrap:
 
 ## Performance
 
-You can comapre performance for some cases by executing `bin/benchmark`. Examples for benchmark are presented in `bin/examples.rb`.
+You can compare performance for some cases by executing `bin/benchmark`. Examples for benchmark are presented in `bin/examples.rb`.
 
 `Flows::Operation` and `Dry::Trancation` may be executed in two ways:
 
