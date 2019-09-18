@@ -1,10 +1,10 @@
 # Basic Usage
 
-Result Object is a way of presenting result of some calculation. Result may be successful or failure.
+Result Object is a way of presenting result of some calculation. Result may be successful or failed.
 For example, if you calculate expression `a / b`:
 
 * for `a = 6` and `b = 2` result will be successful with data `3`.
-* for `a = 6` and `b = 0` result will be failure with data, for example, `"Cannot divide by zero"`.
+* for `a = 6` and `b = 0` result will be failed with data, for example, `"Cannot divide by zero"`.
 
 Examples of such approach may be found in other libraries and languages:
 
@@ -13,7 +13,7 @@ Examples of such approach may be found in other libraries and languages:
 * [Faraday gem](https://www.rubydoc.info/gems/faraday/Faraday/Response) has `Faraday::Response` object which contains data and status
 * [dry-rb Result Monad](https://dry-rb.org/gems/dry-monads/result/) has `Dry::Monads::Result`
 
-So, why you need Result Object? Why not just return `nil` on failure or raise an error (like in standard library)? There are some reasons:
+So, why do you need Result Object? Why not just return `nil` on a failure or raise an error (like in standard library)? Because:
 
 * raising errors and exceptions isn't very convenient and explicit way to handle errors. Moreover it's slow and feels like `goto`. But it's still a good way to abort execution when unexpected error happens.
 * returning `nil` does not work when you have to deal with different type of errors or error has some data payload.
