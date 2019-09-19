@@ -1,4 +1,4 @@
-# Basic Usage
+# Result Object :: Basic Usage
 
 Result Object is a way of presenting result of some calculation. Result may be successful or failed.
 For example, if you calculate expression `a / b`:
