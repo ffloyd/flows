@@ -29,3 +29,11 @@ Naming/UncommunicativeMethodParamName:
 Style/MixinUsage:
   Exclude:
     - '**/*.md'
+
+Lint/UnreachableCode:
+  Exclude:
+    - 'docs/result_objects/do_notation.md'
+
+Lint/Void:
+  Exclude:
+    - 'docs/result_objects/do_notation.md'
