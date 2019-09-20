@@ -8,7 +8,27 @@ Small and fast ruby framework for implementing railway-like operations.
 By design it is close to [Trailblazer::Operation](http://trailblazer.to/gems/operation/2.0/) and [Dry::Transaction](https://dry-rb.org/gems/dry-transaction/),
 but has simpler and flexible DSLs for defining operations and matching results. Also `flows` is faster, see [Performance](overview/performance.md).
 
-`flows` has no production dependencies so it can be used with any framework.
+`flows` has no production dependencies so it can be used with any framework and cannot bring dependency incompatibilities.
+
+## Installation
+
+Add this line to your application's Gemfile:
+
+```ruby
+gem 'flows'
+```
+
+And then execute:
+
+```sh
+bundle
+```
+
+Or install it yourself as:
+
+```sh
+gem install flows
+```
 
 ## Flows::Result
 
@@ -55,7 +75,7 @@ Features:
 * each result has status (`:positive`, `:negative` and `:zero_division` in the provided example are result statuses)
 * convenient helpers for creating and matching Result Objects (`#ok`, `#err`, `#math_ok`, `#match_err`)
 * different data accessor for successful (`#unwrap`) and failure (`#error`) results (prevents using failure objects as successful ones)
-* Do-notation (like [this one](https://dry-rb.org/gems/dry-monads/1.0/do-notation/) but with a bit [richer API](result_objects/do_notation.md))
+* Do Notation (like [this one](https://dry-rb.org/gems/dry-monads/1.0/do-notation/) but with a bit [different API](result_objects/do_notation.md))
 * result has metadata - this may be used for storing execution metadata (execution time, for example, or something for good error reporting)
 
 More details in a [Result Object Basic Usage Guide](result_objects/basic_usage.md).
@@ -109,7 +129,7 @@ More details in a [Railway Basic Usage Guide](railway/basic_usage.md).
 
 ## Flows::Operation
 
-If you can express your business logic in BPMN - you can code it using Operations:
+If you can draw your business logic in BPMN - you can code it using Operations:
 
 ```ruby
 class ExampleOperation
@@ -165,7 +185,7 @@ Features:
 * Superset of `Railway` - any Railway can be converted into Operation in a seconds
 * Result Shaping - return only data you need
 * Branching and Tracks - you may do even loops if you brave enough
-* Good Composition - cause everything here returns Result Objects and receives keyword arguments (or hash) you may compose Operations and Railways without any additional effort. Generally speaking - Railway is a simplified operation.
+* Good Composition - because everything here returns Result Objects and receives keyword arguments (or hash) you may compose Operations and Railways without any additional effort. Generally speaking - Railway is a simplified operation.
 
 More details in a [Operation Basic Usage Guide](operation/basic_usage.md).
 

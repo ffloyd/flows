@@ -1,5 +1,5 @@
 * Overview
-  * [Getting Started](overview/getting_started.md)
+  * [Getting Started](README.md)
   * [Performance](overview/performance.md)
 
 * Result Objects
