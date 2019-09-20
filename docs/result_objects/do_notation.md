@@ -1,12 +1,13 @@
 # Result Object :: Do Notation
 
+This functionality aims to simplify common control flow pattern: when you have to stop execution on a first failure and return this failure.
+Do Notation inspired by [Do Notation in dry-rb](https://dry-rb.org/gems/dry-monads/do-notation/) and [Haskell do keyword](https://wiki.haskell.org/Keywords#do).
+
 Sometimes you have to write something like this:
 
 ```ruby
 class Something
   include Flows::Result::Helpers
-
-  # All methods return Result Object
 
   def do_job
     user_result = fetch_user
@@ -24,15 +25,15 @@ class Something
   private
 
   def fetch_user
-    result
+    # returns Ok or Err
   end
 
   def fetch_data
-    result
+    # returns Ok or Err
   end
 
   def calculation(_user, _data)
-    result
+    # returns Ok or Err
   end
 end
 ```
@@ -45,8 +46,6 @@ By using Do Notation feature you may rewrite it like this:
 class SomethingWithDoNotation
   include Flows::Result::Helpers
   include Flows::Result::Do # enable Do Notation
-
-  # All methods return Result Object
 
   do_for(:do_job) # changes behaviour of `yield` in this method
   def do_job
