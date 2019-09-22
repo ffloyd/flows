@@ -1,6 +1,6 @@
 # Result Object :: Basic Usage
 
-Result Object is a way of presenting result of some calculation. Result may be successful or failed.
+Result Object is a way of presenting the result of a calculation. The result may be successful or failed.
 For example, if you calculate expression `a / b`:
 
 * for `a = 6` and `b = 2` result will be successful with data `3`.
@@ -13,15 +13,15 @@ Examples of such approach may be found in other libraries and languages:
 * [Faraday gem](https://www.rubydoc.info/gems/faraday/Faraday/Response) has `Faraday::Response` object which contains data and status
 * [dry-rb Result Monad](https://dry-rb.org/gems/dry-monads/result/) has `Dry::Monads::Result`
 
-So, why do you need Result Object? Why not just return `nil` on a failure or raise an error (like in standard library)? Because:
+So, why do you need Result Object? Why not just return `nil` on a failure or raise an error (like in the standard library)? Here are several reasons:
 
-* raising errors and exceptions isn't very convenient and explicit way to handle errors. Moreover it's slow and feels like `goto`. But it's still a good way to abort execution when unexpected error happens.
-* returning `nil` does not work when you have to deal with different type of errors or error has some data payload.
+* raising errors and exceptions isn't a very convenient and explicit way to handle errors. Moreover, it is slow and looks like `goto`. However, it is still a good way to abort execution on an unexpected error.
+* returning `nil` does not work when you have to deal with different types of errors or an error has some data payload.
 * using specific Result Objects (like `Faraday::Response`) brings inconsistency - you have to learn how to deal with each new type of Result.
 
-That's why `Flows` should have Result Object implementation. If any executable Flows entity will return Result Object with same API - wiring between your app components becomes trivial. Also, Result Objects should be fast and lightweight as possible.
+That's why `Flows` should have Result Object implementation. If any executable Flows entity will return Result Object with the same API - composing your app components becomes trivial. Result Objects should also be as fast and lightweight as possible.
 
-Flows' implementation inspired mainly by [Rust Result Type](https://doc.rust-lang.org/std/result/enum.Result.html) and focused on following features:
+Flows' implementation is inspired mainly by [Rust Result Type](https://doc.rust-lang.org/std/result/enum.Result.html) and focused on following features:
 
 * use idiomatic Ruby: no methods named with first capital letter (`Name(1, 2)`), etc.
 * provide convenient helpers for `case` and `===` (case equality) for matching results and writing routing logic
