@@ -30,6 +30,14 @@ Style/MixinUsage:
   Exclude:
     - '**/*.md'
 
+Lint/UnusedMethodArgument:
+  Exclude:
+    - '**/*.md'
+
+Lint/UnusedBlockArgument:
+  Exclude:
+    - '**/*.md'
+
 Lint/UnreachableCode:
   Exclude:
     - 'docs/result_objects/do_notation.md'
