@@ -3,10 +3,10 @@
 `Flows::Railway` is an implementation of a Railway Programming pattern. You may read about this pattern in the following articles:
 
 * [Programming on rails: Railway Oriented Programming](http://sandordargo.com/blog/2017/09/27/railway_oriented_programming) // it's not about Ruby on Rails
-* [Railway Oriented Programming : A powerful Functional Programming pattern](https://medium.com/@naveenkumarmuguda/railway-oriented-programming-a-powerful-functional-programming-pattern-ab454e467f31)
+* [Railway Oriented Programming: A powerful Functional Programming pattern](https://medium.com/@naveenkumarmuguda/railway-oriented-programming-a-powerful-functional-programming-pattern-ab454e467f31)
 * [Railway Oriented Programming in Elixir with Pattern Matching on Function Level and Pipelining](https://medium.com/elixirlabs/railway-oriented-programming-in-elixir-with-pattern-matching-on-function-level-and-pipelining-e53972cede98)
 
-Let's review a simple task and solve it using Flows: you have to get a user by ID, get all user's blog posts and convert it to array of HTML-strings. In such situation we have to implement three parts of our task and compose it into something we can call from Rails controller, for example. Also, first and third steps may fail (user not found, conversion to HTML failed). And if step failed - we have to return failure info immediately. Let's draw this using UML activity diagram:
+Let's review a simple task and solve it using `Flows::Railway`: you have to get a user by ID, get all user's blog posts and convert it to an array of HTML-strings. In such situation, we have to implement three parts of our task and compose it into something we can call, for example, from a Rails controller. Also, the first and third steps may fail (user not found, conversion to HTML failed). And if a step failed - we have to return failure info immediately. Let's draw this using a UML activity diagram:
 
 ```plantuml
 @startuml
@@ -86,16 +86,16 @@ RenderUserBlogPosts.new.call(id: 2)
 
 ## Flows::Railway rules
 
-* steps executed from first to last
-* first step receives input arguments
+* steps execution happens from the first to the last step
+* input arguments (`Railway#call(...)`) becomes the input of the first step
 * each step should return Result Object (`Flows::Result::Helpers` already included)
-* if step returns failed result - execution stops and failed Result Object returned
-* if step returns successful result - result data becomes arguments of a following step
-* if last step returns successful result - it becomes a result of an railway execution
+* if step returns failed result - execution stops and failed Result Object returned from Railway
+* if step returns successful result - result data becomes arguments of the following step
+* if the last step returns successful result - it becomes a result of a Railway execution
 
 ## Defining Steps
 
-Two ways of step definition exists. First is by using method:
+Two ways of step definition exist. First is by using an instance method:
 
 ```ruby
 step :do_something
@@ -112,11 +112,11 @@ Second is by using lambda:
 step :do_something, ->(**arguments) { ok(some: 'data') }
 ```
 
-Definition with lambda exists primarily for debugging/testing purposes. I recommend you to use method-based implementations for all your business logic.
+Definition with lambda exists primarily for debugging/testing purposes. I recommend you to use method-based implementations for all your business logic. Also, this is good for consistency, readability, and maintenance. __Think about Railway as about small book: you have a "table of contents" in a form of step definitions and actual "chapters" in the same order in a form of public methods. And your private methods becomes something like "appendix".__
 
 ## Dependency Injection
 
-By default we search for step implementation methods in an class instance. But you may override method source and inject your own:
+By default, we search for step implementation methods in a class instance. But you may override method source and inject your own:
 
 ```ruby
 class SayOk
@@ -174,7 +174,7 @@ Moreover, you can mix both approaches. Injecting using `deps:` has higher priori
 
 ## Pre-building and Performance
 
-As mentioned before, railway execution consists of two phases: build (`.new`) and run (`#call`). And build phase is expensive. You may compare overhead when you build a railway each time:
+As mentioned before, railway execution consists of two phases: build (`.new`) and run (`#call`). And the build phase is expensive. You may compare overheads when you build a railway each time:
 
 ```
 $ WITH_RW=1 bin/benchmark
@@ -217,7 +217,7 @@ Flows::Railway (build once):    63202.5 i/s
 Flows::Railway (build each time):    21645.2 i/s - 2.92x  slower
 ```
 
-As benchmark shows your infrastructure code overhead from Flows will be almost three times lower when you build your railways at 'compile' time. I mean something like that:
+As the benchmark shows your infrastructure code overhead from Flows will be almost three times lower when you build your railways at 'compile' time. I mean something like that:
 
 ```ruby
 class MyClass
