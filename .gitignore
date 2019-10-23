@@ -13,3 +13,6 @@
 # profile results folder
 /profile/
 !/profile/.keep
+
+# OS specific stuff
+.DS_Store
