@@ -32,3 +32,5 @@ RSpec.shared_context 'with helpers' do
     end
   end
 end
+
+Dir[File.join(__dir__, 'shared', '*.rb')].each { |f| require f }

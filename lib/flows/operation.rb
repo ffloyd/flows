@@ -4,11 +4,14 @@ require_relative 'operation/dsl'
 require_relative 'operation/builder'
 require_relative 'operation/executor'
 
+require_relative 'implicit_build'
+
 module Flows
   # Operation DSL
   module Operation
     def self.included(mod)
       mod.extend ::Flows::Operation::DSL
+      mod.extend ::Flows::ImplicitBuild
     end
 
     include ::Flows::Result::Helpers

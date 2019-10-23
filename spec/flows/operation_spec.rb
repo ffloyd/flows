@@ -938,4 +938,22 @@ RSpec.describe Flows::Operation do
       end
     end
   end
+
+  describe 'implicit building' do
+    subject(:base_class) do
+      Class.new do
+        include Flows::Operation
+
+        step :do_job
+
+        ok_shape :data
+
+        def do_job(**)
+          ok(data: 'ok')
+        end
+      end
+    end
+
+    it_behaves_like 'has implicit building'
+  end
 end
