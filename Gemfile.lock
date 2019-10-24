@@ -1,5 +1,5 @@
 GIT
-  remote: git://github.com/ffloyd/markdownlint.git
+  remote: https://github.com/ffloyd/markdownlint.git
   revision: 801cb12f645d894e0d262bb4908d8086b6dd23bc
   branch: update-kramdown-dep
   specs:
@@ -211,4 +211,4 @@ DEPENDENCIES
   trailblazer-operation
 
 BUNDLED WITH
-   2.0.1
+   2.0.2
