@@ -7,15 +7,15 @@ module Flows
       def initialize(flow:, class_name:)
         @flow = flow
         @railway_class_name = class_name
+        @context = {}
       end
 
       def call(**params)
-        context = {}
-        last_result = @flow.call(ok(params), context: context)
+        last_result = @flow.call(ok(params), context: @context)
         last_meta = last_result.meta
 
         last_meta[:railway] = @railway_class_name
-        last_meta[:last_step] = context[:last_step]
+        last_meta[:last_step] = @context[:last_step]
 
         last_result
       end

@@ -11,60 +11,25 @@ module Flows
       end
 
       def call
-        resolve_bodies_and_wiring
-
         nodes = build_nodes
         Flows::Flow.new(start_node: nodes.first.name, nodes: nodes)
       end
 
       private
 
-      def resolve_bodies_and_wiring
-        index = 0
-
-        while index < @steps.length
-          current_step = @steps[index]
-
-          current_step[:next_step] = @steps[index + 1]&.fetch(:name) || :term
-          current_step[:body] = current_step[:custom_body] || resolve_body_from_source(current_step[:name])
-
-          index += 1
-        end
+      def build_nodes
+        @steps
+          .to_a(body_resolver: method(:resolve_step_body))
+          .map(&:to_node)
       end
 
       # :reek:ManualDispatch - is the only way to go
-      def resolve_body_from_source(name)
+      def resolve_step_body(name)
         return @deps[name] if @deps.key?(name)
 
         raise(::Flows::Railway::NoStepImplementationError, name) unless @method_source.respond_to?(name)
 
         @method_source.method(name)
-      end
-
-      def build_nodes # rubocop:disable Metrics/MethodLength
-        @nodes = @steps.map do |step|
-          name = step[:name]
-
-          Flows::Node.new(
-            name: name,
-            body: step[:body],
-            preprocessor: method(:node_preprocessor),
-            postprocessor: method(:node_postprocessor),
-            router: Flows::ResultRouter.new(step[:next_step], :term),
-
-            meta: { name: name }
-          )
-        end
-      end
-
-      def node_preprocessor(input, _context, _meta)
-        input.unwrap
-      end
-
-      def node_postprocessor(output, context, meta)
-        context[:last_step] = meta[:name]
-
-        output
       end
     end
   end

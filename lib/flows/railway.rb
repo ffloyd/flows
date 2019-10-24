@@ -1,5 +1,7 @@
 require_relative './railway/errors'
 
+require_relative './railway/step'
+require_relative './railway/step_list'
 require_relative './railway/dsl'
 require_relative './railway/builder'
 require_relative './railway/executor'

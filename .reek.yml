@@ -23,7 +23,6 @@ detectors:
       - 'Flows::Operation#_flows_do_checks'
       - 'Flows::Operation::Executor#build_success_result'
       - 'Flows::Operation::Executor#build_failure_result'
-      - 'Flows::Railway::Builder#resolve_bodies_and_wiring'
   FeatureEnvy:
     exclude:
       # It's better to refactor step to be a Class, not hash
@@ -50,7 +49,6 @@ detectors:
       - 'Flows::Operation::DSL#track'
       - 'Flows::Operation::Executor#build_success_result'
       - 'Flows::Operation::Executor#build_failure_result'
-      - 'Flows::Railway::Executor#call'
       - 'Flows::Result::Do::DSL#do_for'
   UtilityFunction:
     exclude:
@@ -58,8 +56,6 @@ detectors:
       - 'Flows::Operation::Builder#build_meta'
       - 'Flows::Operation::Builder#node_preprocessor'
       - 'Flows::Operation::Builder#node_postprocessor'
-      - 'Flows::Railway::Builder#node_preprocessor'
-      - 'Flows::Railway::Builder#node_postprocessor'
   NestedIterators:
     exclude:
       - 'Flows::Result::Do::DSL#do_for'
