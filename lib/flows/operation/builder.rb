@@ -73,7 +73,7 @@ module Flows
       end
 
       def build_nodes
-        @nodes = @steps.map do |step|
+        @steps.map do |step|
           Flows::Node.new(
             name: step[:name],
             body: build_final_body(step),

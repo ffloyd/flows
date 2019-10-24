@@ -5,12 +5,11 @@ exclude_paths:
 
 detectors:
   LongParameterList:
-    max_params: 4
-    overrides:
-      initialize:
-        max_params: 7
+    exclude:
+      - 'Flows::Node#initialize'
   TooManyInstanceVariables:
-    max_instance_variables: 7 # might be lowered after refactoring complete
+    exclude:
+      - 'Flows::Node'
   DuplicateMethodCall:
     allow_calls:
       - 'ok'

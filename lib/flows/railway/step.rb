@@ -1,6 +1,6 @@
 module Flows
   class Railway
-    # Step bla
+    # Step stores step data and can be converted to Flows::Node
     class Step
       attr_reader :name, :body, :next_step
 
