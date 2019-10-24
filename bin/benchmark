@@ -23,13 +23,11 @@ puts '-' * 50
 puts '- task: A + B, one step implementation'
 puts '-' * 50
 
-flows_summator = FlowsSummator.new
-flows_railway_summator = FlowsRailwaySummator.new
 dry_summator = DrySummator.new
 
 Benchmark.ips do |b|
   b.report 'Flows::Railway (build once)' do
-    flows_railway_summator.call(a: 1, b: 2)
+    FlowsRailwaySummator.call(a: 1, b: 2)
   end if with_railway && !no_prebuild
 
   b.report 'Flows::Railway (build each time)' do
@@ -37,7 +35,7 @@ Benchmark.ips do |b|
   end if with_railway && !no_eachbuild
 
   b.report 'Flows::Operation (build once)' do
-    flows_summator.call(a: 1, b: 2)
+    FlowsSummator.call(a: 1, b: 2)
   end if with_operation && !no_prebuild
 
   b.report 'Flows::Operation (build each time)' do
@@ -69,13 +67,11 @@ puts '-' * 50
 puts '- task: ten steps returns successful result'
 puts '-' * 50
 
-flows_ten_steps = FlowsTenSteps.new
-flows_railway_ten_steps = FlowsRailwayTenSteps.new
 dry_ten_steps = DryTenSteps.new
 
 Benchmark.ips do |b|
   b.report 'Flows::Railway (build once)' do
-    flows_railway_ten_steps.call(a: 1, b: 2)
+    FlowsRailwayTenSteps.call(a: 1, b: 2)
   end if with_railway && !no_prebuild
 
   b.report 'Flows::Railway (build each time)' do
@@ -83,7 +79,7 @@ Benchmark.ips do |b|
   end if with_railway && !no_eachbuild
 
   b.report 'Flows::Operation (build once)' do
-    flows_ten_steps.call(a: 1, b: 2)
+    FlowsTenSteps.call(a: 1, b: 2)
   end if with_operation && !no_prebuild
 
   b.report 'Flows::Operation (build each time)' do
