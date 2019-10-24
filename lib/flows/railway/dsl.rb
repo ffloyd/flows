@@ -5,7 +5,9 @@ module Flows
       attr_reader :steps
 
       def self.extended(mod, steps = nil)
-        mod.instance_variable_set(:@steps, steps || [])
+        steps ||= []
+
+        mod.instance_variable_set(:@steps, steps)
 
         mod.class_exec do
           def self.inherited(subclass)

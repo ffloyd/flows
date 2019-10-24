@@ -1,4 +1,5 @@
 module Flows
+  # :reek:IrresponsibleModule - should be fixed when YARD docs will be introduced
   module Railway
     # rubocop:disable Style/Documentation
     class NoStepsError < ::Flows::Error

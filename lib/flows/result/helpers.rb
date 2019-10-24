@@ -1,6 +1,9 @@
 module Flows
   class Result
     # Shortcuts for building result objects
+    #
+    # :reek:UtilityFunction and :reek:FeatureEnvy checks should be disabled here
+    # because this module is intended to contain utility functions only.
     module Helpers
       private
 

@@ -4,6 +4,7 @@ module Flows
     module DSL
       attr_reader :steps, :ok_shapes, :err_shapes
 
+      # :reek:ControlParameter
       def self.extended(mod, steps = nil, ok_shapes = nil, err_shapes = nil)
         mod.instance_variable_set(:@steps, steps || [])
         mod.instance_variable_set(:@track_path, [])
@@ -78,6 +79,7 @@ module Flows
 
       private
 
+      # :reek:LongParameterList - should be refactored
       def make_step(name, type: :step, custom_routes: {}, custom_body: nil, block: nil)
         {
           type: type,

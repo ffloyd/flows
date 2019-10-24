@@ -11,7 +11,7 @@ module Flows
       end
 
       def call
-        resolve_bodies_and_wiring!
+        resolve_bodies_and_wiring
 
         nodes = build_nodes
         Flows::Flow.new(start_node: nodes.first.name, nodes: nodes)
@@ -19,7 +19,7 @@ module Flows
 
       private
 
-      def resolve_bodies_and_wiring!
+      def resolve_bodies_and_wiring
         index = 0
 
         while index < @steps.length
@@ -32,6 +32,7 @@ module Flows
         end
       end
 
+      # :reek:ManualDispatch - is the only way to go
       def resolve_body_from_source(name)
         return @deps[name] if @deps.key?(name)
 
@@ -40,16 +41,18 @@ module Flows
         @method_source.method(name)
       end
 
-      def build_nodes
+      def build_nodes # rubocop:disable Metrics/MethodLength
         @nodes = @steps.map do |step|
+          name = step[:name]
+
           Flows::Node.new(
-            name: step[:name],
+            name: name,
             body: step[:body],
             preprocessor: method(:node_preprocessor),
             postprocessor: method(:node_postprocessor),
             router: Flows::ResultRouter.new(step[:next_step], :term),
 
-            meta: { name: step[:name] }
+            meta: { name: name }
           )
         end
       end

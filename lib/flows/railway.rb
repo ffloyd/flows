@@ -19,7 +19,9 @@ module Flows
     def initialize(method_source: nil, deps: {})
       _flows_do_checks
 
-      flow = _flows_make_flow(method_source || self, deps)
+      method_source ||= self
+      flow = _flows_make_flow(method_source, deps)
+
       @_flows_executor = _flows_make_executor(flow)
     end
 

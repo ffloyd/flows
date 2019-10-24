@@ -11,12 +11,12 @@ module Flows
         @steps = steps
         @deps = deps
 
-        @step_names = @steps.map { |s| s[:name] }
+        @step_names = @steps.map { |step| step[:name] }
       end
 
       def call
-        resolve_wiring!
-        resolve_bodies!
+        resolve_wiring
+        resolve_bodies
 
         nodes = build_nodes
         Flows::Flow.new(start_node: nodes.first.name, nodes: nodes)
@@ -24,22 +24,24 @@ module Flows
 
       private
 
-      def resolve_wiring! # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+      def resolve_wiring # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
         # we have to disable some linters for performance reasons
         # this method can be simplified using `map.with_index`, but while loops is about
         # 2x faster for such cases.
         index = 0
+        steps_count = @steps.length
 
-        while index < @steps.length
+        while index < steps_count
           current_step = @steps[index]
           next_step_name = nil
 
           inner_index = index + 1
-          while inner_index < @steps.length
+          while inner_index < steps_count
             candidate = @steps[inner_index]
-            candidate_last_track = candidate[:track_path].last
+            track_path = candidate[:track_path]
+            candidate_last_track = track_path.last
 
-            if candidate[:track_path] == [] || current_step[:track_path].include?(candidate_last_track)
+            if track_path == [] || current_step[:track_path].include?(candidate_last_track)
               next_step_name = candidate[:name]
               break
             end
@@ -53,7 +55,7 @@ module Flows
         end
       end
 
-      def resolve_bodies!
+      def resolve_bodies
         @steps.each do |step|
           step.merge!(
             body: step[:custom_body] || resolve_body_from_source(step[:name])
@@ -61,6 +63,7 @@ module Flows
         end
       end
 
+      # We allow here :reek:ManualDispatch because it's the only way to go here
       def resolve_body_from_source(name)
         return @deps[name] if @deps.key?(name)
 
@@ -83,11 +86,13 @@ module Flows
       end
 
       def build_final_body(step)
+        body = step[:body]
+
         case step[:type]
         when :step
-          step[:body]
+          body
         when :wrapper
-          build_wrapper_body(step[:body], step[:block])
+          build_wrapper_body(body, step[:block])
         end
       end
 

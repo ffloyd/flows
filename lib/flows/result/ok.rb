@@ -19,7 +19,7 @@ module Flows
       end
 
       def error
-        raise NoErrorError.new(@status, @data)
+        raise NoErrorError.new(@status, @unwrap)
       end
     end
   end

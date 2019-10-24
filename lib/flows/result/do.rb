@@ -4,12 +4,13 @@ module Flows
     module Do
       # DSL for Do-notation
       module DSL
-        def do_for(method_name)
+        def do_for(method_name) # rubocop:disable Metrics/MethodLength
           @flows_result_do_module.define_method(method_name) do |*args|
             super(*args) do |*fields, result|
               case result
               when Flows::Result::Ok
-                fields.any? ? result.unwrap.values_at(*fields) : result.unwrap
+                data = result.unwrap
+                fields.any? ? data.values_at(*fields) : data
               when Flows::Result::Err then return result
               else raise "Unexpected result: #{result.inspect}. Should be a Flows::Result"
               end

@@ -4,6 +4,10 @@ pre-commit:
     rubocop:
       glob: "{*.rb,*.md,*.gemspec,Gemfile,Rakefile}"
       run: bundle exec rubocop {staged_files}
+    reek:
+      glob: "*.rb"
+      exclude: "^spec"
+      run: bundle exec reek {staged_files}
     markdownlinter:
       glob: "*.md"
       run: bundle exec mdl {staged_files}

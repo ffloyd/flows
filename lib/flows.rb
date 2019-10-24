@@ -1,4 +1,5 @@
 module Flows
+  # Base class for all library's errors.
   class Error < StandardError; end
 end
 

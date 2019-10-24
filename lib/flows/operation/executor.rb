@@ -31,12 +31,14 @@ module Flows
       end
 
       def build_success_result(status, context)
-        return ok(status, context[:data]) if @ok_shapes == :no_shapes
+        data = context[:data]
+
+        return ok(status, data) if @ok_shapes == :no_shapes
 
         shape = @ok_shapes[status]
         raise ::Flows::Operation::UnexpectedSuccessStatusError.new(status, @ok_shapes.keys) if shape.nil?
 
-        data = extract_data(context[:data], shape)
+        data = extract_data(data, shape)
 
         ok(status, data)
       end
@@ -45,13 +47,14 @@ module Flows
         raise ::Flows::Operation::NoFailureShapeError if @err_shapes.nil?
 
         meta = build_meta(context, last_result)
+        data = context[:data]
 
-        return Flows::Result::Err.new(context[:data], status: status, meta: meta) if @err_shapes == :no_shapes
+        return Flows::Result::Err.new(data, status: status, meta: meta) if @err_shapes == :no_shapes
 
         shape = @err_shapes[status]
         raise ::Flows::Operation::UnexpectedFailureStatusError.new(status, @err_shapes.keys) if shape.nil?
 
-        data = extract_data(context[:data], shape)
+        data = extract_data(data, shape)
 
         Flows::Result::Err.new(data, status: status, meta: meta)
       end
@@ -69,7 +72,8 @@ module Flows
           context_data: context[:data]
         }
 
-        meta[:nested_metadata] = last_result.meta if last_result.meta.any?
+        last_meta = last_result.meta
+        meta[:nested_metadata] = last_meta if last_meta.any?
 
         meta
       end

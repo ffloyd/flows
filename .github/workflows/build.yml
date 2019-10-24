@@ -33,6 +33,8 @@ jobs:
         run: bundle install --jobs 4 --retry 3
       - name: Rubocop
         run: bundle exec rubocop
+      - name: Reek
+        run: bundle exec reek
       - name: RSpec
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

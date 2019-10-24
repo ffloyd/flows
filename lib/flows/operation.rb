@@ -19,7 +19,8 @@ module Flows
     def initialize(method_source: nil, deps: {})
       _flows_do_checks
 
-      flow = _flows_make_flow(method_source || self, deps)
+      method_source ||= self
+      flow = _flows_make_flow(method_source, deps)
 
       @_flows_executor = _flows_make_executor(flow)
     end
@@ -31,8 +32,10 @@ module Flows
     private
 
     def _flows_do_checks
-      raise NoStepsError if self.class.steps.empty?
-      raise NoSuccessShapeError, self if self.class.ok_shapes.nil?
+      klass = self.class
+
+      raise NoStepsError if klass.steps.empty?
+      raise NoSuccessShapeError, self if klass.ok_shapes.nil?
     end
 
     def _flows_make_flow(method_source, deps)
@@ -44,11 +47,13 @@ module Flows
     end
 
     def _flows_make_executor(flow)
+      klass = self.class
+
       ::Flows::Operation::Executor.new(
         flow: flow,
-        ok_shapes: self.class.ok_shapes,
-        err_shapes: self.class.err_shapes,
-        class_name: self.class.name
+        ok_shapes: klass.ok_shapes,
+        err_shapes: klass.err_shapes,
+        class_name: klass.name
       )
     end
   end
