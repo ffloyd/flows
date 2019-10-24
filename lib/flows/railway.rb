@@ -4,14 +4,14 @@ require_relative './railway/dsl'
 require_relative './railway/builder'
 require_relative './railway/executor'
 
-require_relative './implicit_build'
+require_relative './ext/implicit_build'
 
 module Flows
   # Railway DSL
   module Railway
     def self.included(mod)
       mod.extend ::Flows::Railway::DSL
-      mod.extend ::Flows::ImplicitBuild
+      mod.extend ::Flows::Ext::ImplicitBuild
     end
 
     include ::Flows::Result::Helpers
