@@ -1,5 +1,5 @@
 module Flows
-  module Operation
+  class Operation
     # DSL methods for operation
     module DSL
       attr_reader :steps, :ok_shapes, :err_shapes

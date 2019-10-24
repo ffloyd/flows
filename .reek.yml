@@ -18,12 +18,6 @@ detectors:
   #
   # TODO list below
   #
-  ModuleInitialize:
-    # https://github.com/troessner/reek/blob/v5.4.0/docs/Module-Initialize.md
-    exclude:
-      # It's better to make it classes.
-      - 'Flows::Operation'
-      - 'Flows::Railway'
   NilCheck:
     exclude:
       - 'Flows::Operation#_flows_do_checks'

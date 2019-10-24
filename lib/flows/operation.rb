@@ -8,11 +8,9 @@ require_relative 'ext/implicit_build'
 
 module Flows
   # Operation DSL
-  module Operation
-    def self.included(mod)
-      mod.extend ::Flows::Operation::DSL
-      mod.extend ::Flows::Ext::ImplicitBuild
-    end
+  class Operation
+    extend ::Flows::Operation::DSL
+    extend ::Flows::Ext::ImplicitBuild
 
     include ::Flows::Result::Helpers
 

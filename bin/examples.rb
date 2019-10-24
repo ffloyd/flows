@@ -7,9 +7,7 @@ require 'trailblazer/operation'
 # Task: a + b = ?
 #
 
-class FlowsSummator
-  include Flows::Operation
-
+class FlowsSummator < Flows::Operation
   step :sum
 
   ok_shape :sum
@@ -57,8 +55,7 @@ end
 # Task: 10 steps which returns simple value
 #
 
-class FlowsTenSteps
-  include Flows::Operation
+class FlowsTenSteps < Flows::Operation
 
   step :s1
   step :s2

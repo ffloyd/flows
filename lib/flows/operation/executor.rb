@@ -1,5 +1,5 @@
 module Flows
-  module Operation
+  class Operation
     # Runner for operation steps
     class Executor
       include ::Flows::Result::Helpers

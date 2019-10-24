@@ -1,7 +1,7 @@
 require_relative './builder/build_router'
 
 module Flows
-  module Operation
+  class Operation
     # Flow builder
     class Builder
       attr_reader :steps, :method_source, :deps
@@ -97,9 +97,8 @@ module Flows
       end
 
       def build_wrapper_body(wrapper, block)
-        suboperation_class = Class.new do
-          include ::Flows::Operation
-        end
+        # TODO: this may be dangerous when end user will create something like ApplicationOperation
+        suboperation_class = Class.new(::Flows::Operation)
 
         suboperation_class.instance_exec(&block)
         suboperation_class.no_shape

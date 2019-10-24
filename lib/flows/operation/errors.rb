@@ -1,6 +1,6 @@
 module Flows
   # :reek:IrresponsibleModule - should be fixed when YARD docs will be introduced
-  module Operation
+  class Operation
     # rubocop:disable Style/Documentation
     class NoSuccessShapeError < ::Flows::Error
       def message

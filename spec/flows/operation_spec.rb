@@ -8,9 +8,7 @@ RSpec.describe Flows::Operation do
       subject(:invoke) { operation_class.new.call }
 
       let(:operation_class) do
-        Class.new do
-          include Flows::Operation
-
+        Class.new(described_class) do
           step :build_result
 
           ok_shape :data
@@ -30,9 +28,7 @@ RSpec.describe Flows::Operation do
       subject(:build) { operation_class.new }
 
       let(:operation_class) do
-        Class.new do
-          include Flows::Operation
-
+        Class.new(described_class) do
           step :build_result
 
           ok_shape :data
@@ -50,9 +46,7 @@ RSpec.describe Flows::Operation do
       subject(:invoke) { operation_class.new.call }
 
       let(:operation_class) do
-        Class.new do
-          include Flows::Operation
-
+        Class.new(described_class) do
           step :do_job, ->(**) { ok(data: 'from lambda') }
 
           ok_shape :data
@@ -68,9 +62,7 @@ RSpec.describe Flows::Operation do
       subject(:invoke) { operation_class.new.call }
 
       let(:operation_class) do
-        Class.new do
-          include Flows::Operation
-
+        Class.new(described_class) do
           step :do_job, ->(**) { ok(data: 'from lambda') }
 
           ok_shape :data
@@ -90,9 +82,7 @@ RSpec.describe Flows::Operation do
       subject(:invoke) { operation_class.new.call }
 
       let(:operation_class) do
-        Class.new do
-          include Flows::Operation
-
+        Class.new(described_class) do
           step :do_job,
                ->(**) { ok(data: 'from lambda') },
                match_ok => :term
@@ -114,9 +104,7 @@ RSpec.describe Flows::Operation do
       subject(:invoke) { operation_class.new.call }
 
       let(:operation_class) do
-        Class.new do
-          include Flows::Operation
-
+        Class.new(described_class) do
           step :build_result
 
           ok_shape :data
@@ -138,9 +126,7 @@ RSpec.describe Flows::Operation do
       subject(:invoke) { operation_class.new.call }
 
       let(:operation_class) do
-        Class.new do
-          include Flows::Operation
-
+        Class.new(described_class) do
           step :build_result
 
           ok_shape :data
@@ -160,9 +146,7 @@ RSpec.describe Flows::Operation do
       subject(:invoke) { operation_class.new.call }
 
       let(:operation_class) do
-        Class.new do
-          include Flows::Operation
-
+        Class.new(described_class) do
           step :build_result
 
           ok_shape :data
@@ -182,9 +166,7 @@ RSpec.describe Flows::Operation do
       subject(:build) { operation_class.new }
 
       let(:operation_class) do
-        Class.new do
-          include Flows::Operation
-
+        Class.new(described_class) do
           step :build_result
 
           def build_result(**)
@@ -204,9 +186,7 @@ RSpec.describe Flows::Operation do
       subject(:invoke) { operation_class.new.call }
 
       let(:operation_class) do
-        Class.new do
-          include Flows::Operation
-
+        Class.new(described_class) do
           step :build_result
 
           ok_shape type_a: %i[data],
@@ -233,9 +213,7 @@ RSpec.describe Flows::Operation do
       subject(:invoke) { operation_class.new.call }
 
       let(:operation_class) do
-        Class.new do
-          include Flows::Operation
-
+        Class.new(described_class) do
           step :build_result
 
           ok_shape type_a: %i[data],
@@ -258,9 +236,7 @@ RSpec.describe Flows::Operation do
       subject(:invoke) { operation_class.new.call }
 
       let(:operation_class) do
-        Class.new do
-          include Flows::Operation
-
+        Class.new(described_class) do
           step :build_result
 
           ok_shape :data
@@ -283,9 +259,7 @@ RSpec.describe Flows::Operation do
       subject(:invoke) { operation_class.new.call }
 
       let(:operation_class) do
-        Class.new do
-          include Flows::Operation
-
+        Class.new(described_class) do
           step :build_result
 
           ok_shape :data
@@ -306,9 +280,7 @@ RSpec.describe Flows::Operation do
       subject(:invoke) { operation_class.new.call }
 
       let(:operation_class) do
-        Class.new do
-          include Flows::Operation
-
+        Class.new(described_class) do
           step :build_result
 
           ok_shape :data
@@ -329,9 +301,7 @@ RSpec.describe Flows::Operation do
       subject(:build) { operation_class.new.call }
 
       let(:operation_class) do
-        Class.new do
-          include Flows::Operation
-
+        Class.new(described_class) do
           step :build_result
 
           ok_shape :data
@@ -353,9 +323,7 @@ RSpec.describe Flows::Operation do
       subject(:invoke) { operation_class.new.call }
 
       let(:operation_class) do
-        Class.new do
-          include Flows::Operation
-
+        Class.new(described_class) do
           step :build_result
 
           ok_shape :data
@@ -383,9 +351,7 @@ RSpec.describe Flows::Operation do
       subject(:invoke) { operation_class.new.call }
 
       let(:operation_class) do
-        Class.new do
-          include Flows::Operation
-
+        Class.new(described_class) do
           step :build_result
 
           ok_shape :data
@@ -408,9 +374,7 @@ RSpec.describe Flows::Operation do
     subject(:invoke) { operation_class.new.call }
 
     let(:operation_class) do
-      Class.new do
-        include Flows::Operation
-
+      Class.new(described_class) do
         step :do_job
 
         no_shape
@@ -431,9 +395,7 @@ RSpec.describe Flows::Operation do
       subject(:operation) { operation_class.new }
 
       let(:operation_class) do
-        Class.new do
-          include Flows::Operation
-
+        Class.new(described_class) do
           step :resolve,
                match_ok => :term,
                match_err => :last_step
@@ -468,9 +430,7 @@ RSpec.describe Flows::Operation do
       subject(:operation) { operation_class.new }
 
       let(:operation_class) do
-        Class.new do
-          include Flows::Operation
-
+        Class.new(described_class) do
           step :resolve, match_ok(:end_now) => :term
           step :last_step
 
@@ -505,9 +465,7 @@ RSpec.describe Flows::Operation do
       subject(:operation) { operation_class.new }
 
       let(:operation_class) do
-        Class.new do
-          include Flows::Operation
-
+        Class.new(described_class) do
           step :first, match_ok(:track) => :side_track
 
           track :side_track do
@@ -551,9 +509,7 @@ RSpec.describe Flows::Operation do
       subject(:operation) { operation_class.new }
 
       let(:operation_class) do
-        Class.new do
-          include Flows::Operation
-
+        Class.new(described_class) do
           step :first, match_ok(:track) => :side_track
 
           track :side_track do
@@ -622,9 +578,7 @@ RSpec.describe Flows::Operation do
       subject(:invoke) { operation_class.new.call }
 
       let(:operation_class) do
-        Class.new do
-          include Flows::Operation
-
+        Class.new(described_class) do
           step :init
 
           wrap :wrapper do
@@ -667,9 +621,7 @@ RSpec.describe Flows::Operation do
       subject(:invoke) { operation_class.new.call }
 
       let(:operation_class) do
-        Class.new do
-          include Flows::Operation
-
+        Class.new(described_class) do
           step :init, match_ok => :wrapped_track
 
           track :wrapped_track do
@@ -714,9 +666,7 @@ RSpec.describe Flows::Operation do
       subject(:invoke) { operation_class.new.call }
 
       let(:operation_class) do
-        Class.new do
-          include Flows::Operation
-
+        Class.new(described_class) do
           step :init
 
           wrap(
@@ -766,9 +716,7 @@ RSpec.describe Flows::Operation do
       end
 
       let(:operation_class) do
-        Class.new do
-          include Flows::Operation
-
+        Class.new(described_class) do
           step :do_job
 
           ok_shape :data
@@ -788,9 +736,7 @@ RSpec.describe Flows::Operation do
       end
 
       let(:operation_class) do
-        Class.new do
-          include Flows::Operation
-
+        Class.new(described_class) do
           step :do_job
 
           ok_shape :data
@@ -814,9 +760,7 @@ RSpec.describe Flows::Operation do
       end
 
       let(:operation_class) do
-        Class.new do
-          include Flows::Operation
-
+        Class.new(described_class) do
           wrap :wrapper do
             step :do_job
           end
@@ -842,9 +786,7 @@ RSpec.describe Flows::Operation do
       end
 
       let(:operation_class) do
-        Class.new do
-          include Flows::Operation
-
+        Class.new(described_class) do
           step :to_track,
                ->(**) { ok },
                routes(
@@ -869,9 +811,7 @@ RSpec.describe Flows::Operation do
     subject(:invoke_parent) { base_class.new.call }
 
     let(:base_class) do
-      Class.new do
-        include Flows::Operation
-
+      Class.new(described_class) do
         step :do_job
 
         ok_shape parent: [:result], child: [:result]
@@ -899,9 +839,9 @@ RSpec.describe Flows::Operation do
     end
 
     context 'when child class redefines step using method' do
-      subject(:invoke) { railway_class.new.call }
+      subject(:invoke) { operation_class.new.call }
 
-      let(:railway_class) do
+      let(:operation_class) do
         Class.new(base_class) do
           def do_job(**)
             ok(:child, result: :good)
@@ -920,12 +860,12 @@ RSpec.describe Flows::Operation do
 
     context 'when child class redefines step using deps' do
       subject(:invoke) do
-        railway_class.new(deps: {
-                            do_job: ->(**) { ok(:child, result: :good) }
-                          }).call
+        operation_class.new(deps: {
+                              do_job: ->(**) { ok(:child, result: :good) }
+                            }).call
       end
 
-      let(:railway_class) do
+      let(:operation_class) do
         Class.new(base_class)
       end
 
@@ -941,9 +881,7 @@ RSpec.describe Flows::Operation do
 
   describe 'implicit building' do
     subject(:base_class) do
-      Class.new do
-        include Flows::Operation
-
+      Class.new(described_class) do
         step :do_job
 
         ok_shape :data

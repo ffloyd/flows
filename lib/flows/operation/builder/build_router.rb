@@ -1,5 +1,5 @@
 module Flows
-  module Operation
+  class Operation
     class Builder
       # Router builder
       module BuildRouter
