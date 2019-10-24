@@ -19,9 +19,7 @@ class FlowsSummator
   end
 end
 
-class FlowsRailwaySummator
-  include Flows::Railway
-
+class FlowsRailwaySummator < Flows::Railway
   step :sum
 
   def sum(a:, b:)
@@ -88,9 +86,7 @@ class FlowsTenSteps
   def s10(**); ok(data: :ok); end
 end
 
-class FlowsRailwayTenSteps
-  include Flows::Railway
-
+class FlowsRailwayTenSteps < Flows::Railway
   step :s1
   step :s2
   step :s3

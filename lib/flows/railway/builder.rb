@@ -1,5 +1,5 @@
 module Flows
-  module Railway
+  class Railway
     # Flow builder
     class Builder
       attr_reader :steps, :method_source, :deps

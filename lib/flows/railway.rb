@@ -8,11 +8,9 @@ require_relative './ext/implicit_build'
 
 module Flows
   # Railway DSL
-  module Railway
-    def self.included(mod)
-      mod.extend ::Flows::Railway::DSL
-      mod.extend ::Flows::Ext::ImplicitBuild
-    end
+  class Railway
+    extend ::Flows::Railway::DSL
+    extend ::Flows::Ext::ImplicitBuild
 
     include ::Flows::Result::Helpers
 

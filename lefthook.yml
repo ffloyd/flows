@@ -6,7 +6,7 @@ pre-commit:
       run: bundle exec rubocop {staged_files}
     reek:
       glob: "*.rb"
-      exclude: "^spec"
+      exclude: "^spec|^bin"
       run: bundle exec reek {staged_files}
     markdownlinter:
       glob: "*.md"

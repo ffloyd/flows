@@ -1,5 +1,5 @@
 module Flows
-  module Railway
+  class Railway
     # DSL methods for Railway
     module DSL
       attr_reader :steps

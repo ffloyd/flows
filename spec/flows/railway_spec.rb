@@ -7,21 +7,17 @@ RSpec.describe Flows::Railway do
     subject(:build) { railway_class.new }
 
     let(:railway_class) do
-      Class.new do
-        include Flows::Railway
-      end
+      Class.new(described_class)
     end
 
-    it { expect { build }.to raise_error Flows::Railway::NoStepsError }
+    it { expect { build }.to raise_error described_class::NoStepsError }
   end
 
   describe 'with steps defined by methods' do
     subject(:railway) { railway_class.new }
 
     let(:railway_class) do
-      Class.new do
-        include Flows::Railway
-
+      Class.new(described_class) do
         step :sum
         step :square
 
@@ -63,9 +59,7 @@ RSpec.describe Flows::Railway do
     subject(:invoke) { railway_class.new.call(arg: :value) }
 
     let(:railway_class) do
-      Class.new do
-        include Flows::Railway
-
+      Class.new(described_class) do
         step :hello, ->(**data) { ok(**data) }
       end
     end
@@ -85,9 +79,7 @@ RSpec.describe Flows::Railway do
     end
 
     let(:railway_class) do
-      Class.new do
-        include Flows::Railway
-
+      Class.new(described_class) do
         step :hello
       end
     end
@@ -103,9 +95,7 @@ RSpec.describe Flows::Railway do
     subject(:invoke_parent) { base_class.new.call }
 
     let(:base_class) do
-      Class.new do
-        include Flows::Railway
-
+      Class.new(described_class) do
         step :do_job
 
         def do_job(**)
@@ -173,9 +163,7 @@ RSpec.describe Flows::Railway do
 
   describe 'implicit building' do
     subject(:base_class) do
-      Class.new do
-        include Flows::Railway
-
+      Class.new(described_class) do
         step :do_job
 
         def do_job(**)

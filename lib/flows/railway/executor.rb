@@ -1,5 +1,5 @@
 module Flows
-  module Railway
+  class Railway
     # Runner for railway steps
     class Executor
       include ::Flows::Result::Helpers
