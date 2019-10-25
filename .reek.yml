@@ -48,13 +48,9 @@ detectors:
       - 'Flows::Operation::DSL#track'
       - 'Flows::Operation::Executor#build_success_result'
       - 'Flows::Operation::Executor#build_failure_result'
-      - 'Flows::Result::Do::DSL#do_for'
   UtilityFunction:
     exclude:
       # Should be fixed by extrating to a Step Class
       - 'Flows::Operation::Builder#build_meta'
       - 'Flows::Operation::Builder#node_preprocessor'
       - 'Flows::Operation::Builder#node_postprocessor'
-  NestedIterators:
-    exclude:
-      - 'Flows::Result::Do::DSL#do_for'

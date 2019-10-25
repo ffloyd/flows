@@ -7,7 +7,7 @@ RSpec.describe Flows::Result::Do do
 
   let(:example_class) do
     Class.new do
-      include Flows::Result::Do
+      extend Flows::Result::Do
 
       do_for(:simple_unwrap)
       def simple_unwrap(first, last)
@@ -63,6 +63,26 @@ RSpec.describe Flows::Result::Do do
 
     it 'returns only given field value' do
       expect(invoke).to eq [:value]
+    end
+  end
+
+  describe 'inheritance support' do
+    subject(:invoke) { child.in_child(-> { ok }, -> { ok(all: 'good') }) }
+
+    let(:child_class) do
+      Class.new(example_class) do
+        do_for(:in_child)
+        def in_child(first, last)
+          yield first.call
+          yield last.call
+        end
+      end
+    end
+
+    let(:child) { child_class.new }
+
+    it 'works' do
+      expect(invoke).to eq(all: 'good')
     end
   end
 end
