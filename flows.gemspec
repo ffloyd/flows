@@ -32,6 +32,7 @@ Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
   spec.add_development_dependency 'rubocop-performance'
   spec.add_development_dependency 'rubocop-rspec'
 
+  spec.add_development_dependency 'awesome_print'
   spec.add_development_dependency 'pry'
 
   spec.add_development_dependency 'codecov'
