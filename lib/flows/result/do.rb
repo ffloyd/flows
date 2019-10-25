@@ -1,5 +1,3 @@
-require_relative '../ext/inheritable_attrs'
-
 module Flows
   class Result
     # Do-notation for Result Objects

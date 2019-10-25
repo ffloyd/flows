@@ -5,6 +5,8 @@ end
 
 require 'flows/version'
 
+require 'flows/ext'
+
 require 'flows/router'
 require 'flows/result_router'
 

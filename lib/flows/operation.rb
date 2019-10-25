@@ -4,9 +4,6 @@ require_relative 'operation/dsl'
 require_relative 'operation/builder'
 require_relative 'operation/executor'
 
-require_relative 'ext/implicit_build'
-require_relative 'ext/inheritable_attrs'
-
 module Flows
   # Operation DSL
   class Operation
