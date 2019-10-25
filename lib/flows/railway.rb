@@ -7,6 +7,7 @@ require_relative './railway/builder'
 require_relative './railway/executor'
 
 require_relative './ext/implicit_build'
+require_relative './ext/inheritable_attrs'
 
 module Flows
   # Railway DSL

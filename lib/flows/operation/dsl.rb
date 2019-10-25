@@ -4,21 +4,14 @@ module Flows
     module DSL
       attr_reader :steps, :ok_shapes, :err_shapes
 
-      def self.extended(mod) # rubocop:disable Metrics/MethodLength
-        mod.instance_variable_set(:@steps, [])
-        mod.instance_variable_set(:@track_path, [])
-        mod.instance_variable_set(:@ok_shapes, nil)
-        mod.instance_variable_set(:@err_shapes, nil)
-
-        mod.class_exec do
-          def self.inherited(subclass)
-            subclass.instance_variable_set(:@steps, steps.dup)
-            subclass.instance_variable_set(:@track_path, @track_path.dup)
-            subclass.instance_variable_set(:@ok_shapes, @ok_shapes.dup)
-            subclass.instance_variable_set(:@err_shapes, @err_shapes.dup)
-            super
-          end
-        end
+      def self.extended(mod)
+        ::Flows::Ext::InheritableAttrs.dup_strategy(
+          mod,
+          '@steps' => [],
+          '@track_path' => [],
+          '@ok_shapes' => nil,
+          '@err_shapes' => nil
+        )
       end
 
       include Flows::Result::Helpers
