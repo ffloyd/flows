@@ -5,7 +5,7 @@ module Flows
       attr_reader :steps
 
       def self.extended(mod)
-        ::Flows::Ext::InheritableAttrs.dup_strategy(
+        ::Flows::Ext::InheritableAttrs::DupStrategy.call(
           mod,
           '@steps' => StepList.new
         )

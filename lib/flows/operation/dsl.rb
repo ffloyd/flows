@@ -5,7 +5,7 @@ module Flows
       attr_reader :steps, :ok_shapes, :err_shapes
 
       def self.extended(mod)
-        ::Flows::Ext::InheritableAttrs.dup_strategy(
+        ::Flows::Ext::InheritableAttrs::DupStrategy.call(
           mod,
           '@steps' => [],
           '@track_path' => [],
