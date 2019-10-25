@@ -1,0 +1,12 @@
+* TODO-list of unfinished refactorings and features before 1.0 [2/7]
+
+  * [ ] Refactor Operation to the same structure as for Railway
+    * Step object
+    * Track object
+    * Shape object
+  * [X] Extract singleton variables approach to a separate mixin
+  * [X] Check ~do_for~ in combination with inheritance
+  * [ ] Maybe ~Flows::Node#meta~ and ~Flow::Flow~'s context deserves separate classes or abstraction
+  * [ ] Add YARD documentation
+  * [ ] Update the site documentation structure
+  * [ ] Finish the site documentation
