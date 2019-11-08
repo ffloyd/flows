@@ -32,14 +32,14 @@ jobs:
       - name: Install Deps
         run: bundle install --jobs 4 --retry 3
       - name: Rubocop
-        run: bundle exec rubocop
+        run: bundle exec rake rubocop
       - name: Reek
-        run: bundle exec reek
+        run: bundle exec rake reek
       - name: RSpec
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        run: bundle exec rspec
-      - name: Markdown Linter (docs)
-        run: bundle exec mdl docs/**/*.md README.md
+        run: bundle exec rake spec
       - name: Spelling Check (docs & code)
-        run: bundle exec forspell
+        run: bundle exec rake spellcheck
+      - name: Markdown Linter (docs)
+        run: bundle exec rake mdl
