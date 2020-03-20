@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+set -vx
+
+rm -rf .yardoc/ && bundle exec yard server --reload
+rm -rf .yardoc/
