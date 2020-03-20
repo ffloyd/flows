@@ -11,8 +11,6 @@ RSpec.describe Flows::Node do
     let(:input) { double }
     let(:context) { double }
 
-    let(:name) { :node_name }
-
     let(:output) { double }
     let(:body) { proc_double output }
 
@@ -24,7 +22,6 @@ RSpec.describe Flows::Node do
 
     let(:init_params) do
       {
-        name: name,
         body: body,
         router: router,
         meta: meta

@@ -34,9 +34,10 @@ gem install flows
 
 _Rest of documentation will be here when v0.4.0 be ready._ Stay tuned.
 
-## Readme TODOs
+## Readme TODO: list of tasks to accomplish before
 
 * [ ] lefthook usage
 * [ ] `bundle exec rake` to check all the things + describe linter setup
+* [ ] describe why so many linters
 * [ ] `bin/*` scripts usage
 

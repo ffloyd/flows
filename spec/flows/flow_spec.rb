@@ -9,24 +9,25 @@ RSpec.describe Flows::Flow do
     context 'with simple two-node flow' do
       let(:flow) do
         described_class.new(
-          start_node: node_a.name,
-          nodes: [node_a, node_b]
+          start_node: :plus_one,
+          node_map: {
+            plus_one: node_plus_one,
+            mult_by_two: node_mult_by_two
+          }
         )
       end
 
-      let(:node_a) do
+      let(:node_plus_one) do
         Flows::Node.new(
-          name: :plus_one,
           body: ->(x) { x + 1 },
           router: Flows::Router.new(routes: {
-                                      Integer => :mult_two
+                                      Integer => :mult_by_two
                                     })
         )
       end
 
-      let(:node_b) do
+      let(:node_mult_by_two) do
         Flows::Node.new(
-          name: :mult_two,
           body: ->(x) { x * 2 },
           router: Flows::Router.new(routes: {
                                       Integer => :term

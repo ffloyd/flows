@@ -1,13 +1,9 @@
 module Flows
   # Representation of FSM node.
-  # TODO: rename to `Flows::Flow::Node`
-  # TODO: remove `name` attr because name is useless inside implementation
-  # also it will shut up :reek:TooManyInstanceVariables
   class Node
-    attr_reader :name, :meta
+    attr_reader :meta
 
-    def initialize(name:, body:, router:, meta: {}, preprocessor: nil, postprocessor: nil)
-      @name = name
+    def initialize(body:, router:, meta: {}, preprocessor: nil, postprocessor: nil)
       @body = body
       @router = router
 

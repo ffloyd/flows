@@ -12,4 +12,8 @@ detectors:
     max_params: 3
     overrides:
       initialize:
-        max_params: 6
+        max_params: 6 # +1 to default value
+  TooManyInstanceVariables:
+    enabled: true
+    exclude: []
+    max_instance_variables: 5 # +1 to default value
