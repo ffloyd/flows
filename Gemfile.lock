@@ -221,6 +221,7 @@ DEPENDENCIES
   simplecov
   stackprof
   trailblazer-operation
+  yard
 
 BUNDLED WITH
    2.1.4

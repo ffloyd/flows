@@ -30,6 +30,9 @@ Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
   spec.add_development_dependency 'rake', '~> 13.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
 
+  # Documentation is the key!
+  spec.add_development_dependency 'yard'
+
   # linters to make code and documentation awesome
   spec.add_development_dependency 'forspell', '~> 0.0.8'
   spec.add_development_dependency 'inch'
