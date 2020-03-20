@@ -1,3 +1,0 @@
-# Benchmarks & Profiling
-
-TODO

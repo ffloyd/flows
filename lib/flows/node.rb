@@ -1,5 +1,6 @@
 module Flows
   # Representation of FSM node.
+  # TODO: rename to `Flows::Flow::Node`
   class Node
     attr_reader :name, :meta
 

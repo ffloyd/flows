@@ -5,7 +5,7 @@ RSpec.describe Flows::Result::Helpers do
 
   describe '#ok' do
     context 'without status code' do
-      subject(:result) { ok(data) }
+      subject(:result) { ok(**data) }
 
       let(:data) do
         {
@@ -25,7 +25,7 @@ RSpec.describe Flows::Result::Helpers do
     end
 
     context 'with explicit status code' do
-      subject(:result) { ok(status, data) }
+      subject(:result) { ok(status, **data) }
 
       let(:data) do
         {
@@ -47,7 +47,7 @@ RSpec.describe Flows::Result::Helpers do
 
   describe '#err' do
     context 'without status code' do
-      subject(:result) { err(data) }
+      subject(:result) { err(**data) }
 
       let(:data) do
         {
@@ -67,7 +67,7 @@ RSpec.describe Flows::Result::Helpers do
     end
 
     context 'with explicit status code' do
-      subject(:result) { err(status, data) }
+      subject(:result) { err(status, **data) }
 
       let(:data) do
         {

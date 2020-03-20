@@ -8,7 +8,7 @@ Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
   spec.authors       = ['Roman Kolesnev']
   spec.email         = ['rvkolesnev@gmail.com']
 
-  spec.summary       = 'Ruby framework for building FSM-like data flows.'
+  spec.summary       = 'Ruby framework for building your Business Logic Layer inside Rails and other frameworks.'
   spec.homepage      = 'https://github.com/ffloyd/flows'
   spec.license       = 'MIT'
 
@@ -22,7 +22,7 @@ Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
   spec.require_paths = ['lib']
 
   spec.add_development_dependency 'bundler', '~> 2.0'
-  spec.add_development_dependency 'rake', '~> 10.0'
+  spec.add_development_dependency 'rake', '~> 13.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
 
   spec.add_development_dependency 'forspell', '~> 0.0.8'

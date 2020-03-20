@@ -1,5 +1,6 @@
 module Flows
   # Node router: defines predicate rules to calculate next node.
+  # TODO: rename to `Flows::Router::Custom`
   class Router
     # Base class for {Flows::Router} error.
     class Error < Flows::Error; end
@@ -7,8 +8,8 @@ module Flows
     # Raised when no route found basing on provided data.
     class NoRouteError < Error; end
 
-    def initialize(route_hash, preprocessor: nil)
-      @route_def = route_hash
+    def initialize(routes:, preprocessor: nil)
+      @route_def = routes
       @preprocessor = preprocessor
     end
 

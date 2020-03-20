@@ -4,9 +4,9 @@
 require 'bundler/setup'
 require 'benchmark/ips'
 
-puts '-' * 50
-puts '- method execution'
-puts '-' * 50
+puts '#' * 50
+puts '# different method execution ways'
+puts '#' * 50
 
 class OneMethod
   def meth
@@ -18,9 +18,10 @@ one_method = OneMethod.new
 method_obj = one_method.method(:meth)
 
 Benchmark.ips do |b|
-  b.report('native call') { one_method.meth }
-  b.report('send(...)') { one_method.send(:meth) }
-  b.report('Method#call') { method_obj.call }
+  b.report('instance.meth') { one_method.meth }
+  b.report('instance.public_send(:meth)') { one_method.public_send(:meth) }
+  b.report('instance.send(:meth)') { one_method.send(:meth) }
+  b.report('instance.method(:meth).call') { method_obj.call }
 
   b.compare!
 end

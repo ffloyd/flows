@@ -14,5 +14,3 @@ require 'flows/node'
 require 'flows/flow'
 
 require 'flows/result'
-require 'flows/railway'
-require 'flows/operation'

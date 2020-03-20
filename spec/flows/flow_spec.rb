@@ -18,9 +18,9 @@ RSpec.describe Flows::Flow do
         Flows::Node.new(
           name: :plus_one,
           body: ->(x) { x + 1 },
-          router: Flows::Router.new(
-            Integer => :mult_two
-          )
+          router: Flows::Router.new(routes: {
+                                      Integer => :mult_two
+                                    })
         )
       end
 
@@ -28,9 +28,9 @@ RSpec.describe Flows::Flow do
         Flows::Node.new(
           name: :mult_two,
           body: ->(x) { x * 2 },
-          router: Flows::Router.new(
-            Integer => :term
-          )
+          router: Flows::Router.new(routes: {
+                                      Integer => :term
+                                    })
         )
       end
 

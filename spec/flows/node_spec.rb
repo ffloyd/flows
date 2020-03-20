@@ -17,7 +17,7 @@ RSpec.describe Flows::Node do
     let(:body) { proc_double output }
 
     let(:router) do
-      Flows::Router.new(output => :next_route)
+      Flows::Router.new(routes: { output => :next_route })
     end
 
     let(:meta) { { some: :meta } }
@@ -32,7 +32,7 @@ RSpec.describe Flows::Node do
     end
 
     context 'with simplest node' do
-      let(:node) { described_class.new(init_params) }
+      let(:node) { described_class.new(**init_params) }
 
       it 'returns output and next route' do
         expect(call).to eq [output, :next_route]
@@ -42,7 +42,7 @@ RSpec.describe Flows::Node do
     context 'with defined preprocessor' do
       let(:node) do
         described_class.new(
-          init_params.merge(preprocessor: preprocessor)
+          **init_params.merge(preprocessor: preprocessor)
         )
       end
 
@@ -65,7 +65,7 @@ RSpec.describe Flows::Node do
     context 'with defined postprocessor' do
       let(:node) do
         described_class.new(
-          init_params.merge(postprocessor: postprocessor)
+          **init_params.merge(postprocessor: postprocessor)
         )
       end
 

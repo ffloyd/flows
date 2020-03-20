@@ -15,6 +15,7 @@ Result metadata: `#{@meta.inspect}`"
     end
 
     # Error for dealing with failure result as success one
+    # TODO: better naming
     class NoErrorError < Flows::Error
       def initialize(status, data)
         @status = status

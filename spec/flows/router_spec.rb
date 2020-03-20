@@ -14,9 +14,9 @@ RSpec.describe Flows::Router do
 
     context 'when no preprocessor specified' do
       let(:router) do
-        described_class.new(
-          predicate => :next_route
-        )
+        described_class.new(routes: {
+                              predicate => :next_route
+                            })
       end
 
       it 'calls predicate with output' do
@@ -32,11 +32,11 @@ RSpec.describe Flows::Router do
 
     context 'when several predicates matches' do
       let(:router) do
-        described_class.new(
-          predicate => :first_route,
-          predicate.clone => :second_route,
-          predicate.clone => :third_route
-        )
+        described_class.new(routes: {
+                              predicate => :first_route,
+                              predicate.clone => :second_route,
+                              predicate.clone => :third_route
+                            })
       end
 
       it 'returns first matched route' do
@@ -46,11 +46,11 @@ RSpec.describe Flows::Router do
 
     context 'when case equality used instead of predicates' do
       let(:router) do
-        described_class.new(
-          meta => :first_route,
-          context => :second_route,
-          output => :third_route
-        )
+        described_class.new(routes: {
+                              meta => :first_route,
+                              context => :second_route,
+                              output => :third_route
+                            })
       end
 
       it 'returns correct route' do
@@ -60,7 +60,7 @@ RSpec.describe Flows::Router do
 
     context 'when preprocessor used' do
       let(:router) do
-        described_class.new(routes, preprocessor: preprocessor)
+        described_class.new(routes: routes, preprocessor: preprocessor)
       end
 
       let(:routes) do
@@ -83,7 +83,7 @@ RSpec.describe Flows::Router do
     end
 
     context 'when no route matched' do
-      let(:router) { described_class.new(no_match: :route) }
+      let(:router) { described_class.new(routes: { no_match: :route }) }
 
       it 'raises Flows::Error' do
         expect { call }.to raise_error Flows::Router::NoRouteError
