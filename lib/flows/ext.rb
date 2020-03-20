@@ -1,8 +1,10 @@
 module Flows
-  # Contains various language helpers.
+  # Namespace for low-level purely technical OOP helpers.
+  #
+  # @since 0.4.0
   module Ext
   end
 end
 
-require_relative './ext/implicit_build'
+require_relative './ext/implicit_init'
 require_relative './ext/inheritable_attrs'
