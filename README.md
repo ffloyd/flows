@@ -34,3 +34,9 @@ gem install flows
 
 _Rest of documentation will be here when v0.4.0 be ready._ Stay tuned.
 
+## Readme TODOs
+
+* [ ] lefthook usage
+* [ ] `bundle exec rake` to check all the things + describe linter setup
+* [ ] `bin/*` scripts usage
+

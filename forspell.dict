@@ -6,3 +6,4 @@ linter
 linters
 matchers
 superset
+lefthook

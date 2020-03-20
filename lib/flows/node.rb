@@ -1,6 +1,8 @@
 module Flows
   # Representation of FSM node.
   # TODO: rename to `Flows::Flow::Node`
+  # TODO: remove `name` attr because name is useless inside implementation
+  # also it will shut up :reek:TooManyInstanceVariables
   class Node
     attr_reader :name, :meta
 

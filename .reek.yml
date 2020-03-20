@@ -1,3 +1,5 @@
+# default config: https://github.com/troessner/reek/blob/master/docs/defaults.reek.yml
+# detectors' docs: https://github.com/troessner/reek/tree/master/docs
 ---
 exclude_paths:
   - 'bin/'
@@ -5,52 +7,9 @@ exclude_paths:
 
 detectors:
   LongParameterList:
-    exclude:
-      - 'Flows::Node#initialize'
-  TooManyInstanceVariables:
-    exclude:
-      - 'Flows::Node'
-  DuplicateMethodCall:
-    allow_calls:
-      - 'ok'
-      - 'err'
-  #
-  # TODO list below
-  #
-  NilCheck:
-    exclude:
-      - 'Flows::Operation#_flows_do_checks'
-      - 'Flows::Operation::Executor#build_success_result'
-      - 'Flows::Operation::Executor#build_failure_result'
-  FeatureEnvy:
-    exclude:
-      # It's better to refactor step to be a Class, not hash
-      - 'Flows::Operation#_flows_make_executor'
-      - 'Flows::Operation::Builder#resolve_bodies'
-      - 'Flows::Operation::Builder#build_final_body'
-      - 'Flows::Operation::Executor#extract_data'
-      - 'Flows::Operation::Executor#build_meta'
-  DataClump:
-    # https://github.com/troessner/reek/blob/v5.4.0/docs/Data-Clump.md
-    exclude:
-      # It's better to refactor it to RouterBuilder.
-      - 'Flows::Operation::Builder::BuildRouter'
-  TooManyStatements:
-    # https://github.com/troessner/reek/blob/v5.4.0/docs/Too-Many-Statements.md
-    exclude:
-      - initialize # this is part of default config
-      # After creating separate step class it might be refatored.
-      - 'Flows::Operation::Builder#resolve_wiring'
-      - 'Flows::Operation::Builder#build_wrapper_body'
-      # Should be refactored somehow
-      - 'Flows::Operation::DSL#self.extended'
-      - 'Flows::Operation::DSL#step'
-      - 'Flows::Operation::DSL#track'
-      - 'Flows::Operation::Executor#build_success_result'
-      - 'Flows::Operation::Executor#build_failure_result'
-  UtilityFunction:
-    exclude:
-      # Should be fixed by extrating to a Step Class
-      - 'Flows::Operation::Builder#build_meta'
-      - 'Flows::Operation::Builder#node_preprocessor'
-      - 'Flows::Operation::Builder#node_postprocessor'
+    enabled: true
+    exclude: []
+    max_params: 3
+    overrides:
+      initialize:
+        max_params: 6

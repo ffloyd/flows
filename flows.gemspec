@@ -21,10 +21,16 @@ Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
+  # This library has no production dependencies.
+  # So, it will not block you from updating any dependencies in your project.
+  # So, don't add production dependencies.
+
+  # things that should be part of a standard library
   spec.add_development_dependency 'bundler', '~> 2.0'
   spec.add_development_dependency 'rake', '~> 13.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
 
+  # linters to make code and documentation awesome
   spec.add_development_dependency 'forspell', '~> 0.0.8'
   spec.add_development_dependency 'mdl'
   spec.add_development_dependency 'reek'
@@ -33,9 +39,12 @@ Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
   spec.add_development_dependency 'rubocop-performance'
   spec.add_development_dependency 'rubocop-rspec'
 
+  # let's make dubugging confortable
   spec.add_development_dependency 'awesome_print'
   spec.add_development_dependency 'pry'
 
+  # 100% coverage does not mean that you cover everything,
+  # but 50% coverage means that you haven't covered half of the project.
   spec.add_development_dependency 'codecov'
   spec.add_development_dependency 'simplecov'
 

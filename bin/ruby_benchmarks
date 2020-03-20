@@ -4,9 +4,13 @@
 require 'bundler/setup'
 require 'benchmark/ips'
 
-puts '#' * 50
-puts '# different method execution ways'
-puts '#' * 50
+print_header = lambda do |text|
+  puts '#' * 50
+  puts "# #{text}"
+  puts '#' * 50
+end
+
+print_header.call('different method execution ways')
 
 class OneMethod
   def meth
