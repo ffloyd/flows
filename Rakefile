@@ -3,6 +3,7 @@ require 'bundler/gem_tasks'
 require 'rspec/core/rake_task'
 require 'rubocop/rake_task'
 require 'reek/rake/task'
+require 'inch/rake'
 
 require 'forspell/cli'
 require 'mdl'
@@ -10,6 +11,7 @@ require 'mdl'
 RSpec::Core::RakeTask.new(:spec)
 RuboCop::RakeTask.new(:rubocop)
 Reek::Rake::Task.new
+Inch::Rake::Suggest.new
 
 PATHS_TO_SPELLCHECK = ['.'].freeze
 PATHS_FOR_MDL = ['README.md', Dir.glob('docs/**/*.md')].flatten.freeze

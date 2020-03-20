@@ -76,6 +76,11 @@ GEM
     highline (2.0.3)
     hirb (0.7.3)
     ice_nine (0.11.2)
+    inch (0.8.0)
+      pry
+      sparkr (>= 0.2.0)
+      term-ansicolor
+      yard (~> 0.9.12)
     jaro_winkler (1.5.4)
     json (2.3.0)
     kramdown (2.1.0)
@@ -157,8 +162,14 @@ GEM
       simplecov-html (~> 0.11)
     simplecov-html (0.12.2)
     slop (4.8.0)
+    sparkr (0.4.1)
     stackprof (0.2.15)
+    sync (0.5.0)
+    term-ansicolor (1.7.1)
+      tins (~> 1.0)
     thread_safe (0.3.6)
+    tins (1.24.1)
+      sync
     tomlrb (1.2.9)
     trailblazer-activity (0.10.0)
       trailblazer-context (>= 0.2.0, < 0.3.0)
@@ -196,6 +207,7 @@ DEPENDENCIES
   dry-transaction
   flows!
   forspell (~> 0.0.8)
+  inch
   mdl
   pry
   rake (~> 13.0)
@@ -211,4 +223,4 @@ DEPENDENCIES
   trailblazer-operation
 
 BUNDLED WITH
-   2.1.2
+   2.1.4
