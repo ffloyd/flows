@@ -2,7 +2,7 @@ module Flows
   module Ext
     # Class extension with method `MyClass.call` which works like `MyClass.new.call`.
     #
-    # @note This mixin must be injected using `extend`, not `include`.
+    # @note This module must be injected into target class using `extend`, not `include`.
     #
     # @note Class inheritance is supported: each child class will inherit behaviour, but not data.
     #
@@ -15,7 +15,7 @@ module Flows
     #     end
     #
     #     def call
-    #       return @param
+    #       @param
     #     end
     #   end
     #

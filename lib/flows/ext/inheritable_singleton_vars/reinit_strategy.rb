@@ -1,6 +1,6 @@
 module Flows
   module Ext
-    module InheritableAttrs
+    module InheritableSingletonVars
       # Strategy which uses #dup on initial default values to initialize child ones.
       module ReinitStrategy
         VAR_MAP_VAR_NAME = :@inheritable_vars_with_reinit

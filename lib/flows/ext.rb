@@ -7,4 +7,4 @@ module Flows
 end
 
 require_relative './ext/implicit_init'
-require_relative './ext/inheritable_attrs'
+require_relative './ext/inheritable_singleton_vars'
