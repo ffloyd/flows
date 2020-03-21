@@ -22,6 +22,20 @@ module Flows
       module DupStrategy
         VAR_LIST_VAR_NAME = :@inheritable_vars_with_dup
 
+        # @api private
+        module InheritanceCallback
+          def inherited(child_class)
+            var_list = instance_variable_get(VAR_LIST_VAR_NAME)
+            child_class.instance_variable_set(VAR_LIST_VAR_NAME, var_list.dup)
+
+            var_list.each do |name|
+              child_class.instance_variable_set(name, instance_variable_get(name).dup)
+            end
+
+            super
+          end
+        end
+
         class << self
           # Applies behaviour and defaults for singleton variables.
           #
@@ -62,18 +76,8 @@ module Flows
           end
 
           def inject_inheritance_hook(klass)
-            klass.class_exec do
-              def self.inherited(child_class)
-                var_list = instance_variable_get(VAR_LIST_VAR_NAME)
-                child_class.instance_variable_set(VAR_LIST_VAR_NAME, var_list.dup)
-
-                var_list.each do |name|
-                  child_class.instance_variable_set(name, instance_variable_get(name).dup)
-                end
-
-                super
-              end
-            end
+            singleton = klass.singleton_class
+            singleton.prepend(InheritanceCallback) unless singleton.is_a?(InheritanceCallback)
           end
         end
       end

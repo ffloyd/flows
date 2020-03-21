@@ -67,6 +67,8 @@ module Flows
     #       end
     #     end
     #
+    # Moreover, you can use multiple strategies in the same class.
+    #
     # @since 0.4.0
     module InheritableSingletonVars
     end

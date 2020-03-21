@@ -2,6 +2,7 @@ require 'bundler/setup'
 
 require 'simplecov'
 require 'codecov'
+require 'pry'
 
 SimpleCov.minimum_coverage 80 # TODO: return to 95
 SimpleCov.formatter = SimpleCov::Formatter::Codecov unless ENV['CODECOV_TOKEN'].nil?

@@ -34,9 +34,9 @@ module Flows
       end
 
       def self.extended(mod)
-        ::Flows::Ext::InheritableSingletonVars::ReinitStrategy.call(
+        ::Flows::Ext::InheritableSingletonVars::IsolationStrategy.call(
           mod,
-          MOD_VAR_NAME => Module.new
+          MOD_VAR_NAME => -> { Module.new }
         )
       end
 
