@@ -15,8 +15,8 @@ RSpec.describe Flows::Result::Helpers do
 
       it { is_expected.to be_a Flows::Result::Ok }
 
-      it 'has :success status' do
-        expect(result.status).to eq :success
+      it 'has :ok status' do
+        expect(result.status).to eq :ok
       end
 
       it 'has provided data' do
@@ -57,8 +57,8 @@ RSpec.describe Flows::Result::Helpers do
 
       it { is_expected.to be_a Flows::Result::Err }
 
-      it 'has :failure status' do
-        expect(result.status).to eq :failure
+      it 'has :err status' do
+        expect(result.status).to eq :err
       end
 
       it 'has provided data' do

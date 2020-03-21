@@ -1,25 +1,29 @@
 module Flows
   class Result
-    # Wrapper for failure results
+    # Result Object for failure results.
+    #
+    # @see Flows::Result behaviour described here
     class Err < Result
       attr_reader :error
 
-      def initialize(data, status: :failure, meta: {})
+      def initialize(data, status: :err, meta: {})
         @error = data
         @status = status
         @meta = meta
       end
 
+      # @return [false]
       def ok?
         false
       end
 
+      # @return [true]
       def err?
         true
       end
 
       def unwrap
-        raise UnwrapError.new(@status, @error, @meta)
+        raise AccessError, self
       end
     end
   end

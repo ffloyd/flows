@@ -23,7 +23,7 @@ RSpec.describe Flows::Result::Err do
     subject(:unwrap) { result.unwrap }
 
     it 'raises exception' do
-      expect { unwrap }.to raise_error Flows::Result::UnwrapError
+      expect { unwrap }.to raise_error Flows::Result::AccessError
     end
   end
 
@@ -39,7 +39,7 @@ RSpec.describe Flows::Result::Err do
     subject(:status) { result.status }
 
     context 'with default status' do
-      it { expect(status).to eq :failure }
+      it { expect(status).to eq :err }
     end
 
     context 'with explicit status' do

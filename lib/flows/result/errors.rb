@@ -1,30 +1,38 @@
 module Flows
   class Result
-    # Error for unwrapping non-successful result object
-    class UnwrapError < Flows::Error
-      def initialize(status, data, meta)
-        @status = status
-        @data = data
-        @meta = meta
+    # Error for invalid data access cases
+    class AccessError < Flows::Error
+      def initialize(result)
+        @result = result
       end
 
       def message
-        "You're trying to unwrap non-successful result with status `#{@status.inspect}` and data `#{@data.inspect}`\n\
-Result metadata: `#{@meta.inspect}`"
-      end
-    end
-
-    # Error for dealing with failure result as success one
-    # TODO: better naming
-    class NoErrorError < Flows::Error
-      def initialize(status, data)
-        @status = status
-        @data = data
+        [
+          base_msg,
+          "  Result status: #{@result.status.inspect}",
+          "  Result data:   #{@result.data.inspect}",
+          "  Result meta:   #{@result.meta.inspect}"
+        ].join('/n')
       end
 
-      def message
-        "You're trying to get error data for successful result with status \
-`#{@status.inspect}` and data `#{@data.inspect}`"
+      private
+
+      def base_msg
+        case @result
+        when Flows::Result::Ok
+          'Data in successful object must be retrieved using `#unwrap` method, not `#error`.'
+        when Flows::Result::Err
+          'Data in failure object must be retrieved using `#error` method, not `#unwrap`.'
+        end
+      end
+
+      def data
+        case @result
+        when Flows::Result::Ok
+          @result.unwrap
+        when Flows::Result::Err
+          @result.error
+        end
       end
     end
   end

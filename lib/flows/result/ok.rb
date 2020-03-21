@@ -1,6 +1,8 @@
 module Flows
   class Result
-    # Wrapper for successful results
+    # Result Object for successful results.
+    #
+    # @see Flows::Result behaviour described here
     class Ok < Result
       attr_reader :unwrap
 
@@ -10,16 +12,18 @@ module Flows
         @meta = meta
       end
 
+      # @return [true]
       def ok?
         true
       end
 
+      # @return [false]
       def err?
         false
       end
 
       def error
-        raise NoErrorError.new(@status, @unwrap)
+        raise AccessError, self
       end
     end
   end

@@ -9,13 +9,13 @@ RSpec.describe Flows::Result::Do do
     Class.new do
       extend Flows::Result::Do
 
-      do_for(:simple_unwrap)
+      do_notation(:simple_unwrap)
       def simple_unwrap(first, last)
         yield first.call
         yield last.call
       end
 
-      do_for(:matched_unwrap)
+      do_notation(:matched_unwrap)
       def matched_unwrap(fun, *fields)
         yield(*fields, fun.call)
       end
@@ -71,7 +71,7 @@ RSpec.describe Flows::Result::Do do
 
     let(:child_class) do
       Class.new(example_class) do
-        do_for(:in_child)
+        do_notation(:in_child)
         def in_child(first, last)
           yield first.call
           yield last.call
