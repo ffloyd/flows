@@ -12,6 +12,10 @@ module Flows
       # Unfortunately it's not documented well in the standard library.
       # So, [this will help you](https://blog.appsignal.com/2019/02/26/diving-into-dup-and-clone.html).
       #
+      # @note If you change variables in a parent class after a child being defined
+      #   it will have no effect on a child. Remember this when working in environments
+      #   with tricky or experimental autoload mechanism.
+      #
       # @see InheritableSingletonVars the parent module's documentation describes the problem this module solves.
       #
       # @since 0.4.0
