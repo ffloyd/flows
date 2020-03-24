@@ -18,20 +18,20 @@ RSpec.describe Flows::Flow do
       end
 
       let(:node_plus_one) do
-        Flows::Node.new(
+        Flows::Flow::Node.new(
           body: ->(x) { x + 1 },
-          router: Flows::Router.new(routes: {
-                                      Integer => :mult_by_two
-                                    })
+          router: Flows::Flow::Router::Custom.new(routes: {
+                                                    Integer => :mult_by_two
+                                                  })
         )
       end
 
       let(:node_mult_by_two) do
-        Flows::Node.new(
+        Flows::Flow::Node.new(
           body: ->(x) { x * 2 },
-          router: Flows::Router.new(routes: {
-                                      Integer => :term
-                                    })
+          router: Flows::Flow::Router::Custom.new(routes: {
+                                                    Integer => :end
+                                                  })
         )
       end
 
@@ -40,6 +40,50 @@ RSpec.describe Flows::Flow do
 
       it 'works' do
         expect(call).to eq 22
+      end
+    end
+
+    context 'with simple three-node flow and branching' do
+      let(:flow) do
+        # it's example from the documentation
+        described_class.new(
+          start_node: :sum_list,
+          node_map: {
+            sum_list: Flows::Flow::Node.new(
+              body: ->(list) { list.sum },
+              router: Flows::Flow::Router::Custom.new(
+                routes: {
+                  ->(x) { x > 10 } => :print_big,
+                  ->(x) { x <= 10 } => :print_small
+                }
+              )
+            ),
+            print_big: Flows::Flow::Node.new(
+              body: ->(_) { 'Big' },
+              router: Flows::Flow::Router::Custom.new(
+                routes: {
+                  String => :end
+                }
+              )
+            ),
+            print_small: Flows::Flow::Node.new(
+              body: ->(_) { 'Small' },
+              router: Flows::Flow::Router::Custom.new(
+                routes: {
+                  String => :end
+                }
+              )
+            )
+          }
+        )
+      end
+
+      it 'works in case of the first possible branch' do
+        expect(flow.call([1, 2], context: {})).to eq 'Small'
+      end
+
+      it 'works in case of the second possible branch' do
+        expect(flow.call([10, 20], context: {})).to eq 'Big'
       end
     end
   end

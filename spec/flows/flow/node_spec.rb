@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe Flows::Node do
+RSpec.describe Flows::Flow::Node do
   include_context 'with helpers'
 
   describe '.call' do
@@ -15,7 +15,7 @@ RSpec.describe Flows::Node do
     let(:body) { proc_double output }
 
     let(:router) do
-      Flows::Router.new(routes: { output => :next_route })
+      Flows::Flow::Router::Custom.new(routes: { output => :next_route })
     end
 
     let(:meta) { { some: :meta } }
@@ -43,7 +43,8 @@ RSpec.describe Flows::Node do
         )
       end
 
-      let(:preprocessor_result) { double }
+      let(:expected_body_arg) { double }
+      let(:preprocessor_result) { [[expected_body_arg], {}] }
       let(:preprocessor) { proc_double preprocessor_result }
 
       it 'calls preprocessor with input, context and meta' do
@@ -55,7 +56,8 @@ RSpec.describe Flows::Node do
       it 'uses preprocessor output as body input' do
         call
 
-        expect(body).to have_received(:call).with(preprocessor_result)
+        # bug in RSpec: empty keyword arguments still affects this matcher
+        expect(body).to have_received(:call).with(expected_body_arg, {})
       end
     end
 

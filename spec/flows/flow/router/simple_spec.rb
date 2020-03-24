@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe Flows::ResultRouter do
+RSpec.describe Flows::Flow::Router::Simple do
   include Flows::Result::Helpers
 
   describe '.call' do

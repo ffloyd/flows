@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe Flows::Router do
+RSpec.describe Flows::Flow::Router::Custom do
   include_context 'with helpers'
 
   describe '.call' do
@@ -86,7 +86,7 @@ RSpec.describe Flows::Router do
       let(:router) { described_class.new(routes: { no_match: :route }) }
 
       it 'raises Flows::Error' do
-        expect { call }.to raise_error Flows::Router::NoRouteError
+        expect { call }.to raise_error Flows::Flow::Router::NoRouteError
       end
     end
   end

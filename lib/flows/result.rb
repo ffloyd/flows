@@ -1,4 +1,6 @@
 module Flows
+  # @abstract
+  #
   # Result Object is a way of presenting the result of a calculation. The result may be successful or failed.
   #
   # For example, if you calculate expression `a / b`:
@@ -146,17 +148,19 @@ module Flows
   #   end
   #
   # @!method ok?
+  #   @abstract
   #   @return [Boolean] `true` if result is successful
   # @!method err?
+  #   @abstract
   #   @return [Boolean] `true` if result is failure
   # @!method unwrap
+  #   @abstract
   #   @return [Object] result data
   #   @raise [AccessError] if called on failure object
   # @!method error
+  #   @abstract
   #   @return [Object] result data
   #   @raise [AccessError] if called on successful object
-  #
-  # @abstract
   #
   # @since 0.4.0
   class Result
