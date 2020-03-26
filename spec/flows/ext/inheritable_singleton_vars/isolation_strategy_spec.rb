@@ -86,4 +86,75 @@ RSpec.describe Flows::Ext::InheritableSingletonVars::IsolationStrategy do
       end
     end
   end
+
+  describe('when applied to a module which included into module which included into class') do
+    subject(:base_class) do
+      Class.new.tap do |klass|
+        klass.include middle_module
+      end
+    end
+
+    let(:middle_module) do
+      Module.new.tap { |mod| mod.include inner_module }
+    end
+
+    let(:inner_module) do
+      Module.new.tap do |mod|
+        described_class.call(
+          mod,
+          '@array' => -> { [] }
+        )
+
+        described_class.call(
+          mod,
+          '@integer' => -> { 3 }
+        )
+      end
+    end
+
+    let(:array_variable) { base_class.instance_variable_get(:@array) }
+    let(:integer_variable) { base_class.instance_variable_get(:@integer) }
+
+    it 'sets array variable default' do
+      expect(array_variable).to eq []
+    end
+
+    it 'sets integer variable default' do
+      expect(integer_variable).to eq 3
+    end
+
+    context 'when chid class created and when base class\' variablies are modified afterwards' do
+      subject(:child_class) { Class.new(base_class) }
+
+      before do
+        # change values before child class definition
+        array_variable << 'before copy'
+        base_class.instance_variable_set(:@integer, 5)
+
+        child_class # child class definition happens here
+
+        child_array_variable << 'after copy'
+        child_class.instance_variable_set(:@integer, 10)
+      end
+
+      let(:child_array_variable) { child_class.instance_variable_get(:@array) }
+      let(:child_integer_variable) { child_class.instance_variable_get(:@integer) }
+
+      it 'preserves array in the base class unmodyfied' do
+        expect(array_variable).to eq ['before copy']
+      end
+
+      it 'does not save parent array mofifications in the child class' do
+        expect(child_array_variable).to eq ['after copy']
+      end
+
+      it 'preserves integer in the base class unmodyfied' do
+        expect(integer_variable).to eq 5
+      end
+
+      it 'saves integer mofifications in the child class' do
+        expect(child_integer_variable).to eq 10
+      end
+    end
+  end
 end

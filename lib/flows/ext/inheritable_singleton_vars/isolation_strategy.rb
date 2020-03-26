@@ -18,13 +18,23 @@ module Flows
         # @api private
         module InheritanceCallback
           def inherited(child_class)
-            new_var_map = instance_variable_get(VAR_MAP_VAR_NAME).transform_values(&:dup)
+            IsolationStrategy.migrate(self, child_class)
 
-            child_class.instance_variable_set(VAR_MAP_VAR_NAME, new_var_map)
+            super
+          end
 
-            new_var_map.each do |name, default_value_proc|
-              child_class.instance_variable_set(name, default_value_proc.call)
-            end
+          def included(child_mod)
+            IsolationStrategy.migrate(self, child_mod)
+
+            child_mod.singleton_class.prepend InheritanceCallback
+
+            super
+          end
+
+          def extended(child_mod)
+            IsolationStrategy.migrate(self, child_mod)
+
+            child_mod.singleton_class.prepend InheritanceCallback
 
             super
           end
@@ -53,6 +63,19 @@ module Flows
             add_variables_to_store(klass, var_defaults)
 
             inject_inheritance_hook(klass)
+          end
+
+          # Moves variables between modules
+          #
+          # @api private
+          def migrate(from_mod, to_mod)
+            new_var_map = from_mod.instance_variable_get(VAR_MAP_VAR_NAME).dup
+
+            to_mod.instance_variable_set(VAR_MAP_VAR_NAME, new_var_map)
+
+            new_var_map.each do |name, default_value_proc|
+              to_mod.instance_variable_set(name, default_value_proc.call)
+            end
           end
 
           private

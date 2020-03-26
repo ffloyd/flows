@@ -50,7 +50,7 @@ RSpec.describe Flows::Ext::InheritableSingletonVars::DupStrategy do
     end
   end
 
-  describe 'when applied for base class' do
+  describe 'when applied to base class' do
     subject(:base_class) do
       Class.new do
         Flows::Ext::InheritableSingletonVars::DupStrategy.call(
@@ -74,6 +74,34 @@ RSpec.describe Flows::Ext::InheritableSingletonVars::DupStrategy do
 
         Flows::Ext::InheritableSingletonVars::DupStrategy.call(
           self,
+          '@integer' => 3
+        )
+      end
+    end
+
+    it_behaves_like 'expected'
+  end
+
+  describe('when applied to a module which included into module which included into class') do
+    subject(:base_class) do
+      Class.new.tap do |klass|
+        klass.include middle_module
+      end
+    end
+
+    let(:middle_module) do
+      Module.new.tap { |mod| mod.include inner_module }
+    end
+
+    let(:inner_module) do
+      Module.new.tap do |mod|
+        described_class.call(
+          mod,
+          '@array' => []
+        )
+
+        described_class.call(
+          mod,
           '@integer' => 3
         )
       end
@@ -164,4 +192,6 @@ RSpec.describe Flows::Ext::InheritableSingletonVars::DupStrategy do
       end
     end
   end
+
+  context
 end

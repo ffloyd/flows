@@ -25,12 +25,23 @@ module Flows
         # @api private
         module InheritanceCallback
           def inherited(child_class)
-            var_list = instance_variable_get(VAR_LIST_VAR_NAME)
-            child_class.instance_variable_set(VAR_LIST_VAR_NAME, var_list.dup)
+            DupStrategy.migrate(self, child_class)
 
-            var_list.each do |name|
-              child_class.instance_variable_set(name, instance_variable_get(name).dup)
-            end
+            super
+          end
+
+          def included(child_mod)
+            DupStrategy.migrate(self, child_mod)
+
+            child_mod.singleton_class.prepend(InheritanceCallback)
+
+            super
+          end
+
+          def extended(child_mod)
+            DupStrategy.migrate(self, child_mod)
+
+            child_mod.singleton_class.prepend(InheritanceCallback)
 
             super
           end
@@ -59,6 +70,18 @@ module Flows
             add_var_list(klass, var_names)
 
             inject_inheritance_hook(klass)
+          end
+
+          # Moves variables between modules
+          #
+          # @api private
+          def migrate(from_mod, to_mod)
+            var_list = from_mod.instance_variable_get(VAR_LIST_VAR_NAME)
+            to_mod.instance_variable_set(VAR_LIST_VAR_NAME, var_list.dup)
+
+            var_list.each do |name|
+              to_mod.instance_variable_set(name, from_mod.instance_variable_get(name).dup)
+            end
           end
 
           private
