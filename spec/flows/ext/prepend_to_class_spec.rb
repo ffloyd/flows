@@ -21,23 +21,25 @@ RSpec.describe Flows::Ext::PrependToClass do
     end
   end
 
-  let(:patched_module) do
+  let(:module_to_prepend) do
     Module.new do
-      attr_reader :data
+      def initialize(*args, **kwargs, &block)
+        @data = kwargs[:data]
 
-      Flows::Ext::PrependToClass.call(self) do
-        def initialize(*args, **kwargs, &block)
-          @data = kwargs[:data]
+        filtered_kwargs = kwargs.reject { |key, _| key == :data }
 
-          filtered_kwargs = kwargs.reject { |key, _| key == :data }
-
-          if filtered_kwargs.empty? # https://bugs.ruby-lang.org/issues/14415
-            super(*args, &block)
-          else
-            super(*args, **filtered_kwargs, &block)
-          end
+        if filtered_kwargs.empty? # https://bugs.ruby-lang.org/issues/14415
+          super(*args, &block)
+        else
+          super(*args, **filtered_kwargs, &block)
         end
       end
+    end
+  end
+
+  let(:patched_module) do
+    Module.new { attr_reader :data }.tap do |mod|
+      described_class.call(mod, module_to_prepend)
     end
   end
 

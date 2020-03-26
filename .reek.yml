@@ -9,10 +9,12 @@ detectors:
   LongParameterList:
     enabled: true
     exclude: []
-    max_params: 3
+    max_params: 4 # +1 to default value
     overrides:
       initialize:
         max_params: 6 # +1 to default value
+  ModuleInitialize:
+    enabled: false
   TooManyInstanceVariables:
     enabled: true
     exclude: []

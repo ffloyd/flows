@@ -1,12 +1,13 @@
 module Flows
   module Ext
-    # Allows to prepend custom module to a class initializer.
+    # In the situation when a module is included into another module and only afterwards included into class,
+    # allows to force particular module to be prepended to a class only.
     #
     # When you write some module to abstract out some behaviour you may
     # need a way to expand initializer behaviour of a target class.
     # You can prepend a module with an initializer wrapper inside `.included(mod)`
     # or `.extended(mod)` callbacks. But it will not work if you include your module into module
-    # and only after to a class.
+    # and only after to a class. It's one of the cases when `PrependToClass` can help you.
     #
     # Let's show it on example: we need a module which expands initializer to accept `:data`
     # keyword argument and sets its value:
@@ -77,7 +78,7 @@ module Flows
     #     module HasData
     #       attr_reader :data
     #
-    #       Flows::Ext::PrependToClass.call(self) do
+    #       module InitializePatch
     #         def initialize(*args, **kwargs, &block)
     #           @data = kwargs[:data]
     #
@@ -90,6 +91,8 @@ module Flows
     #           end
     #         end
     #       end
+    #
+    #       Flows::Ext::PrependToClass.call(self, InitializePatch)
     #     end
     #
     #     module Stuff
@@ -112,18 +115,22 @@ module Flows
     #     # => 'data'
     module PrependToClass
       class << self
-        def call(mod, &initializer_module_body)
-          init_patch = Module.new(&initializer_module_body)
-          mod.singleton_class.prepend injector(init_patch)
+        # When `mod` is included into class in any way `module_to_prepend`
+        # will be prepended to the class.
+        #
+        # @param mod [Module] host module
+        # @param module_to_prepend [Module] module to be prepended to a class
+        def call(mod, module_to_prepend)
+          mod.singleton_class.prepend injector(module_to_prepend)
         end
 
         private
 
-        def injector(patch_mod)
+        def injector(module_to_prepend)
           Module.new.tap do |injector|
             injector.define_method(:included) do |target_mod|
               if target_mod.class == Class
-                target_mod.prepend(patch_mod)
+                target_mod.prepend(module_to_prepend)
               else # Module
                 target_mod.singleton_class.prepend injector
               end
