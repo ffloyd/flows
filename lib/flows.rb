@@ -3,6 +3,7 @@
 # The most important ones are:
 #
 # * {Flows::Result}
+# * {Flows::Railway}
 # * TODO: fill this list
 #
 # @since 0.4.0
@@ -18,3 +19,5 @@ require 'flows/version'
 require 'flows/ext'
 require 'flows/result'
 require 'flows/flow'
+
+require 'flows/railway'

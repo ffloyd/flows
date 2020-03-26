@@ -21,12 +21,14 @@ end
 
 one_method = OneMethod.new
 method_obj = one_method.method(:meth)
+lam = -> { :ok }
 
 Benchmark.ips do |b|
   b.report('instance.meth') { one_method.meth }
   b.report('instance.public_send(:meth)') { one_method.public_send(:meth) }
   b.report('instance.send(:meth)') { one_method.send(:meth) }
   b.report('instance.method(:meth).call') { method_obj.call }
+  b.report('lambda call') { lam.call }
 
   b.compare!
 end
