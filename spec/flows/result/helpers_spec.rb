@@ -45,6 +45,39 @@ RSpec.describe Flows::Result::Helpers do
     end
   end
 
+  describe '#ok_data' do
+    context 'without status code' do
+      subject(:result) { ok_data(data) }
+
+      let(:data) { double }
+
+      it { is_expected.to be_a Flows::Result::Ok }
+
+      it 'has :ok status' do
+        expect(result.status).to eq :ok
+      end
+
+      it 'has provided data' do
+        expect(result.unwrap).to eq data
+      end
+    end
+
+    context 'with explicit status code' do
+      subject(:result) { ok_data(data, status: status) }
+
+      let(:data) { double }
+      let(:status) { :explicit }
+
+      it 'has provided status' do
+        expect(result.status).to eq status
+      end
+
+      it 'has provided data' do
+        expect(result.unwrap).to eq data
+      end
+    end
+  end
+
   describe '#err' do
     context 'without status code' do
       subject(:result) { err(**data) }
@@ -75,6 +108,39 @@ RSpec.describe Flows::Result::Helpers do
         }
       end
 
+      let(:status) { :explicit }
+
+      it 'has provided status' do
+        expect(result.status).to eq status
+      end
+
+      it 'has provided data' do
+        expect(result.error).to eq data
+      end
+    end
+  end
+
+  describe '#err_data' do
+    context 'without status code' do
+      subject(:result) { err_data(data) }
+
+      let(:data) { double }
+
+      it { is_expected.to be_a Flows::Result::Err }
+
+      it 'has :err status' do
+        expect(result.status).to eq :err
+      end
+
+      it 'has provided data' do
+        expect(result.error).to eq data
+      end
+    end
+
+    context 'with explicit status code' do
+      subject(:result) { err_data(data, status: status) }
+
+      let(:data) { double }
       let(:status) { :explicit }
 
       it 'has provided status' do

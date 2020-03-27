@@ -10,7 +10,7 @@ module Flows
         [
           base_msg,
           "  Result status: #{@result.status.inspect}",
-          "  Result data:   #{@result.data.inspect}",
+          "  Result data:   #{data.inspect}",
           "  Result meta:   #{@result.meta.inspect}"
         ].join('/n')
       end

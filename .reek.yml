@@ -19,3 +19,5 @@ detectors:
     enabled: true
     exclude: []
     max_instance_variables: 5 # +1 to default value
+  DataClump:
+    exclude: ['Flows::Result::Helpers']
