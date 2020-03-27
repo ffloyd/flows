@@ -15,7 +15,7 @@ RSpec.describe Flows::Flow::Node do
     let(:body) { proc_double output }
 
     let(:router) do
-      Flows::Flow::Router::Custom.new(routes: { output => :next_route })
+      Flows::Flow::Router::Custom.new(output => :next_route)
     end
 
     let(:meta) { { some: :meta } }
@@ -56,8 +56,7 @@ RSpec.describe Flows::Flow::Node do
       it 'uses preprocessor output as body input' do
         call
 
-        # bug in RSpec: empty keyword arguments still affects this matcher
-        expect(body).to have_received(:call).with(expected_body_arg, {})
+        expect(body).to have_received(:call).with(expected_body_arg)
       end
     end
 
@@ -82,7 +81,7 @@ RSpec.describe Flows::Flow::Node do
       it 'uses postprocessor output as router input' do
         call
 
-        expect(router).to have_received(:call).with(postprocessor_result, context: context, meta: meta)
+        expect(router).to have_received(:call).with(postprocessor_result)
       end
     end
   end

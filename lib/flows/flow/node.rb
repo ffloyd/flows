@@ -111,12 +111,15 @@ module Flows
       # `:reek:TooManyStatements` is disabled for this method because even
       # one more call to a private method impacts performance here.
       def call(input, context:)
-        output = if @preprocessor
-                   args, kwargs = @preprocessor.call(input, context, @meta)
-                   @body.call(*args, **kwargs)
-                 else
-                   @body.call(input)
-                 end
+        output =
+          if @preprocessor
+            args, kwargs = @preprocessor.call(input, context, @meta)
+
+            # https://bugs.ruby-lang.org/issues/14415
+            kwargs.empty? ? @body.call(*args) : @body.call(*args, **kwargs)
+          else
+            @body.call(input)
+          end
         output = @postprocessor.call(output, context, @meta) if @postprocessor
 
         route = @router.call(output, context: context, meta: @meta)
