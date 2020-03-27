@@ -57,6 +57,9 @@ Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
   spec.add_development_dependency 'ruby-prof'
   spec.add_development_dependency 'stackprof'
 
+  # make benchmark scripts convinient CLI tool
+  spec.add_development_dependency 'thor'
+
   # alternatives for comparison in benchmarking
   spec.add_development_dependency 'dry-transaction'
   spec.add_development_dependency 'trailblazer-operation'
