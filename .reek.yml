@@ -21,3 +21,7 @@ detectors:
     max_instance_variables: 5 # +1 to default value
   DataClump:
     exclude: ['Flows::Result::Helpers']
+  IrresponsibleModule:
+    exclude: ['Flows::SharedContextPipeline']
+  FeatureEnvy:
+    exclude: ['Flows::SharedContextPipeline#call']

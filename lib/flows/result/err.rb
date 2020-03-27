@@ -4,12 +4,14 @@ module Flows
     #
     # @see Flows::Result behaviour described here
     class Err < Result
-      attr_reader :error
-
       def initialize(data, status: :err, meta: {})
-        @error = data
+        @data = data
         @status = status
         @meta = meta
+      end
+
+      def error
+        @data
       end
 
       # @return [false]

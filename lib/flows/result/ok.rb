@@ -4,12 +4,14 @@ module Flows
     #
     # @see Flows::Result behaviour described here
     class Ok < Result
-      attr_reader :unwrap
-
       def initialize(data, status: :success, meta: {})
-        @unwrap = data
+        @data = data
         @status = status
         @meta = meta
+      end
+
+      def unwrap
+        @data
       end
 
       # @return [true]
