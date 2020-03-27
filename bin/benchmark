@@ -25,42 +25,50 @@ puts '-' * 50
 
 dry_summator = DrySummator.new
 
-Benchmark.ips do |b|
-  b.report 'Flows::Railway (build once)' do
-    FlowsRailwaySummator.call(a: 1, b: 2)
-  end if with_railway && !no_prebuild
+# Benchmark.ips do |b|
+#   b.report 'Flows::Railway (build once)' do
+#     FlowsRailwaySummator.call(a: 1, b: 2)
+#   end if with_railway && !no_prebuild
 
-  b.report 'Flows::Railway (build each time)' do
-    FlowsRailwaySummator.new.call(a: 1, b: 2)
-  end if with_railway && !no_eachbuild
+#   b.report 'Flows::Railway (build each time)' do
+#     FlowsRailwaySummator.new.call(a: 1, b: 2)
+#   end if with_railway && !no_eachbuild
 
-  # b.report 'Flows::Operation (build once)' do
-  #   FlowsSummator.call(a: 1, b: 2)
-  # end if with_operation && !no_prebuild
+#   b.report 'Flows::SharedContextPipeline (build once)' do
+#     SCPSummator.call(a: 1, b: 2)
+#   end if with_operation && !no_prebuild
 
-  # b.report 'Flows::Operation (build each time)' do
-  #   FlowsSummator.new.call(a: 1, b: 2)
-  # end if with_operation && !no_eachbuild
+#   b.report 'Flows::SharedContextPipeline (build each time)' do
+#     SCPSummator.new.call(a: 1, b: 2)
+#   end if with_operation && !no_eachbuild
 
-  b.report 'Dry::Transaction (build once)' do
-    dry_summator.call(a: 1, b: 2)
-  end if with_dry && !no_prebuild
+#   b.report 'Flows::SharedContextPipeline (build once, mutable steps)' do
+#     SCPMutSummator.call(a: 1, b: 2)
+#   end if with_operation && !no_prebuild
 
-  b.report 'Dry::Transaction (build each time)' do
-    DrySummator.new.call(a: 1, b: 2)
-  end if with_dry && !no_eachbuild
+#   b.report 'Flows::SharedContextPipeline (build each time, mutable steps))' do
+#     SCPMutSummator.new.call(a: 1, b: 2)
+#   end if with_operation && !no_eachbuild
 
-  b.report 'Trailblazer::Operation' do
-    TBSummator.call(a: 1, b: 2)
-  end if with_trailblazer
+#   b.report 'Dry::Transaction (build once)' do
+#     dry_summator.call(a: 1, b: 2)
+#   end if with_dry && !no_prebuild
 
-  b.report 'PORO' do
-    POROSummator.call(a: 1, b: 2)
-  end if with_poro
+#   b.report 'Dry::Transaction (build each time)' do
+#     DrySummator.new.call(a: 1, b: 2)
+#   end if with_dry && !no_eachbuild
 
-  b.compare!
-end
-puts
+#   b.report 'Trailblazer::Operation' do
+#     TBSummator.call(a: 1, b: 2)
+#   end if with_trailblazer
+
+#   b.report 'PORO' do
+#     POROSummator.call(a: 1, b: 2)
+#   end if with_poro
+
+#   b.compare!
+# end
+# puts
 
 
 puts '-' * 50
@@ -68,6 +76,7 @@ puts '- task: ten steps returns successful result'
 puts '-' * 50
 
 dry_ten_steps = DryTenSteps.new
+do_ten_steps = DoTenSteps.new
 
 Benchmark.ips do |b|
   b.report 'Flows::Railway (build once)' do
@@ -78,13 +87,25 @@ Benchmark.ips do |b|
     FlowsRailwayTenSteps.new.call(a: 1, b: 2)
   end if with_railway && !no_eachbuild
 
-  # b.report 'Flows::Operation (build once)' do
-  #   FlowsTenSteps.call(a: 1, b: 2)
-  # end if with_operation && !no_prebuild
+  b.report 'Flows::SharedContextPipeline (build once)' do
+    SCPTenSteps.call(a: 1, b: 2)
+  end if with_operation && !no_prebuild
 
-  # b.report 'Flows::Operation (build each time)' do
-  #   FlowsTenSteps.new.call(a: 1, b: 2)
-  # end if with_operation && !no_eachbuild
+  b.report 'Flows::SharedContextPipeline (build each time)' do
+    SCPTenSteps.new.call(a: 1, b: 2)
+  end if with_operation && !no_eachbuild
+
+  b.report 'Flows::SharedContextPipeline (build once, mutable steps)' do
+    SCPMutTenSteps.call(a: 1, b: 2)
+  end if with_operation && !no_prebuild
+
+  b.report 'Flows::SharedContextPipeline (build each time, mutable steps)' do
+    SCPMutTenSteps.new.call(a: 1, b: 2)
+  end if with_operation && !no_eachbuild
+
+  b.report 'Flows do notation' do
+    do_ten_steps.call(a: 1, b: 2)
+  end if with_operation && !no_prebuild
 
   b.report 'Dry::Transaction (build once)' do
     dry_ten_steps.call(a: 1, b: 2)
