@@ -20,18 +20,18 @@ RSpec.describe Flows::Flow do
       let(:node_plus_one) do
         Flows::Flow::Node.new(
           body: ->(x) { x + 1 },
-          router: Flows::Flow::Router::Custom.new(routes: {
-                                                    Integer => :mult_by_two
-                                                  })
+          router: Flows::Flow::Router::Custom.new(
+            Integer => :mult_by_two
+          )
         )
       end
 
       let(:node_mult_by_two) do
         Flows::Flow::Node.new(
           body: ->(x) { x * 2 },
-          router: Flows::Flow::Router::Custom.new(routes: {
-                                                    Integer => :end
-                                                  })
+          router: Flows::Flow::Router::Custom.new(
+            Integer => :end
+          )
         )
       end
 
@@ -52,26 +52,20 @@ RSpec.describe Flows::Flow do
             sum_list: Flows::Flow::Node.new(
               body: ->(list) { list.sum },
               router: Flows::Flow::Router::Custom.new(
-                routes: {
-                  ->(x) { x > 10 } => :print_big,
-                  ->(x) { x <= 10 } => :print_small
-                }
+                ->(x) { x > 10 } => :print_big,
+                ->(x) { x <= 10 } => :print_small
               )
             ),
             print_big: Flows::Flow::Node.new(
               body: ->(_) { 'Big' },
               router: Flows::Flow::Router::Custom.new(
-                routes: {
-                  String => :end
-                }
+                String => :end
               )
             ),
             print_small: Flows::Flow::Node.new(
               body: ->(_) { 'Small' },
               router: Flows::Flow::Router::Custom.new(
-                routes: {
-                  String => :end
-                }
+                String => :end
               )
             )
           }

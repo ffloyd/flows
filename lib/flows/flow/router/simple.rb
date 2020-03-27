@@ -11,7 +11,7 @@ module Flows
         end
 
         # @see Flows::Flow::Router#call
-        def call(result, **)
+        def call(result)
           result.ok? ? @success_route : @failure_route
         end
       end

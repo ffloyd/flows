@@ -10,11 +10,9 @@ module Flows
     #
     # If router returns `:end` - it stops an execution process.
     #
-    # @!method call( result, context:, meta: )
+    # @!method call( result )
     #   @abstract
     #   @param result [Flows::Result] Result Object, output of a {Node} execution.
-    #   @param context [Hash] execution context.
-    #   @param meta [Hash] execution metadata.
     #   @return [Symbol] name of the next node or  a special symbol `:end`.
     #   @raise [NoRouteError] if cannot determine a route.
     class Router

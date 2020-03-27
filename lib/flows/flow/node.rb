@@ -122,7 +122,7 @@ module Flows
           end
         output = @postprocessor.call(output, context, @meta) if @postprocessor
 
-        route = @router.call(output, context: context, meta: @meta)
+        route = @router.call(output)
 
         [output, route]
       end

@@ -34,6 +34,7 @@ Style/WhileUntilModifier:
 Naming/MethodParameterName:
   Exclude:
     - '**/*.md'
+    - 'spec/**/*'
 
 Style/MixinUsage:
   Exclude:
@@ -46,11 +47,3 @@ Lint/UnusedMethodArgument:
 Lint/UnusedBlockArgument:
   Exclude:
     - '**/*.md'
-
-Lint/UnreachableCode:
-  Exclude:
-    - 'docs/result_objects/do_notation.md'
-
-Lint/Void:
-  Exclude:
-    - 'docs/result_objects/do_notation.md'
