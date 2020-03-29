@@ -73,6 +73,7 @@ GEM
       sanitize (~> 5.0)
       slop (~> 4.6)
       yard
+    gli (2.19.0)
     highline (2.0.3)
     hirb (0.7.3)
     ice_nine (0.11.2)
@@ -83,6 +84,9 @@ GEM
       yard (~> 0.9.12)
     jaro_winkler (1.5.4)
     json (2.3.0)
+    kalibera (0.1)
+      memoist (~> 0.11.0)
+      rbzip2 (~> 0.2.0)
     kramdown (2.1.0)
     kramdown-parser-gfm (1.1.0)
       kramdown (~> 2.0)
@@ -92,6 +96,7 @@ GEM
       kramdown-parser-gfm (~> 1.0)
       mixlib-cli (~> 2.1, >= 2.1.1)
       mixlib-config (>= 2.2.1, < 4)
+    memoist (0.11.0)
     method_source (1.0.0)
     mini_portile2 (2.4.0)
     mixlib-cli (2.1.5)
@@ -113,6 +118,7 @@ GEM
     psych (3.1.0)
     rainbow (3.0.0)
     rake (13.0.1)
+    rbzip2 (0.2.0)
     reek (5.6.0)
       codeclimate-engine-rb (~> 0.4.0)
       kwalify (~> 0.7.0)
@@ -167,7 +173,6 @@ GEM
     sync (0.5.0)
     term-ansicolor (1.7.1)
       tins (~> 1.0)
-    thor (1.0.1)
     thread_safe (0.3.6)
     tins (1.24.1)
       sync
@@ -195,6 +200,7 @@ GEM
       coercible (~> 1.0)
       descendants_tracker (~> 0.0, >= 0.0.3)
       equalizer (~> 0.0, >= 0.0.9)
+    warning (1.0.0)
     yard (0.9.24)
 
 PLATFORMS
@@ -205,10 +211,13 @@ DEPENDENCIES
   benchmark-ips
   bundler (~> 2.0)
   codecov
+  dry-monads (~> 1.3)
   dry-transaction
   flows!
   forspell (~> 0.0.8)
+  gli
   inch
+  kalibera
   mdl
   pry
   rake (~> 13.0)
@@ -221,8 +230,8 @@ DEPENDENCIES
   ruby-prof
   simplecov
   stackprof
-  thor
   trailblazer-operation
+  warning
   yard
 
 BUNDLED WITH

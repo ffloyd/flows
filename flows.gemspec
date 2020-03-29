@@ -54,13 +54,16 @@ Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
 
   # benchmarking tools
   spec.add_development_dependency 'benchmark-ips'
+  spec.add_development_dependency 'kalibera'
   spec.add_development_dependency 'ruby-prof'
   spec.add_development_dependency 'stackprof'
 
-  # make benchmark scripts convinient CLI tool
-  spec.add_development_dependency 'thor'
+  # make benchmark scripts a convinient CLI tool
+  spec.add_development_dependency 'gli'
+  spec.add_development_dependency 'warning' # to suppress some unhandable Ruby warnings during CLI execution
 
   # alternatives for comparison in benchmarking
+  spec.add_development_dependency 'dry-monads', '~> 1.3'
   spec.add_development_dependency 'dry-transaction'
   spec.add_development_dependency 'trailblazer-operation'
 end

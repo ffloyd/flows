@@ -1,0 +1,19 @@
+inherit_from:
+  - ../../.rubocop.yml
+
+# Examples can contain inaccurate or meaningless code
+
+Naming/MethodParameterName:
+  Enabled: false
+
+Lint/UnusedMethodArgument:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Lint/UselessAssignment:
+  Enabled: false
+
+Metrics/MethodLength:
+  Enabled: false

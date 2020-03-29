@@ -1,0 +1,92 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'flows'
+
+require 'benchmark/ips'
+require 'pry'
+require 'gli'
+require 'warning'
+
+require_relative 'benchmark_cli/helpers'
+require_relative 'benchmark_cli/examples'
+
+require_relative 'benchmark_cli/ruby'
+require_relative 'benchmark_cli/compare'
+
+Warning.ignore(/BigDecimal.new is deprecated/)
+
+# Benchmarking CLI application
+class BenchmarkCLI
+  extend GLI::App
+  extend Flows::Result::Helpers
+
+  program_desc 'Benchmark runner'
+
+  use_openstruct true
+
+  accept Array do |value|
+    value.split(/,/).map(&:strip)
+  end
+
+  # https://github.com/davetron5000/gli/issues/285
+  pre do |_gopts, cmd, opts, _args|
+    cmd.flags.each do |_, flag|
+      next unless flag.type == Array
+      next unless opts[flag.name].is_a? String
+
+      all_names = flag.aliases + [flag.name]
+      all_names.each do |name|
+        opts[name] = opts[name].split(/,/)
+      end
+    end
+
+    true
+  end
+
+  desc 'Run Ruby benchmarks'
+  command :ruby do |cmd|
+    cmd.flag %i[b benchmarks],
+             desc: 'benchmarks to run',
+             default_value: Ruby::BENCHMARKS.keys.join(','),
+             type: Array
+
+    cmd.action do |_gopts, opts, _args|
+      result = Ruby::Command.new(opts.benchmarks).call
+
+      case result
+      when match_ok then puts 'Benchmark finished! Thank you for patience!'
+      when match_err then exit_now!(result.error)
+      end
+    end
+  end
+
+  desc 'Compare different Flows abstractions and alternatives from the other libraries'
+  command :compare do |cmd|
+    cmd.flag %i[b benchmarks],
+             desc: 'benchmarks to run',
+             default_value: Compare::BENCHMARKS.keys.join(','),
+             type: Array
+
+    cmd.flag %i[m modes],
+             desc: 'modes to apply to each benchmark',
+             default_value: Compare::MODES.keys.join(','),
+             type: Array
+
+    cmd.flag %i[i implementations],
+             desc: 'implementations to compare',
+             default_value: Compare::IMPLEMENTATIONS.keys.join(','),
+             type: Array
+
+    cmd.action do |_gopts, opts, _args|
+      result = Compare::Command.new(opts.benchmarks, opts.modes, opts.implementations).call
+
+      case result
+      when match_ok then puts 'Benchmark finished! Thank you for patience!'
+      when match_err then exit_now!(result.error)
+      end
+    end
+  end
+end
+
+exit BenchmarkCLI.run(ARGV)
