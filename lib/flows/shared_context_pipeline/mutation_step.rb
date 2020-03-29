@@ -1,6 +1,8 @@
 module Flows
   class SharedContextPipeline
     EMPTY_HASH = {}.freeze
+    EMPTY_OK = Flows::Result::Ok.new(nil).freeze
+    EMPTY_ERR = Flows::Result::Ok.new(nil).freeze
 
     # @api private
     class MutationStep < Step
@@ -13,7 +15,7 @@ module Flows
       NODE_POSTPROCESSOR = lambda do |output, _context, _meta|
         case output
         when Flows::Result then output
-        else output ? Flows::Result::Ok.new(nil) : Flows::Result::Err.new(nil)
+        else output ? EMPTY_OK : EMPTY_ERR
         end
       end
     end
