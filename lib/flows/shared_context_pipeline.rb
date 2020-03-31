@@ -9,7 +9,7 @@ module Flows
   #
   # Let's start with example. Let's say we have to calculate `(a + b) * (a - b)`:
   #
-  #     class Claculation < SharedContextPipeline
+  #     class Claculation < Flows::SharedContextPipeline
   #       step :calc_left_part
   #       step :calc_right_part
   #       step :calc_result
@@ -48,6 +48,27 @@ module Flows
   # * When calculation is finished a Result Object will be returned:
   #     * result will have the same type and status as in the last executed step result
   #     * result wull have a full execution context as data
+  #
+  # ## Mutation Steps
+  #
+  # You may use a different step definition way:
+  #
+  #     class MyClass < Flows::SharedContextPipeline
+  #       mut_step :hello
+  #
+  #       def hello(ctx)
+  #         ctx[:result] = 'hello'
+  #       end
+  #     end
+  #
+  # When you use `mut_step` DSL method you define a step with different rules for implementation:
+  #
+  # * step implementation receives _one_ argument and it's your execution context in a form of a mutable Hash
+  # * step implementation can modify execution context
+  # * if step implementation returns
+  #     * "truly" value - it makes step successful with default status `:ok`
+  #     * "falsey" value - it makes step failure with default status `:err`
+  #     * {Result} - it works like for standard step, but data is ignored. Only result type and status have effect.
   class SharedContextPipeline
     extend ::Flows::Ext::ImplicitInit
 

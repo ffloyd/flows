@@ -1,5 +1,8 @@
+# rubocop:disable Style/Documentation
+# ^^^ it is false positive here
+
 module Flows
-  class SharedContextPipeline # rubocop:disable Style/Documentation
+  class SharedContextPipeline
     EMPTY_ARRAY = [].freeze
 
     # @api private
@@ -39,3 +42,5 @@ module Flows
     )
   end
 end
+
+# rubocop:enable Style/Documentation
