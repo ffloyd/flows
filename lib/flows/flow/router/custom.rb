@@ -36,7 +36,6 @@ module Flows
         # Creates a new custom router from a route table.
         #
         # @param routes [Hash<Proc, Symbol>] route table.
-        # @param preprocessor [Proc, nil] preprocessor lambda or nil.
         def initialize(routes)
           @routes = routes
         end

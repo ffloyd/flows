@@ -6,16 +6,13 @@ module Flows
     EMPTY_ARRAY = [].freeze
 
     # @api private
-    Step = Struct.new(:name, :lambda, :next_step, keyword_init: true) do
-      def to_node(method_source) # rubocop:disable Metrics/MethodLength
+    Step = Struct.new(:name, :lambda, :router_def, :next_step, keyword_init: true) do
+      def to_node(method_source)
         klass = self.class
 
         Flows::Flow::Node.new(
           body: lambda || method_source.method(name),
-          router: Flows::Flow::Router::Custom.new(
-            Flows::Result::Ok => next_step || :end,
-            Flows::Result::Err => :end
-          ),
+          router: router_def.to_router(next_step),
           meta: { name: name },
           preprocessor: klass::NODE_PREPROCESSOR,
           postprocessor: klass::NODE_POSTPROCESSOR

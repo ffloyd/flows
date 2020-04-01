@@ -2,7 +2,7 @@ module Flows
   class SharedContextPipeline
     EMPTY_HASH = {}.freeze
     EMPTY_OK = Flows::Result::Ok.new(nil).freeze
-    EMPTY_ERR = Flows::Result::Ok.new(nil).freeze
+    EMPTY_ERR = Flows::Result::Err.new(nil).freeze
 
     # @api private
     class MutationStep < Step
