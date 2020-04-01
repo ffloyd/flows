@@ -4,7 +4,7 @@ module Flows
     #
     # @see Flows::Result behaviour described here
     class Ok < Result
-      def initialize(data, status: :success, meta: {})
+      def initialize(data, status: :ok, meta: {})
         @data = data
         @status = status
         @meta = meta

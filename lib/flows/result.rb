@@ -177,6 +177,21 @@ module Flows
     def initialize(**)
       raise 'Use Flows::Result::Ok or Flows::Result::Err for build result objects'
     end
+
+    # Results are equal if have same type and data.
+    #
+    # Metadata is ignored in comparison.
+    #
+    # @return [Boolean]
+    def ==(other)
+      return false if self.class != other.class
+
+      (status == other.status) && (data == other.send(:data))
+    end
+
+    private
+
+    attr_reader :data
   end
 end
 

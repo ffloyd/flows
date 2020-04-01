@@ -39,7 +39,7 @@ RSpec.describe Flows::Result::Ok do
     subject(:status) { result.status }
 
     context 'with default status' do
-      it { expect(status).to eq :success }
+      it { expect(status).to eq :ok }
     end
 
     context 'with explicit status' do
