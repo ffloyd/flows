@@ -20,8 +20,18 @@ detectors:
     exclude: []
     max_instance_variables: 5 # +1 to default value
   DataClump:
-    exclude: ['Flows::Result::Helpers']
+    exclude:
+      - Flows::Result::Helpers
   IrresponsibleModule:
-    exclude: ['Flows::SharedContextPipeline']
+    exclude:
+      - Flows::SharedContextPipeline
   FeatureEnvy:
-    exclude: ['Flows::SharedContextPipeline#call']
+    exclude:
+      - Flows::SharedContextPipeline#call
+  TooManyStatements:
+    exclude:
+      - Flows::SharedContextPipeline#call
+      - initialize
+  DuplicateMethodCall:
+    exclude:
+      - Flows::SharedContextPipeline#call

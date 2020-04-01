@@ -333,4 +333,184 @@ RSpec.describe Flows::SharedContextPipeline do
       end
     end
   end
+
+  describe 'before_all callback' do
+    include_context 'with helpers'
+
+    subject(:calculation) { klass.call(input: :data) }
+
+    let(:klass) do
+      result = Class.new(described_class) do
+        step :hi
+
+        def hi(**)
+          ok
+        end
+      end
+
+      result.before_all(&before_all_proc)
+
+      result
+    end
+
+    let(:before_all_proc) do
+      make_proc_double do |_, ctx|
+        ctx.merge!(from: :callback)
+      end
+    end
+
+    it 'executes callback' do
+      calculation
+
+      expect(before_all_proc).to have_received(:call).with(klass, instance_of(Hash))
+    end
+
+    it 'patches execution context' do
+      expect(calculation.unwrap).to eq(
+        input: :data,
+        from: :callback
+      )
+    end
+  end
+
+  describe 'after_all callback' do
+    include_context 'with helpers'
+
+    subject(:calculation) { klass.call(input: :data) }
+
+    let(:klass) do
+      result = Class.new(described_class) do
+        step :hi
+
+        def hi(**)
+          ok
+        end
+      end
+
+      result.after_all(&after_all_proc)
+
+      result
+    end
+
+    let(:after_all_proc) do
+      make_proc_double do |_, _|
+        Flows::Result::Ok.new({}, status: :substituted)
+      end
+    end
+
+    it 'executes callback' do
+      calculation
+
+      expect(after_all_proc).to have_received(:call).with(klass, Flows::Result::Ok.new(input: :data))
+    end
+
+    it 'substitutes result' do
+      expect(calculation.status).to eq :substituted
+    end
+  end
+
+  describe 'before_each callback' do
+    include_context 'with helpers'
+
+    subject(:calculation) { klass.call(input: :data) }
+
+    let(:klass) do
+      result = Class.new(described_class) do
+        step :hi
+        mut_step :hello
+
+        def hi(**)
+          ok(from_hi: :data)
+        end
+
+        def hello(**)
+          true
+        end
+      end
+
+      result.before_each(&before_each_proc)
+
+      result
+    end
+
+    let(:before_each_proc) do
+      make_proc_double do |_, step_name, context|
+        context[step_name] = :was_here
+      end
+    end
+
+    let(:expected_context) do
+      {
+        input: :data,
+        from_hi: :data,
+        hi: :was_here,
+        hello: :was_here
+      }
+    end
+
+    it 'executes callback' do # rubocop:disable RSpec/MultipleExpectations
+      calculation
+
+      expect(before_each_proc).to have_received(:call).with(klass, :hi, instance_of(Hash)).once.ordered
+      expect(before_each_proc).to have_received(:call).with(klass, :hello, instance_of(Hash)).once.ordered
+    end
+
+    it 'modifies context' do
+      expect(calculation.unwrap).to eq expected_context
+    end
+  end
+
+  describe 'after_each callback' do
+    include Flows::Result::Helpers
+    include_context 'with helpers'
+
+    subject(:calculation) { klass.call(input: :data) }
+
+    let(:klass) do
+      result = Class.new(described_class) do
+        step :hi
+        mut_step :hello
+
+        def hi(**)
+          ok(from_hi: :data)
+        end
+
+        def hello(**)
+          true
+        end
+      end
+
+      result.after_each(&after_each_proc)
+
+      result
+    end
+
+    let(:after_each_proc) do
+      make_proc_double do |_, step_name, context, _|
+        context[step_name] = :was_here
+      end
+    end
+
+    let(:expected_context) do
+      {
+        input: :data,
+        from_hi: :data,
+        hi: :was_here,
+        hello: :was_here
+      }
+    end
+
+    it 'executes callback' do # rubocop:disable RSpec/MultipleExpectations
+      calculation
+
+      expect(after_each_proc).to have_received(:call)
+        .with(klass, :hi, instance_of(Hash), ok(from_hi: :data)).once.ordered
+      expect(after_each_proc).to have_received(:call)
+        .with(klass, :hello, instance_of(Hash), Flows::Result::Ok.new(nil)).once.ordered
+    end
+
+    it 'modifies context' do
+      expect(calculation.unwrap).to eq expected_context
+    end
+  end
 end

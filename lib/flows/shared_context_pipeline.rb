@@ -139,6 +139,36 @@ module Flows
   #
   #       # steps implementations here
   #     end
+  #
+  # ## Callbacks
+  #
+  # You may want to have some logic to execute before all steps, or after all, or before each, or after each.
+  # For example to inject generalized execution process logging.
+  # To achieve this you can use callbacks:
+  #
+  #     class MySCP < Flows::SharedContextPipeline
+  #       before_all do |klass, context|
+  #         # you can modify execution context here
+  #         # return value will be ignored
+  #       end
+  #
+  #       after_all do |klass, pipeline_result|
+  #         # you must provide final result object for pipeline here
+  #         # if no modifications needed - just return provided pipeline_result
+  #       end
+  #
+  #       before_each do |klass, step_name, context|
+  #         # you can modify context here
+  #         # return value will be ignored
+  #       end
+  #
+  #       after_each do |klass, step_name, context, step_result|
+  #         # you can modify context here
+  #         # you must not modify step_result
+  #         # context already has data from step_result at the moment of execution
+  #         # return value will be ignored
+  #       end
+  #     end
   class SharedContextPipeline
     extend ::Flows::Ext::ImplicitInit
 
@@ -150,7 +180,7 @@ module Flows
     def initialize
       tracks = self.class.tracks
 
-      @__flows_railway_flow = Flows::Flow.new(
+      @__flow = Flows::Flow.new(
         start_node: tracks.first_step_name,
         node_map: tracks.to_node_map(self)
       )
@@ -159,16 +189,25 @@ module Flows
     # Executes pipeline with provided keyword arguments, returns Result Object.
     #
     # @return [Flows::Result]
-    def call(**kwargs)
-      context = { data: kwargs }
+    def call(**kwargs) # rubocop:disable Metrics/MethodLength
+      klass = self.class
+      context = { data: kwargs, class: klass }
 
-      result = @__flows_railway_flow.call(nil, context: context)
+      klass.before_all_callbacks.each do |callback|
+        callback.call(klass, context[:data])
+      end
 
-      result.class.new(
+      flow_result = @__flow.call(nil, context: context)
+
+      final_result = flow_result.class.new(
         context[:data],
-        status: result.status,
+        status: flow_result.status,
         meta: { last_step: context[:last_step] }
       )
+
+      klass.after_all_callbacks.reduce(final_result) do |result, callback|
+        callback.call(klass, result)
+      end
     end
   end
 end

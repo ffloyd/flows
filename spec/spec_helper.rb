@@ -4,7 +4,7 @@ require 'simplecov'
 require 'codecov'
 require 'pry'
 
-SimpleCov.minimum_coverage 80 # TODO: return to 95
+SimpleCov.minimum_coverage 95
 SimpleCov.formatter = SimpleCov::Formatter::Codecov unless ENV['CODECOV_TOKEN'].nil?
 
 SimpleCov.start do
@@ -31,6 +31,12 @@ RSpec.shared_context 'with helpers' do
       allow(proc_obj).to receive(:call).and_call_original
       allow(proc_obj).to receive(:===).and_call_original
     end
+  end
+
+  def make_proc_double(&block)
+    allow(block).to receive(:call).and_call_original
+    allow(block).to receive(:===).and_call_original
+    block
   end
 end
 
