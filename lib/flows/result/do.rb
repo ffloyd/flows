@@ -48,7 +48,7 @@ module Flows
     #
     #     class SomethingWithDoNotation
     #       include Flows::Result::Helpers
-    #       include Flows::Result::Do # enable Do Notation
+    #       extend Flows::Result::Do # enable Do Notation
     #
     #       do_notation(:perform) # changes behaviour of `yield` in this method
     #       def perform
@@ -75,7 +75,7 @@ module Flows
     # By the way, when you are using `do_notation` you cannot pass a block to modified method anymore.
     #
     #     class MyClass
-    #       include Flows::Result::Do
+    #       extend Flows::Result::Do
     #
     #       do_notation(:my_method_1)
     #       def my_method_1
