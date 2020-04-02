@@ -13,6 +13,8 @@ end
 
 require 'flows'
 
+Dir[File.expand_path('support/*.rb', __dir__)].sort.each { |f| require f }
+
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
   config.example_status_persistence_file_path = '.rspec_status'
@@ -26,18 +28,7 @@ RSpec.configure do |config|
 end
 
 RSpec.shared_context 'with helpers' do
-  def proc_double(result)
-    ->(*) { result }.tap do |proc_obj|
-      allow(proc_obj).to receive(:call).and_call_original
-      allow(proc_obj).to receive(:===).and_call_original
-    end
-  end
-
-  def make_proc_double(&block)
-    allow(block).to receive(:call).and_call_original
-    allow(block).to receive(:===).and_call_original
-    block
-  end
+  include Support::Helpers
 end
 
 Dir[File.join(__dir__, 'shared', '*.rb')].sort.each { |f| require f }
