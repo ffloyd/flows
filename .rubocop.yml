@@ -47,3 +47,7 @@ Lint/UnusedMethodArgument:
 Lint/UnusedBlockArgument:
   Exclude:
     - '**/*.md'
+
+Style/CaseEquality:
+  Exclude:
+    - 'lib/flows/shape/**/*'
