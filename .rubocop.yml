@@ -50,4 +50,4 @@ Lint/UnusedBlockArgument:
 
 Style/CaseEquality:
   Exclude:
-    - 'lib/flows/shape/**/*'
+    - 'lib/flows/type/**/*'

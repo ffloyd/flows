@@ -1,7 +1,7 @@
-# expects `let(:shape)` to be defined
-RSpec.shared_examples 'Flows::Shape' do |correct_value:, invalid_value:, extracted_value: correct_value, error_message:|
+# expects `let(:type)` to be defined
+RSpec.shared_examples Flows::Type do |correct_value:, invalid_value:, extracted_value: correct_value, error_message:|
   describe '#check' do
-    subject(:check) { shape.check(value) }
+    subject(:check) { type.check(value) }
 
     context 'with correct value' do
       let(:value) { correct_value }
@@ -25,7 +25,7 @@ RSpec.shared_examples 'Flows::Shape' do |correct_value:, invalid_value:, extract
   end
 
   describe '#check!' do
-    subject(:check) { shape.check!(value) }
+    subject(:check) { type.check!(value) }
 
     context 'with correct value' do
       let(:value) { correct_value }
@@ -37,13 +37,13 @@ RSpec.shared_examples 'Flows::Shape' do |correct_value:, invalid_value:, extract
       let(:value) { invalid_value }
 
       it 'raises error' do
-        expect { check }.to raise_error ::Flows::Shape::Error
+        expect { check }.to raise_error ::Flows::Type::Error
       end
     end
   end
 
   describe '#===' do
-    subject(:check) { shape === value } # rubocop:disable Style/CaseEquality
+    subject(:check) { type === value } # rubocop:disable Style/CaseEquality
 
     context 'with correct value' do
       let(:value) { correct_value }
@@ -58,8 +58,8 @@ RSpec.shared_examples 'Flows::Shape' do |correct_value:, invalid_value:, extract
     end
   end
 
-  describe '#extract' do
-    subject(:extract) { shape.extract(value) }
+  describe '#cast' do
+    subject(:cast) { type.cast(value) }
 
     context 'with correct value' do
       let(:value) { correct_value }
@@ -67,7 +67,7 @@ RSpec.shared_examples 'Flows::Shape' do |correct_value:, invalid_value:, extract
       it { is_expected.to be_ok }
 
       it 'returns extracted data' do
-        expect(extract.unwrap).to eq extracted_value
+        expect(cast.unwrap).to eq extracted_value
       end
     end
 
@@ -77,7 +77,7 @@ RSpec.shared_examples 'Flows::Shape' do |correct_value:, invalid_value:, extract
       it { is_expected.to be_err }
 
       it 'returns correct error message' do
-        expect(extract.error).to eq error_message
+        expect(cast.error).to eq error_message
       end
     end
   end

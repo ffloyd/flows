@@ -3,7 +3,7 @@ require 'forwardable'
 # rubocop:disable Style/AccessModifierDeclarations
 
 module Flows
-  class Shape
+  class Type
     # Module with helpers for building shapes.
     #
     # Adds following methods as private:
@@ -13,11 +13,11 @@ module Flows
     module Helpers
       extend Forwardable
 
-      def_delegator Match, :new, :match
-      private :match
+      def_delegator Ruby, :new, :ruby
+      module_function :ruby
 
       def_delegator Predicate, :new, :predicate
-      private :predicate
+      module_function :predicate
     end
   end
 end

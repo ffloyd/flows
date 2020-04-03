@@ -1,6 +1,6 @@
 module Flows
-  class Shape
-    # Class for {Shape} errors.
+  class Type
+    # Class for {Type} errors.
     class Error < ::Flows::Error
       # @param value [Object] checked value
       # @param msg [String] error message
