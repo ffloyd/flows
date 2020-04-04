@@ -18,14 +18,10 @@ module Flows
         @block = block
       end
 
-      private
+      def check!(other)
+        raise Error.new(other, @error_message) unless @block === other
 
-      def do_check(other)
-        if @block === other
-          true
-        else
-          @error_message
-        end
+        true
       end
     end
   end

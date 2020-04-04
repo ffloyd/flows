@@ -35,3 +35,6 @@ detectors:
   DuplicateMethodCall:
     exclude:
       - Flows::SharedContextPipeline#call
+  MissingSafeMethod:
+    exclude:
+      - Flows::Type

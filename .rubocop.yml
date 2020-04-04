@@ -51,3 +51,6 @@ Lint/UnusedBlockArgument:
 Style/CaseEquality:
   Exclude:
     - 'lib/flows/type/**/*'
+
+Naming/RescuedExceptionsVariableName:
+  PreferredName: err

@@ -18,14 +18,13 @@ module Flows
         @error_message = error_message
       end
 
-      private
-
-      def do_check(other)
-        if @object === other
-          true
-        else
-          @error_message || "must match `#{@object.inspect}`"
+      def check!(other)
+        unless @object === other
+          value_error = @error_message || "must match `#{@object.inspect}`"
+          raise Error.new(other, value_error)
         end
+
+        true
       end
     end
   end

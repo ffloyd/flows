@@ -20,11 +20,11 @@ desc 'Run self spellchecking'
 task :spellcheck do |_task|
   puts 'Run forspell checker...'
   Forspell::CLI.new(PATHS_TO_SPELLCHECK).call
-rescue SystemExit => e
-  if e.status.zero?
+rescue SystemExit => err
+  if err.status.zero?
     puts 'Everything is ok.'
   else
-    exit e.status
+    exit err.status
   end
 end
 
@@ -32,11 +32,11 @@ desc 'Run markdown linter'
 task :mdl do |_task|
   puts 'Run MDL linter...'
   MarkdownLint.run(PATHS_FOR_MDL)
-rescue SystemExit => e
-  if e.status.zero?
+rescue SystemExit => err
+  if err.status.zero?
     puts 'Everything is ok.'
   else
-    exit e.status
+    exit err.status
   end
 end
 
