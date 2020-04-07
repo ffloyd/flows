@@ -50,7 +50,7 @@ Lint/UnusedBlockArgument:
 
 Style/CaseEquality:
   Exclude:
-    - 'lib/flows/type/**/*'
+    - 'lib/flows/contract/**/*'
 
 Naming/RescuedExceptionsVariableName:
   PreferredName: err

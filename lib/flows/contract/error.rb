@@ -1,5 +1,5 @@
 module Flows
-  class Type
+  class Contract
     # Class for {Type} errors.
     class Error < ::Flows::Error
       attr_reader :value

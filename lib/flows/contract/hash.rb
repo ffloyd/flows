@@ -1,15 +1,15 @@
 module Flows
-  class Type
+  class Contract
     # This type describes Ruby `Hash` with specified types for keys and values.
     #
-    # If type is not a {Flows::Type} it will be automatically wrapped using {Ruby}.
+    # If type is not a {Flows::Contract} it will be automatically wrapped using {Ruby}.
     #
     # @example
-    #     po_num = Flows::Type::Predicate 'must be a positive number' do |x|
+    #     po_num = Flows::Contract::Predicate 'must be a positive number' do |x|
     #       x.is_a?(Number) && x > 0
     #     end
     #
-    #     dict_with_pos_nums = Flows::Type::Hash.new(Symbol, po_num)
+    #     dict_with_pos_nums = Flows::Contract::Hash.new(Symbol, po_num)
     #
     #     dict_with_pos_nums.check({ a: -1 })
     #     # => Flows::Result::Err.new('hash value `-1` is invalid: must be a positive number')
@@ -19,17 +19,17 @@ module Flows
     #
     #     dict_with_pos_nums === { a: 1, b: 2 }
     #     # => true
-    class Hash < Type
+    class Hash < Contract
       # Stop search for a new type mismatch in keys or values
       # if CHECK_LIMIT errors already found.
       #
       # Applied separately for keys and values.
       CHECK_LIMIT = 10
 
-      HASH_TYPE = Ruby.new(::Hash)
+      HASH_TYPE = CaseEq.new(::Hash)
 
-      # @param key_type [Flows::Type, Object] type for all keys
-      # @param value_type [Flows::Type, Object] type for all values
+      # @param key_type [Flows::Contract, Object] type for all keys
+      # @param value_type [Flows::Contract, Object] type for all values
       def initialize(key_type, value_type)
         @key_type = ensure_type(key_type)
         @value_type = ensure_type(value_type)

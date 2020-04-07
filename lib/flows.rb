@@ -22,4 +22,4 @@ require 'flows/flow'
 
 require 'flows/railway'
 require 'flows/shared_context_pipeline'
-require 'flows/type'
+require 'flows/contract'

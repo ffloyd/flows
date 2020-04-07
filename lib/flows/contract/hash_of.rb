@@ -1,11 +1,11 @@
 module Flows
-  class Type
+  class Contract
     # This type describes Ruby `Hash` with specified structure.
     #
     # Hash can have extra keys. Extra keys will be removed after type casting.
     #
     # @example
-    #     point_type = Flows::Type::HashOf.new(x: Numeric, y: Numeric)
+    #     point_type = Flows::Contract::HashOf.new(x: Numeric, y: Numeric)
     #
     #     point_type === { x: 1, y: 2.0 }
     #     # => true
@@ -21,15 +21,15 @@ module Flows
     #
     #     point_type.check({ x: 1, y: 'Vasya' })
     #     # => Flows::Result::Error.new('key `:y` has an invalid value: must match `Numeric`')
-    class HashOf < Type
-      HASH_TYPE = Ruby.new(::Hash)
+    class HashOf < Contract
+      HASH_CONTRACT = CaseEq.new(::Hash)
 
       def initialize(shape = {})
         @shape = shape.transform_values(&method(:ensure_type))
       end
 
       def check!(other)
-        HASH_TYPE.check!(other)
+        HASH_CONTRACT.check!(other)
 
         errors = check_shape(other)
 
@@ -38,12 +38,12 @@ module Flows
         true
       end
 
-      def cast!(other)
+      def transform!(other)
         check!(other)
 
         other
           .slice(*@shape.keys)
-          .map { |key, value| [key, @shape[key].cast!(value)] }
+          .map { |key, value| [key, @shape[key].transform!(value)] }
           .to_h
       end
 

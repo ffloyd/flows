@@ -37,4 +37,4 @@ detectors:
       - Flows::SharedContextPipeline#call
   MissingSafeMethod:
     exclude:
-      - Flows::Type
+      - Flows::Contract
