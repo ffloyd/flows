@@ -1,3 +1,19 @@
+require_relative 'contract/error'
+
+require_relative 'contract/case_eq'
+require_relative 'contract/predicate'
+
+require_relative 'contract/transformer'
+require_relative 'contract/compose'
+require_relative 'contract/either'
+
+require_relative 'contract/hash'
+require_relative 'contract/hash_of'
+require_relative 'contract/array'
+require_relative 'contract/tuple'
+
+require_relative 'contract/helpers'
+
 module Flows
   # @abstract
   #
@@ -6,12 +22,12 @@ module Flows
   # ## Motivation
   #
   # In ruby we have limited ability to express type contracts.
-  # Because of the dynamic nature of the language we cannot provide type specs for methods.
-  # We can provide type specs in form of YARD documentation, but in this way we have no real type checking.
+  # Because of the dynamic nature of the language we cannot provide type specs or signatures for methods.
+  # We can provide type specs in a form of YARD documentation, but in this way we have no real type checking.
   # Nothing will stop execution if type contract is violated.
   #
   # Flows Contracts are designed to provide runtime type checks for critical places in your code.
-  # Let's review options we have without Contracts and then define what is Flows Contract more strictly.
+  # Let's review options we have except Flows Contracts and then define what is Flows Contract more strictly.
   #
   # Recently in the Ruby community, static/runtime type checking tools started to evolve.
   # The most advanced solution right now is [Sorbet](https://sorbet.org/).
@@ -19,7 +35,7 @@ module Flows
   # Each method will be checked. Moreover, Sorbet is a tool like bundler or rake,
   # not just a library.
   #
-  # In contrast, Flows Contracts are designed to be uses in critical places only.
+  # In contrast, Flows Contracts are designed to be used in critical places only.
   # For example to declare input and output contracts for your service objects.
   # Or to express contracts between application layers
   # (between Data Access Layer and Business Logic Layer for example).
@@ -28,21 +44,20 @@ module Flows
   # And if you already using Sorbet you may use it to express type contracts also.
   # The main differences between Sorbet Runtime and Flows Contracts are:
   #
-  # * Contracts relies on Ruby's case equality and simple helper classes,
+  # * Contracts relies on Ruby's case equality and set of helper Contract classes for the most common cases.
   #   Sorbet provides it's own type system and you have to learn it.
-  # * It may be inconvenient to use Sorbet for expressing contracts only.
-  #   Flows Contracts will be inconvinient if you will try to provide contract for each method.
-  #   And you shouldn't.
-  # * Sorbet Runtime checks should be a bit faster then Contracts checks.
-  # * _The main advantage_ of Flows Contracts here is _transformations_.
+  # * It may be overkill to use Sorbet for expressing contracts only.
+  #   In contrast, Flows Contracts are not designed to provide contract for each method in your codebase.
+  # * Sorbet Runtime checks should be a bit faster then Contracts checks (because of transformations).
+  # * The main advantage of Flows Contracts is _transformations_.
   #   It allows you to slightly transform data using Contract
   #   which adds some degree of flexibility to your entities.
-  #   See Tranformations section of this documentation.
+  #   See Tranformations section of this documentation for details.
   #
   # Let's check what we have for runtime type checking in pure Ruby.
-  # To make some runtime type checks we have two ways:
+  # To make some runtime type checks we have at least two ways:
   #
-  # * methods `#is_a?` and `#kind_of?` can check if subject is an instance of a particular class
+  # * methods like `#is_a?`, `#kind_of?` and `#class` can check if subject is an instance of a particular class
   # * case equality (`===`) in combination with `case` can check different things depends on concrete class.
   #   Check [this article](https://blog.arkency.com/the-equals-equals-equals-case-equality-operator-in-ruby/)
   #   for details.
@@ -62,12 +77,11 @@ module Flows
   #
   # {Contract} is an abstract class which requires {#check!} method
   # to be implemented. It provides {#===}, {#check}, {#to_proc}, {#transform} and {#transform!} methods for usage in
-  # different scenarios.
+  # different scenarios. More details in the methods' documentation.
   #
   # {#transform!} must be overriden for types with defined transforming behaviour.
   # By default no transformation defined - input will be equal to output.
-  #
-  # See method's documentation for details.
+  # See Transformations and Transformation Laws sections of this documentation for details.
   #
   # ## Transformations
   #
@@ -91,7 +105,7 @@ module Flows
   # But in the cases when we talking about 3-6 arguments or nested arguments -
   # contracts will be more convenient way to express transformations.
   #
-  # ## Transformation Rules
+  # ## Transformation Laws
   #
   # When you writing transformations for your contract you MUST implement it
   # with respect to the following laws:
@@ -106,7 +120,46 @@ module Flows
   #     # 2. tranformation of transformed value MUST has no effect:
   #     c.transform(x) == c.transform(c.transform(x))
   #
-  # If you violate these rules - you'll get undefined behaviour of contracts.
+  # If you violate these laws - you'll get undefined behaviour of contracts.
+  #
+  # The meaning of these laws can be explained through [Equivalence Relation](https://en.wikipedia.org/wiki/Equivalence_relation).
+  # Let's use the following contract as example:
+  #
+  # > Accepts natural numbers except zero in form of String or Integer, transforms to Integer
+  #
+  # We can define a type using a set of all possible type values. For our contract such set can be
+  # described like `[1, '1', 2, '2', ...]`.
+  #
+  # First law says that transformation result must not leave a type.
+  # In other words: transformation is a function from contract type to contract type.
+  #
+  # Second law does two things:
+  #
+  # * split values of type into [equivalence classes](https://en.wikipedia.org/wiki/Equivalence_class)
+  # * for each equivalence class defines one and only one value which should be a transform result for
+  #   any value inside the equivalent class. You may call it a tranformation [fixpoint](https://en.wikipedia.org/wiki/Fixed_point_(mathematics)).
+  #
+  # In our example partition will look like this: `[[1, '1'], [2, '2'], ...]`.
+  # Each equivalence class consists of Integer and String form of the same natural number.
+  # And Integer form is a fixpoint.
+  #
+  # Let's review another example:
+  #
+  # > Accepts String, transform is `String#strip`
+  #
+  # In this example each equivalent class is a set of stripped string and all the possible non-stripped variations.
+  # Fixpoint is a stripped string.
+  #
+  # You may think about transformations as transformers (form cinema and animation).
+  # When transformer transforms - it's still the same guy, but in different form (first law).
+  # And fixpoint is transformer main form. We remember Megatron mostly as robot, not as truck. (second law)
+  #
+  # If you find contract transformation too complex abstraction - you can merely not use it.
+  # Flows Contracts without transforms become just type contracts.
+  #
+  # **You MUST be extra careful with transformations and {Compose}.
+  # You cannot just compose any set of types and get a correct result.
+  # See {Compose} documentation for details**
   #
   # ## Low-level contracts
   #
@@ -119,7 +172,7 @@ module Flows
   # * {CaseEq} - to wrap Ruby's case equality with error message.
   #   Automatically applied if you pass some Ruby object instead of
   #   {Contract} to some contract initializer.
-  #   Please preserve such behaviour in your contracts.
+  #   Please preserve such behaviour in custom contracts.
   # * {Predicate} - to wrap lambda-check with error message
   #
   # Composition and modification of contracts:
@@ -136,9 +189,10 @@ module Flows
   # * {Tuple} - restrict fixed-size array elements with contracts
   #
   # Using these classes as is can be too verbose and ugly when building complex contracts.
-  # To address this issue Contract class has singleton methods as shortcuts and {#make} class method as DSL:
+  # To address this issue Contract class has singleton methods as shortcuts and {.make} class method as DSL:
   #
-  #     strip_str = Flows::Contract.transformer(String) { |x| x.strip }
+  #     # Accepts any string, transforms into stripped variant
+  #     strip_str = Flows::Contract.transformer(String, &:strip)
   #
   #     strip_str === 111
   #     # => false
@@ -146,9 +200,10 @@ module Flows
   #     strip_str.transform!('  AAA  ')
   #     # => 'AAA'
   #
+  #     # Accepts positive integers
   #     pos_int = Flows::Contract.compose(
   #       Integer,
-  #       Flows::Contract.predicate('must be positive') { |x| x > 0 }
+  #       Flows::Contract.predicate('must be positive', &:positive?)
   #     )
   #
   #     pos_int === 10
@@ -157,9 +212,16 @@ module Flows
   #     pos_int === -10
   #     # => false
   #
-  #     pos_int_from_str = Flows::Contract.make do
-  #       transformer(either(Integer, String)) { |x| x.to_i }
+  #     # Accepts numbers in String format
+  #     str_num = Flows::Contract.make do
+  #       compose(
+  #         String,
+  #         case_eq(/\A\d+\z/, 'must be a number')
+  #       )
   #     end
+  #
+  #     # Accepts integer or number as string, transforms to integer
+  #     pos_int_from_str = transformer(either(Integer, str_num), &:to_i)
   #
   #     pos_int_from_str === 10
   #     # => true
@@ -173,6 +235,7 @@ module Flows
   #     pos_int_from_str.transform!(10)
   #     # => 10
   #
+  #     # Example of a complex contract
   #     user_contract = Flows::Contract.make do
   #       hash_of(
   #         name: strip_str,
@@ -191,7 +254,8 @@ module Flows
   #       email: 'bla@blabla.com',
   #       password_hash: '01234567890ABCDEF',
   #       age: '10',
-  #       addresses: []
+  #       addresses: [],
+  #       blabla: 'blablabla' # extra field will be removed by HashOf#transform
   #     )
   #
   #     result == {
@@ -204,11 +268,20 @@ module Flows
   #
   # All the shortcuts (without {.make}) are available as a separate module: {Helpers}.
   #
+  # It's up to lead developer how to integrate contracts into app.
+  # You may put contract into constant and use it in the first line of your method.
+  # Or you can write some DSL.
+  # But you should avoid constructing static contracts at runtime -
+  # it's better to instantiate them during loading time (by putting it into constant, for example).
+  #
+  # TODO: Some {SharedContextPipeline} plugins will add DSL for contracts.
+  # So, you don't need to invent anything to use contracts with shared context pipelines.
+  #
   # ## Private helper methods
   #
   # Some private utility methods are defined to simplify new contract implementations:
   #
-  # `ensure_type(value) => Flows::Contract` - if value is a Contract does nothing.
+  # `to_contract(value) => Flows::Contract` - if value is a Contract does nothing.
   # Otherwise wraps value with {CaseEq}. Useful in initializers.
   #
   # `merge_nested_errors(description, nested_error) => String` - to make an accurate
@@ -260,6 +333,8 @@ module Flows
     # If contract is built from other contracts -
     # all internal contracts must be called via {#transform}.
     #
+    # You must obey Transformation Laws (see {Contract} class documentation).
+    #
     # @return [Object] successful result with value after transformation
     # @raise [Flows::Contract::Error] if check failed
     def transform!(other)
@@ -296,10 +371,20 @@ module Flows
       end
     end
 
+    class << self
+      include Helpers
+
+      # @example
+      #     Flows::Contract.make { transformer(either(Symbol, String), &:to_sym) }
+      def make(&block)
+        instance_exec(&block)
+      end
+    end
+
     private
 
     # :reek:UtilityFunction
-    def ensure_type(value)
+    def to_contract(value)
       value.is_a?(::Flows::Contract) ? value : CaseEq.new(value)
     end
 
@@ -311,17 +396,3 @@ module Flows
     end
   end
 end
-
-require_relative 'contract/error'
-
-require_relative 'contract/case_eq'
-require_relative 'contract/predicate'
-
-# require_relative 'contract/transformer'
-# require_relative 'contract/compose'
-# require_relative 'contract/either'
-
-require_relative 'contract/hash'
-require_relative 'contract/hash_of'
-
-# require_relative 'contract/helpers'

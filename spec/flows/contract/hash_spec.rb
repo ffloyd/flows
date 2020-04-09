@@ -13,7 +13,8 @@ RSpec.describe Flows::Contract::Hash do
     end
 
     it_behaves_like 'Flows::Contract with valid value',
-                    value: { a: 1, b: 20 }
+                    value: { a: 1, b: 20 },
+                    after_transform: { a: 1, b: 20 }
 
     error_message = "hash key `\"a\"` is invalid:\n" \
                     "    must match `Symbol`\n" \
@@ -22,6 +23,28 @@ RSpec.describe Flows::Contract::Hash do
 
     it_behaves_like 'Flows::Contract with invalid value',
                     value: { 'a' => 1, b: -10 },
+                    error_message: error_message
+  end
+
+  context 'with value transformations' do
+    let(:contract) do
+      described_class.new(
+        Flows::Contract::Transformer.new(String, &:strip),
+        Flows::Contract::Transformer.new(String, &:upcase)
+      )
+    end
+
+    it_behaves_like 'Flows::Contract with valid value',
+                    value: { '  aa  ' => 'aa' },
+                    after_transform: { 'aa' => 'AA' }
+
+    error_message = "hash key `1` is invalid:\n" \
+                    "    must match `String`\n" \
+                    "hash value `2` is invalid:\n" \
+                    '    must match `String`'
+
+    it_behaves_like 'Flows::Contract with invalid value',
+                    value: { 1 => 2 },
                     error_message: error_message
   end
 end

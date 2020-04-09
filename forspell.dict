@@ -9,3 +9,6 @@ superset
 lefthook
 preprocessor
 postprocessor
+upcase
+fixpoint
+Megatron

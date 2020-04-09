@@ -1,23 +1,18 @@
 module Flows
   class Contract
-    # This type describes Ruby `Hash` with specified types for keys and values.
+    # Contract for Ruby `Hash` with specified contracts for keys and values.
     #
-    # If type is not a {Flows::Contract} it will be automatically wrapped using {Ruby}.
+    # If key contract has transformation - Hash keys will be transformed.
+    #
+    # If value contract has transformation - Hash values will be transformed.
     #
     # @example
-    #     po_num = Flows::Contract::Predicate 'must be a positive number' do |x|
-    #       x.is_a?(Number) && x > 0
-    #     end
+    #     sym_int_hash = Flows::Contract::Hash.new(Symbol, Integer)
     #
-    #     dict_with_pos_nums = Flows::Contract::Hash.new(Symbol, po_num)
+    #     sym_int_hash === { a: 1, b: 2 }
+    #     # => true
     #
-    #     dict_with_pos_nums.check({ a: -1 })
-    #     # => Flows::Result::Err.new('hash value `-1` is invalid: must be a positive number')
-    #
-    #     dict_with_pos_nums.check({ 'a' => 1 })
-    #     # => Flows::Result::Err.new('hash key `"a"` is invalid: must match `Symbol`')
-    #
-    #     dict_with_pos_nums === { a: 1, b: 2 }
+    #     sym_int_hash === { a: 1, b: 'BBB' }
     #     # => true
     class Hash < Contract
       # Stop search for a new type mismatch in keys or values
@@ -28,17 +23,17 @@ module Flows
 
       HASH_TYPE = CaseEq.new(::Hash)
 
-      # @param key_type [Flows::Contract, Object] type for all keys
-      # @param value_type [Flows::Contract, Object] type for all values
-      def initialize(key_type, value_type)
-        @key_type = ensure_type(key_type)
-        @value_type = ensure_type(value_type)
+      # @param key_contract [Contract, Object] contract for keys, non-contract values will be wrapped with {CaseEq}
+      # @param value_contract [Contract, Object] contract for values, non-contract values will be wrapped with {CaseEq}
+      def initialize(key_contract, value_contract)
+        @key_contract = to_contract(key_contract)
+        @value_contract = to_contract(value_contract)
       end
 
       def check!(other)
         HASH_TYPE.check!(other)
 
-        unless other.keys.all?(&@key_type) && other.values.all?(&@value_type)
+        unless other.keys.all?(&@key_contract) && other.values.all?(&@value_contract)
           value_error = report_error(other)
           raise Error.new(other, value_error)
         end
@@ -46,11 +41,12 @@ module Flows
         true
       end
 
-      def cast!(other)
+      def transform!(other)
         check!(other)
+
         other
-          .transform_keys { |key| @key_type.cast!(key) }
-          .transform_values { |value| @value_type.cast!(value) }
+          .transform_keys { |key| @key_contract.transform!(key) }
+          .transform_values { |value| @value_contract.transform!(value) }
       end
 
       private
@@ -60,16 +56,16 @@ module Flows
       end
 
       def invalid_key_errors(other)
-        other.keys.reject(&@key_type)[0..CHECK_LIMIT].map do |key|
-          key_error = @key_type.check(key).error
+        other.keys.reject(&@key_contract)[0..CHECK_LIMIT].map do |key|
+          key_error = @key_contract.check(key).error
 
           merge_nested_errors("hash key `#{key.inspect}` is invalid:", key_error)
         end
       end
 
       def invalid_value_errors(other)
-        other.values.reject(&@value_type)[0..CHECK_LIMIT].map do |value|
-          value_error = @value_type.check(value).error
+        other.values.reject(&@value_contract)[0..CHECK_LIMIT].map do |value|
+          value_error = @value_contract.check(value).error
 
           merge_nested_errors("hash value `#{value.inspect}` is invalid:", value_error)
         end

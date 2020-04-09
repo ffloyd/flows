@@ -28,6 +28,7 @@ detectors:
   FeatureEnvy:
     exclude:
       - Flows::SharedContextPipeline#call
+      - Flows::Contract # too many false positives here
   TooManyStatements:
     exclude:
       - Flows::SharedContextPipeline#call
@@ -35,6 +36,7 @@ detectors:
   DuplicateMethodCall:
     exclude:
       - Flows::SharedContextPipeline#call
+      - 'length'
   MissingSafeMethod:
     exclude:
       - Flows::Contract

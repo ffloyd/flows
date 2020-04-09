@@ -1,8 +1,9 @@
 module Flows
   class Contract
-    # This type describes Ruby `Hash` with specified structure.
+    # Contract for Ruby `Hash` with specified structure.
     #
-    # Hash can have extra keys. Extra keys will be removed after type casting.
+    # Hash can have extra keys. Extra keys will be removed after transform.
+    # Underlying contracts' transforms will be applied to correspond values.
     #
     # @example
     #     point_type = Flows::Contract::HashOf.new(x: Numeric, y: Numeric)
@@ -25,7 +26,7 @@ module Flows
       HASH_CONTRACT = CaseEq.new(::Hash)
 
       def initialize(shape = {})
-        @shape = shape.transform_values(&method(:ensure_type))
+        @shape = shape.transform_values(&method(:to_contract))
       end
 
       def check!(other)

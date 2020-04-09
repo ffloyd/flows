@@ -46,7 +46,7 @@ RSpec.shared_examples 'Flows::Contract with valid value' do |value:, after_trans
     it { is_expected.to eq true }
   end
 
-  describe 'first transform rule: "transformed value MUST match the contract"' do
+  describe 'first transform law: "transformed value MUST match the contract"' do
     subject(:check) { contract.check!(after_transform) }
 
     it 'is met' do
@@ -54,7 +54,7 @@ RSpec.shared_examples 'Flows::Contract with valid value' do |value:, after_trans
     end
   end
 
-  describe 'second transform rule: "tranformation of transformed value MUST has no effect"' do
+  describe 'second transform law: "tranformation of transformed value MUST has no effect"' do
     subject(:second_transform) { contract.transform!(after_transform) }
 
     it 'is met' do

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 RSpec.describe Flows::Contract::HashOf do
-  context 'with hash type for point' do
+  context 'with hash contract for point' do
     let(:contract) do
       described_class.new(x: Float, y: Float)
     end
@@ -16,6 +16,27 @@ RSpec.describe Flows::Contract::HashOf do
 
     it_behaves_like 'Flows::Contract with invalid value',
                     value: { y: '10' },
+                    error_message: error_message
+  end
+
+  context 'with hash contract with transforms' do
+    let(:contract) do
+      described_class.new(
+        s: Flows::Contract::Transformer.new(String, &:strip),
+        u: Flows::Contract::Transformer.new(String, &:upcase)
+      )
+    end
+
+    it_behaves_like 'Flows::Contract with valid value',
+                    value: { s: '  aa  ', u: ' aa ', name: 'Vasya' },
+                    after_transform: { s: 'aa', u: ' AA ' }
+
+    error_message = "missing key `:s`\n" \
+                    "key `:u` has an invalid value:\n" \
+                    '    must match `String`'
+
+    it_behaves_like 'Flows::Contract with invalid value',
+                    value: { u: 10 },
                     error_message: error_message
   end
 end

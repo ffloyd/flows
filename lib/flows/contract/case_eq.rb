@@ -1,8 +1,8 @@
 module Flows
   class Contract
-    # Contract based wrapping on some object's case equality.
+    # Makes a contract from provided object's case equality check.
     #
-    # @example Adding default error message to a String check
+    # @example String contract
     #     string_check = Flows::Contract::CaseEq.new(String)
     #
     #     string_check.check(111)
@@ -10,14 +10,24 @@ module Flows
     #
     #     string_check === 'sdfdsfsd'
     #     # => true
+    #
+    # @example Integer contract with custom error message
+    #     int_check = Flows::Contract::CaseEq.new(Integer, 'must be an integer')
+    #
+    #     int_check.check('111')
+    #     # => Flows::Result::Err.new('must be an integer')
+    #
+    #     string_check === 'sdfdsfsd'
+    #     # => true
     class CaseEq < Contract
       # @param object [#===] object with case equality
-      # @param error_message [String] you may override error message
+      # @param error_message [String] you may override default error message
       def initialize(object, error_message = nil)
         @object = object
         @error_message = error_message
       end
 
+      # @see Contract#check!
       def check!(other)
         unless @object === other
           value_error = @error_message || "must match `#{@object.inspect}`"
