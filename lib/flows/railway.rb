@@ -116,12 +116,12 @@ module Flows
   # ## Advanced initialization
   #
   # In a simple case you can just invoke `YourRailway.call(..)`. Under the hood it works like `.new.call(...)`,
-  # but `.new` part will be executed ones and memoized ({Flows::Ext::ImplicitInit} included).
+  # but `.new` part will be executed ones and memoized ({Flows::Utils::ImplicitInit} included).
   #
-  # You can include {Flows::Ext::DependencyInjector} into your Railway and in this case you will
+  # You can include {Flows::Utils::DependencyInjector} into your Railway and in this case you will
   # need to do `.new(...).call` manually.
   class Railway
-    extend ::Flows::Ext::ImplicitInit
+    extend ::Flows::Utils::ImplicitInit
 
     include ::Flows::Result::Helpers
     extend ::Flows::Result::Helpers

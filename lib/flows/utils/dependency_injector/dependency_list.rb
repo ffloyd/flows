@@ -1,5 +1,5 @@
 module Flows
-  module Ext
+  module Utils
     module DependencyInjector
       # Resolves dependencies on initialization and can inject it into class instance.
       #

@@ -13,7 +13,7 @@ module Flows
         Flows::Result::Err => :end
       )
 
-      Flows::Ext::InheritableSingletonVars::DupStrategy.call(
+      Flows::Utils::InheritableSingletonVars::DupStrategy.call(
         self,
         '@tracks' => TrackList.new,
         '@before_all_callbacks' => [],

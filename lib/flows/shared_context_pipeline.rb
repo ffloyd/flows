@@ -170,7 +170,7 @@ module Flows
   #       end
   #     end
   class SharedContextPipeline
-    extend ::Flows::Ext::ImplicitInit
+    extend ::Flows::Utils::ImplicitInit
 
     include ::Flows::Result::Helpers
     extend ::Flows::Result::Helpers

@@ -158,7 +158,7 @@ module Flows
 
       # @api private
       def self.extended(mod)
-        ::Flows::Ext::InheritableSingletonVars::IsolationStrategy.call(
+        ::Flows::Utils::InheritableSingletonVars::IsolationStrategy.call(
           mod,
           MOD_VAR_NAME => -> { Module.new }
         )

@@ -16,10 +16,10 @@ end
 
 require 'flows/version'
 
-require 'flows/ext'
+require 'flows/utils'
 require 'flows/result'
 require 'flows/flow'
 
+require 'flows/contract'
 require 'flows/railway'
 require 'flows/shared_context_pipeline'
-require 'flows/contract'

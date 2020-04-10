@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-RSpec.describe Flows::Ext::InheritableSingletonVars::IsolationStrategy do
+RSpec.describe Flows::Utils::InheritableSingletonVars::IsolationStrategy do
   describe('when 3 classes in an inheritance chain and each has a controlled variable and ' \
            'each changes inherited variables after definition') do
     let(:base_class) do
       Class.new do
-        Flows::Ext::InheritableSingletonVars::IsolationStrategy.call(
+        Flows::Utils::InheritableSingletonVars::IsolationStrategy.call(
           self,
           '@base' => -> { [] }
         )
@@ -14,7 +14,7 @@ RSpec.describe Flows::Ext::InheritableSingletonVars::IsolationStrategy do
 
     let(:middle_class) do
       Class.new(base_class) do
-        Flows::Ext::InheritableSingletonVars::IsolationStrategy.call(
+        Flows::Utils::InheritableSingletonVars::IsolationStrategy.call(
           self,
           '@middle' => -> { [] }
         )
@@ -23,7 +23,7 @@ RSpec.describe Flows::Ext::InheritableSingletonVars::IsolationStrategy do
 
     let(:last_class) do
       Class.new(middle_class) do
-        Flows::Ext::InheritableSingletonVars::IsolationStrategy.call(
+        Flows::Utils::InheritableSingletonVars::IsolationStrategy.call(
           self,
           '@last' => -> { [] }
         )

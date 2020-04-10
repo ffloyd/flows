@@ -1,5 +1,5 @@
 module Flows
-  module Ext
+  module Utils
     module InheritableSingletonVars
       # Strategy which uses procs to generate initial values in target class and children.
       #
@@ -51,7 +51,7 @@ module Flows
           #
           # @example
           #   class MyClass
-          #     Flows::Ext::InheritableSingletonVars::IsolationStrategy.call(
+          #     Flows::Utils::InheritableSingletonVars::IsolationStrategy.call(
           #       self,
           #       :@my_list => -> { [] }
           #     )

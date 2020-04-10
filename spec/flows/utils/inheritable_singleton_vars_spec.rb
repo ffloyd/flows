@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe Flows::Ext::InheritableSingletonVars do
+RSpec.describe Flows::Utils::InheritableSingletonVars do
   describe 'all strategies can be used together' do
     before do
       base_class
@@ -14,12 +14,12 @@ RSpec.describe Flows::Ext::InheritableSingletonVars do
 
     let(:base_class) do
       Class.new do
-        Flows::Ext::InheritableSingletonVars::DupStrategy.call(
+        Flows::Utils::InheritableSingletonVars::DupStrategy.call(
           self,
           '@with_dup' => []
         )
 
-        Flows::Ext::InheritableSingletonVars::IsolationStrategy.call(
+        Flows::Utils::InheritableSingletonVars::IsolationStrategy.call(
           self,
           '@with_isolation' => -> { [] }
         )

@@ -1,5 +1,5 @@
 module Flows
-  module Ext
+  module Utils
     # In the situation when a module is included into another module and only afterwards included into class,
     # allows to force particular module to be prepended to a class only.
     #
@@ -92,7 +92,7 @@ module Flows
     #         end
     #       end
     #
-    #       Flows::Ext::PrependToClass.call(self, InitializePatch)
+    #       Flows::Utils::PrependToClass.call(self, InitializePatch)
     #     end
     #
     #     module Stuff

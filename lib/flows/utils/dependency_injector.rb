@@ -7,7 +7,7 @@ require_relative 'dependency_injector/dependency_definition'
 require_relative 'dependency_injector/dependency_list'
 
 module Flows
-  module Ext
+  module Utils
     # Allows to inject dependencies on the initialization step.
     #
     # After including this module you inject dependencies by providing `:dependencies` key
@@ -44,7 +44,7 @@ module Flows
     # @example
     #
     #     class MyClass
-    #       include Flows::Ext::DepencyInjector
+    #       include Flows::Utils::DepencyInjector
     #
     #       dependency :logger, required: true
     #       dependency :name, default: 'Boris', type: String # by default dependency is optional.
@@ -91,7 +91,7 @@ module Flows
       # Placeholder for empty value. We cannot use `nil` because value can be `nil`.
       NO_VALUE = :__no_value__
 
-      Flows::Ext::InheritableSingletonVars::DupStrategy.call(
+      Flows::Utils::InheritableSingletonVars::DupStrategy.call(
         self,
         '@dependencies' => {}
       )
@@ -152,7 +152,7 @@ module Flows
         end
       end
 
-      Flows::Ext::PrependToClass.call(self, InitializePatch)
+      Flows::Utils::PrependToClass.call(self, InitializePatch)
     end
   end
 end

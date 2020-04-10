@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-RSpec.describe Flows::Ext::ImplicitInit do
+RSpec.describe Flows::Utils::ImplicitInit do
   subject(:extended_class) do
     Class.new do
-      extend Flows::Ext::ImplicitInit
+      extend Flows::Utils::ImplicitInit
 
       def call
         object_id
