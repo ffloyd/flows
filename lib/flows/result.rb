@@ -191,7 +191,7 @@ module Flows
 
     private
 
-    attr_reader :data
+    attr_accessor :data
   end
 end
 

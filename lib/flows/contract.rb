@@ -376,8 +376,12 @@ module Flows
 
       # @example
       #     Flows::Contract.make { transformer(either(Symbol, String), &:to_sym) }
+      #
+      #     Flows::Contract.make { String }
       def make(&block)
-        instance_exec(&block)
+        result = instance_exec(&block)
+
+        result.is_a?(Contract) ? result : CaseEq.new(result)
       end
     end
 
