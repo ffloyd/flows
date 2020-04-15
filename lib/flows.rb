@@ -16,10 +16,12 @@ end
 
 require 'flows/version'
 
-require 'flows/utils'
+require 'flows/util'
+require 'flows/plugin'
+
 require 'flows/result'
+require 'flows/contract'
 require 'flows/flow'
 
-require 'flows/contract'
 require 'flows/railway'
 require 'flows/shared_context_pipeline'

@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-RSpec.describe Flows::Utils::DependencyInjector do
+RSpec.describe Flows::Plugin::DependencyInjector do
   context 'with no dependencies' do
     subject(:klass) do
       Class.new do
-        include Flows::Utils::DependencyInjector
+        include Flows::Plugin::DependencyInjector
       end
     end
 
@@ -20,7 +20,7 @@ RSpec.describe Flows::Utils::DependencyInjector do
   context 'with optional dependency' do
     subject(:klass) do
       Class.new do
-        include Flows::Utils::DependencyInjector
+        include Flows::Plugin::DependencyInjector
 
         dependency :test, default: 'default_val'
       end
@@ -42,7 +42,7 @@ RSpec.describe Flows::Utils::DependencyInjector do
   context 'with required dependency' do
     subject(:klass) do
       Class.new do
-        include Flows::Utils::DependencyInjector
+        include Flows::Plugin::DependencyInjector
 
         dependency :test, required: true
       end
@@ -64,7 +64,7 @@ RSpec.describe Flows::Utils::DependencyInjector do
   context 'with typed dependency' do
     subject(:klass) do
       Class.new do
-        include Flows::Utils::DependencyInjector
+        include Flows::Plugin::DependencyInjector
 
         dependency :test, required: true, type: String
       end
@@ -97,7 +97,7 @@ RSpec.describe Flows::Utils::DependencyInjector do
 
     let(:klass) do
       Class.new do
-        include Flows::Utils::DependencyInjector
+        include Flows::Plugin::DependencyInjector
 
         dependency :test, required: true
 
@@ -132,7 +132,7 @@ RSpec.describe Flows::Utils::DependencyInjector do
 
     let(:parent_class) do
       Class.new do
-        include Flows::Utils::DependencyInjector
+        include Flows::Plugin::DependencyInjector
 
         dependency :parent_dep, required: true
 
@@ -184,7 +184,7 @@ RSpec.describe Flows::Utils::DependencyInjector do
 
     let(:mod) do
       Module.new do
-        include Flows::Utils::DependencyInjector
+        include Flows::Plugin::DependencyInjector
 
         dependency :test, required: true
       end
@@ -214,7 +214,7 @@ RSpec.describe Flows::Utils::DependencyInjector do
   context 'when no default provided for an optional dependency' do
     subject(:klass) do
       Class.new do
-        include Flows::Utils::DependencyInjector
+        include Flows::Plugin::DependencyInjector
 
         dependency :test
       end

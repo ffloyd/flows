@@ -1,5 +1,5 @@
 module Flows
-  module Utils
+  module Plugin
     module DependencyInjector
       # Resolves dependencies on initialization and can inject it into class instance.
       #

@@ -1,5 +1,5 @@
 module Flows
-  module Utils
+  module Plugin
     module DependencyInjector
       # Struct for storing dependency definitions.
       #

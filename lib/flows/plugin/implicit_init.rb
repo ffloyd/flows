@@ -1,5 +1,5 @@
 module Flows
-  module Utils
+  module Plugin
     # Class extension with method `MyClass.call` which works like `MyClass.new.call`.
     #
     # @note This module must be injected into target class using `extend`, not `include`.
@@ -8,7 +8,7 @@ module Flows
     #
     # @example Extending a class
     #   class SomeClass
-    #     extend Flows::Utils::ImplicitInit
+    #     extend Flows::Plugin::ImplicitInit
     #
     #     def initialize(param: 'default')
     #       @param = param

@@ -1,5 +1,5 @@
 module Flows
-  module Utils
+  module Plugin
     module DependencyInjector
       # Base error class for dependency injection errors.
       class Error < ::Flows::Error; end

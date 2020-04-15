@@ -1,5 +1,5 @@
 module Flows
-  module Utils
+  module Util
     # Namespace for utility classes which allows you to define specific behaviour for
     # [singleton variables](https://medium.com/@leo_hetsch/demystifying-singleton-classes-in-ruby-caf3fa4c9d91)
     # in the context of inheritance.
@@ -41,7 +41,7 @@ module Flows
     # Each strategy here is using following way of injecting into yours abstract classes:
     #
     #     class BaseSomething
-    #       Flows::Utils::InheritableSingletonVars::SomeStrategy.call(
+    #       Flows::Util::InheritableSingletonVars::SomeStrategy.call(
     #         self,
     #         **rest_of_the_options_here
     #       )
@@ -51,7 +51,7 @@ module Flows
     #
     #     module MyExtension
     #       def self.extended(mod)
-    #         Flows::Utils::InheritableSingletonVars::SomeStrategy.call(
+    #         Flows::Util::InheritableSingletonVars::SomeStrategy.call(
     #           mod,
     #           **rest_of_the_options_here
     #         )
@@ -60,7 +60,7 @@ module Flows
     #
     #     module MyMixin
     #       def self.included(mod)
-    #         Flows::Utils::InheritableSingletonVars::SomeStrategy.call(
+    #         Flows::Util::InheritableSingletonVars::SomeStrategy.call(
     #           mod,
     #           **rest_of_the_options_here
     #         )

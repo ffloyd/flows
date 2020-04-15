@@ -1,5 +1,5 @@
 module Flows
-  module Utils
+  module Util
     module InheritableSingletonVars
       # Strategy which uses `#dup` to copy variables to a child class.
       #
@@ -58,7 +58,7 @@ module Flows
           #
           # @example
           #   class MyClass
-          #     Flows::Utils::InheritableSingletonVars::DupStrategy.call(
+          #     Flows::Util::InheritableSingletonVars::DupStrategy.call(
           #       self,
           #       :@my_list => []
           #     )

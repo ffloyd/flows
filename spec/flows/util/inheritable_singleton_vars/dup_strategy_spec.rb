@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe Flows::Utils::InheritableSingletonVars::DupStrategy do
+RSpec.describe Flows::Util::InheritableSingletonVars::DupStrategy do
   # expects `let(:base_class) {...}` definition in the parent context
   # with 2 variables `@array` and `@integer` and defaults `[]` and `3`.
   shared_examples 'expected' do
@@ -53,7 +53,7 @@ RSpec.describe Flows::Utils::InheritableSingletonVars::DupStrategy do
   describe 'when applied to base class' do
     subject(:base_class) do
       Class.new do
-        Flows::Utils::InheritableSingletonVars::DupStrategy.call(
+        Flows::Util::InheritableSingletonVars::DupStrategy.call(
           self,
           '@array' => [],
           '@integer' => 3
@@ -67,12 +67,12 @@ RSpec.describe Flows::Utils::InheritableSingletonVars::DupStrategy do
   describe 'when applied twice in the base class' do
     subject(:base_class) do
       Class.new do
-        Flows::Utils::InheritableSingletonVars::DupStrategy.call(
+        Flows::Util::InheritableSingletonVars::DupStrategy.call(
           self,
           '@array' => []
         )
 
-        Flows::Utils::InheritableSingletonVars::DupStrategy.call(
+        Flows::Util::InheritableSingletonVars::DupStrategy.call(
           self,
           '@integer' => 3
         )
@@ -114,7 +114,7 @@ RSpec.describe Flows::Utils::InheritableSingletonVars::DupStrategy do
            'each changes inherited variables') do
     let(:base_class) do
       Class.new do
-        Flows::Utils::InheritableSingletonVars::DupStrategy.call(
+        Flows::Util::InheritableSingletonVars::DupStrategy.call(
           self,
           '@base' => ['base']
         )
@@ -123,7 +123,7 @@ RSpec.describe Flows::Utils::InheritableSingletonVars::DupStrategy do
 
     let(:middle_class) do
       Class.new(base_class) do
-        Flows::Utils::InheritableSingletonVars::DupStrategy.call(
+        Flows::Util::InheritableSingletonVars::DupStrategy.call(
           self,
           '@middle' => ['middle']
         )
@@ -132,7 +132,7 @@ RSpec.describe Flows::Utils::InheritableSingletonVars::DupStrategy do
 
     let(:last_class) do
       Class.new(middle_class) do
-        Flows::Utils::InheritableSingletonVars::DupStrategy.call(
+        Flows::Util::InheritableSingletonVars::DupStrategy.call(
           self,
           '@last' => ['last']
         )

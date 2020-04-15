@@ -1,13 +1,10 @@
-require_relative 'inheritable_singleton_vars'
-require_relative 'prepend_to_class'
-
 require_relative 'dependency_injector/errors'
 require_relative 'dependency_injector/dependency'
 require_relative 'dependency_injector/dependency_definition'
 require_relative 'dependency_injector/dependency_list'
 
 module Flows
-  module Utils
+  module Plugin
     # Allows to inject dependencies on the initialization step.
     #
     # After including this module you inject dependencies by providing `:dependencies` key
@@ -44,7 +41,7 @@ module Flows
     # @example
     #
     #     class MyClass
-    #       include Flows::Utils::DepencyInjector
+    #       include Flows::Util::DepencyInjector
     #
     #       dependency :logger, required: true
     #       dependency :name, default: 'Boris', type: String # by default dependency is optional.
@@ -91,7 +88,7 @@ module Flows
       # Placeholder for empty value. We cannot use `nil` because value can be `nil`.
       NO_VALUE = :__no_value__
 
-      Flows::Utils::InheritableSingletonVars::DupStrategy.call(
+      Flows::Util::InheritableSingletonVars::DupStrategy.call(
         self,
         '@dependencies' => {}
       )
@@ -152,7 +149,7 @@ module Flows
         end
       end
 
-      Flows::Utils::PrependToClass.call(self, InitializePatch)
+      Flows::Util::PrependToClass.call(self, InitializePatch)
     end
   end
 end

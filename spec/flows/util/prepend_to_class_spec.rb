@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe Flows::Utils::PrependToClass do
+RSpec.describe Flows::Util::PrependToClass do
   shared_examples 'preserves all the initializations' do
     it 'preserves original initialization' do
       expect(instance.greetings).to eq 'Hello!'

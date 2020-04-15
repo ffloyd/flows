@@ -4,7 +4,7 @@ module Flows
     module DSL
       attr_reader :steps
 
-      Flows::Utils::InheritableSingletonVars::DupStrategy.call(
+      Flows::Util::InheritableSingletonVars::DupStrategy.call(
         self,
         '@steps' => StepList.new
       )

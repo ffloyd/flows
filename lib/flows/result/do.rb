@@ -129,7 +129,7 @@ module Flows
       # Isolated location prevents polluting user classes with unnecessary methods.
       #
       # @api private
-      module Utils
+      module Util
         class << self
           def fetch_and_prepend_module(mod)
             module_for_do = mod.instance_variable_get(MOD_VAR_NAME)
@@ -158,16 +158,16 @@ module Flows
 
       # @api private
       def self.extended(mod)
-        ::Flows::Utils::InheritableSingletonVars::IsolationStrategy.call(
+        ::Flows::Util::InheritableSingletonVars::IsolationStrategy.call(
           mod,
           MOD_VAR_NAME => -> { Module.new }
         )
       end
 
       def do_notation(method_name)
-        prepended_mod = Utils.fetch_and_prepend_module(self)
+        prepended_mod = Util.fetch_and_prepend_module(self)
 
-        Utils.define_wrapper(prepended_mod, method_name)
+        Util.define_wrapper(prepended_mod, method_name)
       end
     end
   end
