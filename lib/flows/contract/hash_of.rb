@@ -54,13 +54,15 @@ module Flows
       def check_shape(other)
         @shape.each_with_object([]) do |(key, type), errors|
           unless other.key?(key)
-            errors << "missing key `#{key.inspect}`"
+            errors << "missing hash key `#{key.inspect}`"
             next
           end
 
           result = type.check(other[key])
 
-          errors << merge_nested_errors("key `#{key.inspect}` has an invalid value:", result.error) if result.err?
+          if result.err?
+            errors << merge_nested_errors("hash key `#{key.inspect}` has an invalid assigned value:", result.error)
+          end
         end
       end
     end

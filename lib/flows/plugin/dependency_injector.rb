@@ -100,9 +100,11 @@ module Flows
         # `:reek:BooleanParameter` disabled here because it's not applicable for DSLs
         def dependency(name, required: false, default: NO_DEFAULT, type: NO_TYPE)
           dependencies[name] = DependencyDefinition.new(
+            name: name,
             required: required,
             default: default,
-            type: type
+            type: type,
+            klass: self
           )
         end
       end
@@ -133,9 +135,11 @@ module Flows
 
       # @api private
       module InitializePatch
-        def initialize(*args, **kwargs, &block)
+        def initialize(*args, **kwargs, &block) # rubocop:disable Metrics/MethodLength
+          klass = self.class
           DependencyList.new(
-            definitions: self.class.dependencies,
+            klass: klass,
+            definitions: klass.dependencies,
             provided_values: kwargs[:dependencies].dup || {}
           ).inject_to(self)
 

@@ -47,7 +47,7 @@ module Flows
         other.reject(&@contract)[0..CHECK_LIMIT].map do |elem|
           element_error = @contract.check(elem).error
 
-          merge_nested_errors("array element `#{elem}` is invalid:", element_error)
+          merge_nested_errors("array element `#{elem.inspect}` is invalid:", element_error)
         end.join("\n")
       end
     end

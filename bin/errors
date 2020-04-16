@@ -1,0 +1,66 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'flows'
+
+require 'pry'
+require 'gli'
+
+require_relative 'errors_cli/contract_error_demo'
+require_relative 'errors_cli/flows_router_error_demo'
+require_relative 'errors_cli/di_error_demo'
+
+class ErrorsCLI
+  extend GLI::App
+
+  program_desc 'Error reporting demo'
+
+  use_openstruct true
+
+  desc 'Flows::Contract error'
+  command :contract do |cmd|
+    cmd.action do |_, _, _|
+      ContractErrorDemo.call
+    end
+  end
+
+  desc 'Flows::Flow::Router::NoRouteError'
+  command :flows_router do |cmd|
+    cmd.action do |_, _, _|
+      FlowsRouterErrorDemo.call
+    end
+  end
+
+  desc 'Flows::Plugin::DependencyInjector errors'
+  command :di do |cmd|
+    cmd.desc 'Missing Dependency'
+    cmd.command :missing do |icmd|
+      icmd.action do |_, _, _|
+        DIErrorDemo.missing_dependency
+      end
+    end
+
+    cmd.desc 'Unexpected Dependency'
+    cmd.command :unexpected do |icmd|
+      icmd.action do |_, _, _|
+        DIErrorDemo.unexpected_dependency
+      end
+    end
+
+    cmd.desc 'Invalid Type'
+    cmd.command :invalid_type do |icmd|
+      icmd.action do |_, _, _|
+        DIErrorDemo.invalid_type_dependency
+      end
+    end
+
+    cmd.desc 'Missing Default'
+    cmd.command :missing_default do |icmd|
+      icmd.action do |_, _, _|
+        DIErrorDemo.missing_default
+      end
+    end
+  end
+end
+
+exit ErrorsCLI.run(ARGV)

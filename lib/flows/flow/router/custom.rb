@@ -46,7 +46,7 @@ module Flows
             return route if predicate === result # rubocop:disable Style/CaseEquality
           end
 
-          raise NoRouteError, "no route found for: #{result.inspect}"
+          raise NoRouteError, "no route found for: `#{result.inspect}`"
         end
       end
     end
