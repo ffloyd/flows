@@ -6,9 +6,8 @@ class BenchmarkCLI
     class Base
       include Helpers
 
-      def initialize(implementations, modes)
+      def initialize(implementations)
         @implementations = implementations
-        @modes = modes
       end
 
       def call
@@ -32,14 +31,7 @@ class BenchmarkCLI
       end
 
       def report_implementation(benchmark, cfg)
-        @modes.each do |mode|
-          next unless cfg[:modes].include?(mode)
-
-          report_mode(benchmark, cfg, mode)
-        end
-      end
-
-      def report_mode(benchmark, cfg, mode)
+        mode = cfg[:mode]
         title = "#{cfg[:title]} (#{MODES[mode]})"
         klass = cfg[:classes][self.class::NAME]
 

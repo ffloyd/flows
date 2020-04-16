@@ -25,31 +25,17 @@ class BenchmarkCLI
 
   use_openstruct true
 
-  accept Array do |value|
-    value.split(/,/).map(&:strip)
-  end
-
-  # https://github.com/davetron5000/gli/issues/285
-  pre do |_gopts, cmd, opts, _args|
-    cmd.flags.each do |_, flag|
-      next unless flag.type == Array
-      next unless opts[flag.name].is_a? String
-
-      all_names = flag.aliases + [flag.name]
-      all_names.each do |name|
-        opts[name] = opts[name].split(/,/)
-      end
-    end
-
-    true
-  end
-
   desc 'Run Ruby benchmarks'
+  ruby_benchmarks = Ruby::BENCHMARKS.keys.map(&:to_s)
   command :ruby do |cmd|
-    cmd.flag %i[b benchmarks],
-             desc: 'benchmarks to run',
-             default_value: Ruby::BENCHMARKS.keys.join(','),
-             type: Array
+    cmd.flag(
+      %i[b benchmarks],
+      desc: "benchmarks to run. Pick from: #{ruby_benchmarks.join(', ')}. By default all the benchmarks are executed.",
+      type: String,
+      multiple: true,
+      must_match: ruby_benchmarks,
+      default_value: ruby_benchmarks
+    )
 
     cmd.action do |_gopts, opts, _args|
       result = Ruby::Command.new(opts.benchmarks).call
@@ -63,23 +49,24 @@ class BenchmarkCLI
 
   desc 'Compare different Flows abstractions and alternatives from the other libraries'
   command :compare do |cmd|
+    benchmarks = Compare::BENCHMARKS.keys.map(&:to_s)
     cmd.flag %i[b benchmarks],
              desc: 'benchmarks to run',
-             default_value: Compare::BENCHMARKS.keys.join(','),
-             type: Array
+             type: String,
+             multiple: true,
+             must_match: benchmarks,
+             default_value: benchmarks
 
-    cmd.flag %i[m modes],
-             desc: 'modes to apply to each benchmark',
-             default_value: Compare::MODES.keys.join(','),
-             type: Array
-
+    implementations = Compare::IMPLEMENTATIONS.keys.map(&:to_s)
     cmd.flag %i[i implementations],
              desc: 'implementations to compare',
-             default_value: Compare::IMPLEMENTATIONS.keys.join(','),
-             type: Array
+             type: String,
+             multiple: true,
+             must_match: implementations,
+             default_value: implementations
 
     cmd.action do |_gopts, opts, _args|
-      result = Compare::Command.new(opts.benchmarks, opts.modes, opts.implementations).call
+      result = Compare::Command.new(opts.benchmarks, opts.implementations).call
 
       case result
       when match_ok then puts 'Benchmark finished! Thank you for patience!'

@@ -6,16 +6,14 @@ class BenchmarkCLI
       include Flows::Result::Helpers
       extend Flows::Result::Do
 
-      def initialize(benchmarks, modes, implementations)
+      def initialize(benchmarks, implementations)
         @benchmarks = benchmarks.map(&:to_sym)
         @implementations = implementations.map(&:to_sym)
-        @modes = modes.map(&:to_sym)
       end
 
       do_notation(:call)
       def call
         yield validate_benchmarks
-        yield validate_modes
         yield validate_implementations
 
         run
@@ -39,17 +37,9 @@ class BenchmarkCLI
         ok
       end
 
-      def validate_modes
-        @modes.each do |mode|
-          return err_data("Unexpected mode: #{mode}") unless MODES.key?(mode)
-        end
-
-        ok
-      end
-
       def run
         @benchmarks.each do |name|
-          BENCHMARKS[name].new(@implementations, @modes).call
+          BENCHMARKS[name].new(@implementations).call
         end
       end
     end

@@ -19,31 +19,55 @@ class BenchmarkCLI
     IMPLEMENTATIONS = {
       flows_do: {
         title: 'Flows Do-notation',
-        modes: [:instance_call],
+        mode: :instance_call,
         classes: {
           APlusB::NAME => Examples::APlusB::FlowsDo,
           TenSteps::NAME => Examples::TenSteps::FlowsDo
         }
       },
-      flows_railway: {
+      flows_railway_class: {
         title: 'Flows Railway',
-        modes: %i[class_call instance_call],
+        mode: :class_call,
         classes: {
           APlusB::NAME => Examples::APlusB::FlowsRailway,
           TenSteps::NAME => Examples::TenSteps::FlowsRailway
         }
       },
-      flows_scp: {
+      flows_railway_instance: {
+        title: 'Flows Railway',
+        mode: :instance_call,
+        classes: {
+          APlusB::NAME => Examples::APlusB::FlowsRailway,
+          TenSteps::NAME => Examples::TenSteps::FlowsRailway
+        }
+      },
+      flows_scp_class: {
         title: 'Flows Shared Context Pipeline, functional steps',
-        modes: %i[class_call instance_call],
+        modes: :class_call,
         classes: {
           APlusB::NAME => Examples::APlusB::FlowsSCP,
           TenSteps::NAME => Examples::TenSteps::FlowsSCP
         }
       },
-      flows_scp_mut: {
+      flows_scp_instance: {
+        title: 'Flows Shared Context Pipeline, functional steps',
+        mode: :instance_call,
+        classes: {
+          APlusB::NAME => Examples::APlusB::FlowsSCP,
+          TenSteps::NAME => Examples::TenSteps::FlowsSCP
+        }
+      },
+      flows_scp_mut_class: {
         title: 'Flows Shared Context Pipeline, mutation steps',
-        modes: %i[class_call instance_call],
+        mode: :class_call,
+        classes: {
+          APlusB::NAME => Examples::APlusB::FlowsSCPMut,
+          TenSteps::NAME => Examples::TenSteps::FlowsSCPMut
+        }
+      },
+      flows_scp_mut_instance: {
+        title: 'Flows Shared Context Pipeline, mutation steps',
+        mode: :instance_call,
         classes: {
           APlusB::NAME => Examples::APlusB::FlowsSCPMut,
           TenSteps::NAME => Examples::TenSteps::FlowsSCPMut
@@ -51,7 +75,7 @@ class BenchmarkCLI
       },
       dry_do: {
         title: 'dry-rb Do-notation',
-        modes: [:instance_call],
+        mode: :instance_call,
         classes: {
           APlusB::NAME => Examples::APlusB::DryDo,
           TenSteps::NAME => Examples::TenSteps::DryDo
@@ -59,7 +83,7 @@ class BenchmarkCLI
       },
       dry_transaction: {
         title: 'dry-rb Transaction',
-        modes: [:instance_call],
+        mode: :instance_call,
         classes: {
           APlusB::NAME => Examples::APlusB::DryTransaction,
           TenSteps::NAME => Examples::TenSteps::DryTransaction
@@ -67,7 +91,7 @@ class BenchmarkCLI
       },
       trailblazer: {
         title: 'Trailblazer Operation',
-        modes: [:class_call],
+        mode: :class_call,
         classes: {
           APlusB::NAME => Examples::APlusB::TB,
           TenSteps::NAME => Examples::TenSteps::TB
