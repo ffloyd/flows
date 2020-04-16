@@ -13,6 +13,9 @@ require_relative 'examples/ten_steps/flows_railway'
 require_relative 'examples/a_plus_b/flows_scp'
 require_relative 'examples/ten_steps/flows_scp'
 
+require_relative 'examples/a_plus_b/flows_scp_oc'
+require_relative 'examples/ten_steps/flows_scp_oc'
+
 require_relative 'examples/a_plus_b/flows_scp_mut'
 require_relative 'examples/ten_steps/flows_scp_mut'
 

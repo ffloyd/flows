@@ -5,7 +5,7 @@ require_relative 'compare/ten_steps'
 require_relative 'compare/command'
 
 class BenchmarkCLI
-  module Compare
+  module Compare # rubocop:disable Metrics/ModuleLength
     BENCHMARKS = {
       APlusB::NAME => APlusB,
       TenSteps::NAME => TenSteps
@@ -43,7 +43,7 @@ class BenchmarkCLI
       },
       flows_scp_class: {
         title: 'Flows Shared Context Pipeline, functional steps',
-        modes: :class_call,
+        mode: :class_call,
         classes: {
           APlusB::NAME => Examples::APlusB::FlowsSCP,
           TenSteps::NAME => Examples::TenSteps::FlowsSCP
@@ -55,6 +55,22 @@ class BenchmarkCLI
         classes: {
           APlusB::NAME => Examples::APlusB::FlowsSCP,
           TenSteps::NAME => Examples::TenSteps::FlowsSCP
+        }
+      },
+      flows_scp_oc_class: {
+        title: 'Flows Shared Context Pipeline with contract for output, functional steps',
+        mode: :class_call,
+        classes: {
+          APlusB::NAME => Examples::APlusB::FlowsSCPOC,
+          TenSteps::NAME => Examples::TenSteps::FlowsSCPOC
+        }
+      },
+      flows_scp_oc_instance: {
+        title: 'Flows Shared Context Pipeline with contract for output, functional steps',
+        mode: :instance_call,
+        classes: {
+          APlusB::NAME => Examples::APlusB::FlowsSCPOC,
+          TenSteps::NAME => Examples::TenSteps::FlowsSCPOC
         }
       },
       flows_scp_mut_class: {
