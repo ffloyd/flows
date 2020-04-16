@@ -7,16 +7,17 @@ module Flows
       module Wrapper
         def initialize(*args, &block)
           super(*args, &block)
-          raise NoContractError if self.class.success_contracts.empty?
+          klass = self.class
+          raise NoContractError, klass if klass.success_contracts.empty?
         end
 
         def call(*args, &block)
           result = super(*args, &block)
+          klass = self.class
 
-          contract = Util.contract_for(self.class, result)
-          raise StatusError unless contract
+          contract = Util.contract_for(klass, result)
 
-          Util.transform_result(contract, result)
+          Util.transform_result(klass, contract, result)
 
           result
         end
@@ -28,22 +29,19 @@ module Flows
         module Util
           class << self
             def contract_for(klass, result)
-              raise ResultTypeError unless result.is_a?(Flows::Result)
+              raise ResultTypeError.new(klass, result) unless result.is_a?(Flows::Result)
 
               status = result.status
+              contracts = result.ok? ? klass.success_contracts : klass.failure_contracts
 
-              if result.ok?
-                klass.success_contracts[status]
-              else
-                klass.failure_contracts[status]
-              end
+              contracts[status] || raise(StatusError.new(klass, result, contracts.keys))
             end
 
-            def transform_result(contract, result)
+            def transform_result(klass, contract, result)
               data = result.send(:data)
 
               transformed_result = contract.transform(data)
-              raise ContractError if transformed_result.err?
+              raise ContractError.new(klass, result, transformed_result.error) if transformed_result.err?
 
               result.send(:'data=', transformed_result.unwrap)
             end

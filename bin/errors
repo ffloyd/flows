@@ -9,6 +9,7 @@ require 'gli'
 require_relative 'errors_cli/contract_error_demo'
 require_relative 'errors_cli/flows_router_error_demo'
 require_relative 'errors_cli/di_error_demo'
+require_relative 'errors_cli/oc_error_demo'
 
 class ErrorsCLI
   extend GLI::App
@@ -58,6 +59,37 @@ class ErrorsCLI
     cmd.command :missing_default do |icmd|
       icmd.action do |_, _, _|
         DIErrorDemo.missing_default
+      end
+    end
+  end
+
+  desc 'OutputContract plugin errors'
+  command :output_contract do |cmd|
+    cmd.desc 'No Contract error'
+    cmd.command :no_contract do |icmd|
+      icmd.action do |_, _, _|
+        OCErrorDemo.no_contract
+      end
+    end
+
+    cmd.desc 'Contract error'
+    cmd.command :contract_error do |icmd|
+      icmd.action do |_, _, _|
+        OCErrorDemo.contract_error
+      end
+    end
+
+    cmd.desc 'Status error'
+    cmd.command :status_error do |icmd|
+      icmd.action do |_, _, _|
+        OCErrorDemo.status_error
+      end
+    end
+
+    cmd.desc 'Result type error'
+    cmd.command :result_type_error do |icmd|
+      icmd.action do |_, _, _|
+        OCErrorDemo.result_type_error
       end
     end
   end
