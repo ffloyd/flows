@@ -60,6 +60,7 @@ Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
 
   # make benchmark scripts a convinient CLI tool
   spec.add_development_dependency 'gli'
+  spec.add_development_dependency 'rainbow'
   spec.add_development_dependency 'warning' # to suppress some unhandable Ruby warnings during CLI execution
 
   # alternatives for comparison in benchmarking

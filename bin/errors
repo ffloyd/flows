@@ -6,6 +6,9 @@ require 'flows'
 require 'pry'
 require 'gli'
 
+require 'rainbow/refinement'
+using Rainbow
+
 require_relative 'errors_cli/contract_error_demo'
 require_relative 'errors_cli/flows_router_error_demo'
 require_relative 'errors_cli/di_error_demo'
@@ -18,79 +21,64 @@ class ErrorsCLI
 
   use_openstruct true
 
-  desc 'Flows::Contract error'
-  command :contract do |cmd|
-    cmd.action do |_, _, _|
-      ContractErrorDemo.call
+  def self.make_cmd(ctx, title, name) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+    ctx.desc title
+    ctx.command name do |cmd|
+      cmd.action do |_, _, _|
+        puts title.green
+        puts(('BEGIN' + '-' * (title.length - 5)).color(:darkgray))
+        yield
+      rescue StandardError => err
+        puts err.message
+        puts(('END' + '-' * (title.length - 3)).color(:darkgray))
+        puts
+      end
     end
   end
 
-  desc 'Flows::Flow::Router::NoRouteError'
-  command :flows_router do |cmd|
-    cmd.action do |_, _, _|
-      FlowsRouterErrorDemo.call
-    end
+  make_cmd self, 'Flows::Contract error', :contract do
+    ContractErrorDemo.call
+  end
+
+  make_cmd self, 'Flows::Flow::Router::NoRouteError', :router do
+    FlowsRouterErrorDemo.call
   end
 
   desc 'Flows::Plugin::DependencyInjector errors'
   command :di do |cmd|
-    cmd.desc 'Missing Dependency'
-    cmd.command :missing do |icmd|
-      icmd.action do |_, _, _|
-        DIErrorDemo.missing_dependency
-      end
+    make_cmd cmd, 'Missing Dependency', :missing do
+      DIErrorDemo.missing_dependency
     end
 
-    cmd.desc 'Unexpected Dependency'
-    cmd.command :unexpected do |icmd|
-      icmd.action do |_, _, _|
-        DIErrorDemo.unexpected_dependency
-      end
+    make_cmd cmd, 'Unexpected Dependency', :unexpected do
+      DIErrorDemo.unexpected_dependency
     end
 
-    cmd.desc 'Invalid Type'
-    cmd.command :invalid_type do |icmd|
-      icmd.action do |_, _, _|
-        DIErrorDemo.invalid_type_dependency
-      end
+    make_cmd cmd, 'Invalid Type', :invalid_type do
+      DIErrorDemo.invalid_type_dependency
     end
 
-    cmd.desc 'Missing Default'
-    cmd.command :missing_default do |icmd|
-      icmd.action do |_, _, _|
-        DIErrorDemo.missing_default
-      end
+    make_cmd cmd, 'Missing Default', :missing_default do
+      DIErrorDemo.missing_default
     end
   end
 
   desc 'OutputContract plugin errors'
   command :output_contract do |cmd|
-    cmd.desc 'No Contract error'
-    cmd.command :no_contract do |icmd|
-      icmd.action do |_, _, _|
-        OCErrorDemo.no_contract
-      end
+    make_cmd cmd, 'No Contract error', :no_contract do
+      OCErrorDemo.no_contract
     end
 
-    cmd.desc 'Contract error'
-    cmd.command :contract_error do |icmd|
-      icmd.action do |_, _, _|
-        OCErrorDemo.contract_error
-      end
+    make_cmd cmd, 'Contract error', :contract do
+      OCErrorDemo.contract_error
     end
 
-    cmd.desc 'Status error'
-    cmd.command :status_error do |icmd|
-      icmd.action do |_, _, _|
-        OCErrorDemo.status_error
-      end
+    make_cmd cmd, 'Status error', :status do
+      OCErrorDemo.status_error
     end
 
-    cmd.desc 'Result type error'
-    cmd.command :result_type_error do |icmd|
-      icmd.action do |_, _, _|
-        OCErrorDemo.result_type_error
-      end
+    make_cmd cmd, 'Result type error', :result_type do
+      OCErrorDemo.result_type_error
     end
   end
 end

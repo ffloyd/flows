@@ -220,6 +220,7 @@ DEPENDENCIES
   kalibera
   mdl
   pry
+  rainbow
   rake (~> 13.0)
   reek
   rspec (~> 3.0)

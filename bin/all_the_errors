@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+"${BASH_SOURCE%/*}/errors" contract
+"${BASH_SOURCE%/*}/errors" router
+
+echo
+echo
+echo "---------------------------"
+echo "Dependency Injection plugin"
+echo "---------------------------"
+"${BASH_SOURCE%/*}/errors" di missing
+"${BASH_SOURCE%/*}/errors" di unexpected
+"${BASH_SOURCE%/*}/errors" di invalid_type
+"${BASH_SOURCE%/*}/errors" di missing_default
+
+echo
+echo
+echo "---------------------------"
+echo "Output Contract plugin"
+echo "---------------------------"
+"${BASH_SOURCE%/*}/errors" output_contract no_contract
+"${BASH_SOURCE%/*}/errors" output_contract contract
+"${BASH_SOURCE%/*}/errors" output_contract status
+"${BASH_SOURCE%/*}/errors" output_contract result_type
