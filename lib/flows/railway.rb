@@ -129,7 +129,10 @@ module Flows
     extend DSL
 
     def initialize
-      steps = self.class.steps
+      klass = self.class
+      steps = klass.steps
+
+      raise NoStepsError, klass if steps.empty?
 
       @__flows_railway_flow = Flows::Flow.new(
         start_node: steps.first_step_name,

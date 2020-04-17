@@ -22,14 +22,16 @@ module Flows
       end
 
       def first_step_name
-        raise NoStepsError if @list.empty?
-
         @list.first.name
       end
 
       # `:reek:FeatureEnvy` is false positive here.
       def to_node_map(method_source)
         @list.map { |step| [step.name, step.to_node(method_source)] }.to_h
+      end
+
+      def empty?
+        @list.empty?
       end
     end
   end

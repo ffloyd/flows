@@ -13,6 +13,7 @@ require_relative 'errors_cli/contract_error_demo'
 require_relative 'errors_cli/flows_router_error_demo'
 require_relative 'errors_cli/di_error_demo'
 require_relative 'errors_cli/oc_error_demo'
+require_relative 'errors_cli/railway_error_demo'
 
 class ErrorsCLI
   extend GLI::App
@@ -79,6 +80,13 @@ class ErrorsCLI
 
     make_cmd cmd, 'Result type error', :result_type do
       OCErrorDemo.result_type_error
+    end
+  end
+
+  desc 'Railway errors'
+  command :railway do |cmd|
+    make_cmd cmd, 'No Steps error', :no_steps do
+      RailwayErrorDemo.call
     end
   end
 end

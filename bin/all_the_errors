@@ -22,3 +22,10 @@ echo "---------------------------"
 "${BASH_SOURCE%/*}/errors" output_contract contract
 "${BASH_SOURCE%/*}/errors" output_contract status
 "${BASH_SOURCE%/*}/errors" output_contract result_type
+
+echo
+echo
+echo "---------------------------"
+echo "Railway"
+echo "---------------------------"
+"${BASH_SOURCE%/*}/errors" railway no_steps
