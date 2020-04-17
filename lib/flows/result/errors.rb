@@ -1,5 +1,8 @@
 module Flows
   class Result
+    # Base class for Result errors.
+    class Error < ::Flows::Error; end
+
     # Error for invalid data access cases
     class AccessError < Flows::Error
       def initialize(result)
@@ -9,10 +12,10 @@ module Flows
       def message
         [
           base_msg,
-          "  Result status: #{@result.status.inspect}",
-          "  Result data:   #{data.inspect}",
-          "  Result meta:   #{@result.meta.inspect}"
-        ].join('/n')
+          "  Result status: `#{@result.status.inspect}`",
+          "  Result data:   `#{data.inspect}`",
+          "  Result meta:   `#{@result.meta.inspect}`"
+        ].join("\n")
       end
 
       private
@@ -20,9 +23,9 @@ module Flows
       def base_msg
         case @result
         when Flows::Result::Ok
-          'Data in successful object must be retrieved using `#unwrap` method, not `#error`.'
+          'Data in a successful result must be retrieved using `#unwrap` method, not `#error`.'
         when Flows::Result::Err
-          'Data in failure object must be retrieved using `#error` method, not `#unwrap`.'
+          'Data in a failure result must be retrieved using `#error` method, not `#unwrap`.'
         end
       end
 
