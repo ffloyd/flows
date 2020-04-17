@@ -15,6 +15,7 @@ require_relative 'errors_cli/di_error_demo'
 require_relative 'errors_cli/oc_error_demo'
 require_relative 'errors_cli/railway_error_demo'
 require_relative 'errors_cli/result_error_demo'
+require_relative 'errors_cli/scp_error_demo'
 
 class ErrorsCLI
   extend GLI::App
@@ -104,12 +105,12 @@ class ErrorsCLI
 
   desc 'Shared Context Pipeline errors'
   command :scp do |cmd|
-    make_cmd cmd, 'Access error for successful result', :ok_access do
-      ResultErrorDemo.success_access_error
+    make_cmd cmd, 'No Steps error', :no_steps do
+      SCPErrorDemo.no_steps
     end
 
-    make_cmd cmd, 'Access error for failure result', :err_access do
-      ResultErrorDemo.failure_access_error
+    make_cmd cmd, 'Missing Step Implementation error', :no_step_impl do
+      SCPErrorDemo.no_step_impl
     end
   end
 end

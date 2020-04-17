@@ -178,7 +178,10 @@ module Flows
     extend DSL
 
     def initialize
-      tracks = self.class.tracks
+      klass = self.class
+      tracks = klass.tracks
+
+      raise NoStepsError, klass if tracks.main_track_empty?
 
       @__flow = Flows::Flow.new(
         start_node: tracks.first_step_name,

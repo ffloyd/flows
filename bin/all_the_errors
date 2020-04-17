@@ -30,7 +30,6 @@ echo "Railway"
 echo "---------------------------"
 "${BASH_SOURCE%/*}/errors" railway no_steps
 
-
 echo
 echo
 echo "---------------------------"
@@ -38,3 +37,11 @@ echo "Result"
 echo "---------------------------"
 "${BASH_SOURCE%/*}/errors" result ok_access
 "${BASH_SOURCE%/*}/errors" result err_access
+
+echo
+echo
+echo "---------------------------"
+echo "Shared Context Pipeline"
+echo "---------------------------"
+"${BASH_SOURCE%/*}/errors" scp no_steps
+"${BASH_SOURCE%/*}/errors" scp no_step_impl

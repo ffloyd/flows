@@ -30,6 +30,10 @@ module Flows
         @tracks[:main].first_step_name
       end
 
+      def main_track_empty?
+        @tracks[:main].empty?
+      end
+
       def to_node_map(method_source)
         @tracks.reduce({}) do |node_map, (_, track)|
           node_map.merge!(

@@ -39,9 +39,11 @@ module Flows
       end
 
       def first_step_name
-        raise NoStepsError if @step_list.empty?
-
         @step_list.first.name
+      end
+
+      def empty?
+        @step_list.empty?
       end
 
       def to_node_map(method_source)
