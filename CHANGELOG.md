@@ -16,4 +16,4 @@ Types of changes:
 
 ## [Unreleased]
 
-[unreleased]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.3.0...HEAD
+[unreleased]: https://github.com/ffloyd/flows/compare/v0.3.0...HEAD
