@@ -1,6 +1,8 @@
 module Flows
   # Namespace for class behaviour extensions.
   #
+  # Feel free to use it to empower your abstractions.
+  #
   # @since 0.4.0
   module Plugin
   end

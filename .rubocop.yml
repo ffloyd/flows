@@ -54,3 +54,7 @@ Style/CaseEquality:
 
 Naming/RescuedExceptionsVariableName:
   PreferredName: err
+
+Style/Documentation:
+  Exclude:
+    - 'lib/flows/shared_context_pipeline/step.rb' # false positive here

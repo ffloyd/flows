@@ -274,8 +274,8 @@ module Flows
   # But you should avoid constructing static contracts at runtime -
   # it's better to instantiate them during loading time (by putting it into constant, for example).
   #
-  # TODO: Some {SharedContextPipeline} plugins will add DSL for contracts.
-  # So, you don't need to invent anything to use contracts with shared context pipelines.
+  # {Flows::Plugin::OutputContract} in combination with {SharedContextPipeline} will add DSL for contracts.
+  # So, you don't need to invent anything to use output contracts with shared context pipelines.
   #
   # ## Private helper methods
   #

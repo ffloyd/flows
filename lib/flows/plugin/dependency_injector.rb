@@ -41,7 +41,7 @@ module Flows
     # @example
     #
     #     class MyClass
-    #       include Flows::Util::DepencyInjector
+    #       include Flows::Plugin::DependencyInjector
     #
     #       dependency :logger, required: true
     #       dependency :name, default: 'Boris', type: String # by default dependency is optional.

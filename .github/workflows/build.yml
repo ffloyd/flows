@@ -11,7 +11,7 @@ on:
     - cron: 0 2 * * 1-5
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -19,7 +19,7 @@ jobs:
         ruby:
           - 2.5.x
           - 2.6.x
-          # - 2.7.x
+          - 2.7.x
     steps:
       - uses: actions/checkout@v1
       - name: Set up Ruby
@@ -32,15 +32,7 @@ jobs:
         run: sudo apt-get install hunspell
       - name: Install Deps
         run: bundle install --jobs 4 --retry 3
-      - name: Rubocop
-        run: bundle exec rake rubocop
-      - name: Reek
-        run: bundle exec rake reek
-      - name: RSpec
+      - name: Test
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        run: bundle exec rake spec
-      - name: Spelling Check (docs & code)
-        run: bundle exec rake spellcheck
-      - name: Markdown Linter (docs)
-        run: bundle exec rake mdl
+        run: bundle exec rake

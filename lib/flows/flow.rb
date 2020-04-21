@@ -22,7 +22,7 @@ module Flows
   # > From any state, there is only one transition for any allowed input.
   #
   # So, we represent DFSM states as {Node}s. Each {Node}, basing on input (input includes execution context also)
-  # performs some side effects and returns output and next {Node} (DFSM state).
+  # performs some side effects and returns output and next {Node} name (DFSM state).
   #
   # Side effects here can be spitted into two types:
   #
