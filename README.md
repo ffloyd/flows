@@ -190,6 +190,19 @@ To run documentation server locally run `bin/docserver`.
 Respect `@since` YARD documentation tag. When some module, class or method has any
 API change - you have to provide correct `@since` tag value to the documentation.
 
+### Documentation Driven Development
+
+When you about to do some work, the following guideline can lead to the best
+results:
+
+* first, write needed class and method structure without implementation
+* write YARD documentation with motivation and usage examples for each public
+  class, method, module.
+* write unit tests, check that tests are failing
+* write implementation until tests are green
+
+Yes, it's TDD approach with documentation step prepended.
+
 ### Unit test
 
 Each public API method or module **must** be properly tested. Internal modules
@@ -200,6 +213,27 @@ Test coverage **must** be higher than 95%.
 ### Commit naming
 
 You **must** follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
+
+Allowed prefixes since `v0.4.0`:
+
+* `feat:` - for new features
+* `fix:` - for bugfixes
+* `perf:` - for performance improvements
+* `refactor:` - for refactoring work
+* `ci:` - updates for CI configuration
+* `docs:` - for documentation update
+
+Sometimes commit can have several responsibilities. As example: when you write
+documentation, test and implementation for a feature in the one commit. You can do
+extra effort to split and rearrange commits to make it atomic. But does it
+really provide significant value if we already have a strong convention for
+changelog (see the next section)?
+
+So, when you in such situation use the first applicable prefix in the list:
+between `docs` and `refactor` - pick `refactor`.
+
+Also, there is one more special prefix for release commits. Release commit
+messages **must** look like: `release: v0.4.0`.
 
 ### Changelog
 
@@ -216,3 +250,10 @@ After `v1.0.0` even smallest backward incompatible change will bump major
 version. _No exceptions._
 
 Commit with a version bump should contain _only_ version bump and CHANGELOG.md update.
+
+### Planned features for v1.0.0
+
+* validation framework
+* error reporting improvements
+* various plugins for SCP (tracing, benchmarking, logging, etc)
+* site with guides and conventions
