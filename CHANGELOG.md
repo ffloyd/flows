@@ -16,4 +16,27 @@ Types of changes:
 
 ## [Unreleased]
 
-[unreleased]: https://github.com/ffloyd/flows/compare/v0.3.0...HEAD
+## [0.4.0] - 2020-04-21
+
+### Added
+
+* `Flows::Contract` - type contracts with specific transformation feature.
+* `Flows::Flow` - fast and lightweight logic execution engine, designed for
+  internal usage and library writers.
+* `Flows::Plugin::DependencyInjector` - simple dependency injection plugin for your classes
+* `Flows::Plugin::ImplicitInit` - allows to use `MyClass.call` instead of
+  `MyClass.new.call`, an class instance will be created once.
+* `Flows::Plugin::OutputContract` - plugin for output type checks and
+  transformations for service objects which return `Flows::Result`.
+* `Flows::Railway` - stupid simple implementation of the railway pattern.
+* `Flows::Result` - general purpose Result Object designed after Rust Result type.
+* `Flows::Result::Do` - do-notation for Result Objects.
+* `Flows::SharedContextPipeline` - much more flexible adoption of the railway
+  pattern for Ruby.
+* `Flows::Util::InheritableSingletonVars` - allows to define behavior for
+  singleton variables in the context of inheritance.
+* `Flows::Util::PrependToClass` - allows to prepend some module to class even if
+  target module did not included directly into class.
+
+[unreleased]: https://github.com/ffloyd/flows/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/ffloyd/flows/compare/v0.3.0...v0.4.0
