@@ -34,6 +34,16 @@ Or install it yourself as:
 gem install flows
 ```
 
+## Supported Ruby versions
+
+CI tests against last patch versions every day:
+
+* `MRI 2.5.x`
+* `MRI 2.6.x`
+
+`MRI 2.7.x` will be added later, right now (`2.7.1`) this version of MRI Ruby is too
+unstable and produce segmentation faults inside RSpec internals.
+
 ## Usage & Documentation
 
 * [YARD documentation](https://rubydoc.info/github/ffloyd/flows/master) - this
@@ -184,6 +194,8 @@ API change - you have to provide correct `@since` tag value to the documentation
 Each public API method or module **must** be properly tested. Internal modules
 can be tested indirectly through public API.
 
+Test coverage **must** be higher than 95%.
+
 ### Commit naming
 
 You **must** follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
@@ -201,6 +213,8 @@ The project strictly follows [SemVer](https://semver.org/spec/v2.0.0.html).
 
 After `v1.0.0` even smallest backward incompatible change will bump major
 version. _No exceptions._
+
+Commit with a version bump should contain _only_ version bump and CHANGELOG.md update.
 
 ## Readme TODO: list of tasks to accomplish before
 
