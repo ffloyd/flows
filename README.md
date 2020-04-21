@@ -79,15 +79,16 @@ Activation (in the root of the repo):
 lefthook install
 ```
 
-Run hook manually:
+Run hooks manually:
 
 ```sh
 lefthook run pre-commit
+lefthook run pre-push
 ```
 
-Please, never turn off pre-commit hook.
+Please, never turn off the pre-commit and pre-push hooks.
 
-### Rubocop as the first linter
+### Rubocop linter
 
 [Rubocop](https://docs.rubocop.org/en/stable/) in this setup is responsible for:
 
@@ -105,7 +106,7 @@ contains only development-related scripts and tools so it's ok to ease linter re
 Rubocop Metrics (ABC-size, method/class length, etc) must not be eased
 globally. Never.
 
-### Reek as the second linter
+### Reek linter
 
 [Ruby Reek](https://github.com/troessner/reek) is a very aggressive linter that
 forces you to do a clean OOP design.
@@ -146,8 +147,8 @@ automatically, convenience can only be tested manually. That's why when you
 introduce any new `raise` you have to:
 
 * make an error message clear and descriptive
-* add this error to __errors demo CLI_ (`bin/errors`)
-* add this errors to __all the errors demo_ (`bin/all_the_errors`)
+* add this error to _errors demo CLI_ (`bin/errors`)
+* add this errors to _all the errors demo_ (`bin/all_the_errors`)
 * make sure that error is displayed correctly and follows a style of the rest
   of implemented errors
 
@@ -172,7 +173,7 @@ thing you can do - to offload calculations to a class loading or initialization
 step. Sacrifice some warm-up time to make runtime performance better.
 
 And to compare performance overhead between different `flows` abstractions
-and another libraries alternatives a benchmarking CLI was done: `bin/benchmark`.
+and another alternatives a benchmarking CLI was done: `bin/benchmark`.
 
 This CLI is done using GLI, run `bin/benchmark -h` to explore possibilities.
 
@@ -215,13 +216,3 @@ After `v1.0.0` even smallest backward incompatible change will bump major
 version. _No exceptions._
 
 Commit with a version bump should contain _only_ version bump and CHANGELOG.md update.
-
-## Readme TODO: list of tasks to accomplish before
-
-* [ ] lefthook usage
-* [ ] `bundle exec rake` to check all the things + describe linter setup
-* [ ] describe why so many linters
-* [ ] `bin/*` scripts usage
-* [ ] about `./bin/docserver` command and YARD usage
-* [ ] about mandatory `@since` usage in docs
-
