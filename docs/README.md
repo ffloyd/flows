@@ -10,4 +10,4 @@ but has simpler and flexible DSLs for defining operations and matching results. 
 
 `flows` has no production dependencies so it can be used with any framework and cannot bring dependency incompatibilities.
 
-Rest of the documentation will be here when v0.4.0 be released.
+Rest of the documentation will be here when v1.0.0 be released.
