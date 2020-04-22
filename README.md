@@ -1,6 +1,6 @@
 # Flows
 
-[![Build Status](https://github.com/ffloyd/flows/workflows/Build/badge.svg)](https://github.com/ffloyd/flows/actions)
+[![Build Status](https://github.com/ffloyd/flows/workflows/Test/badge.svg)](https://github.com/ffloyd/flows/actions)
 [![codecov](https://codecov.io/gh/ffloyd/flows/branch/master/graph/badge.svg)](https://codecov.io/gh/ffloyd/flows)
 [![Gem Version](https://badge.fury.io/rb/flows.svg)](https://badge.fury.io/rb/flows)
 
@@ -250,6 +250,16 @@ After `v1.0.0` even smallest backward incompatible change will bump major
 version. _No exceptions._
 
 Commit with a version bump should contain _only_ version bump and CHANGELOG.md update.
+
+### GitHub Flow
+
+Since `v0.4.0` this repo strictly follow [GitHub
+Flow](https://guides.github.com/introduction/flow/) with some additions:
+
+* branch naming using dash: `improved-contexts`
+* use [references to
+  issues](https://help.github.com/en/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword)
+  in commit messages and CHANGELOG.md
 
 ### Planned features for v1.0.0
 

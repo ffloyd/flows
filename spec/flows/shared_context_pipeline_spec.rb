@@ -354,21 +354,28 @@ RSpec.describe Flows::SharedContextPipeline do
     end
 
     let(:before_all_proc) do
-      make_proc_double do |_, ctx|
-        ctx.merge!(from: :callback)
+      make_proc_double do |_, ctx, meta|
+        ctx[:from] = :callback
+        meta[:from] = :callback_meta
       end
     end
 
     it 'executes callback' do
       calculation
 
-      expect(before_all_proc).to have_received(:call).with(klass, instance_of(Hash))
+      expect(before_all_proc).to have_received(:call).with(klass, instance_of(Hash), instance_of(Hash))
     end
 
     it 'patches execution context' do
       expect(calculation.unwrap).to eq(
         input: :data,
         from: :callback
+      )
+    end
+
+    it 'patches meta' do
+      expect(calculation.meta).to eq(
+        from: :callback_meta
       )
     end
   end
@@ -387,25 +394,60 @@ RSpec.describe Flows::SharedContextPipeline do
         end
       end
 
-      result.after_all(&after_all_proc)
+      result.after_all(&after_all_proc_1)
+      result.after_all(&after_all_proc_2)
 
       result
     end
 
-    let(:after_all_proc) do
-      make_proc_double do |_, _|
-        Flows::Result::Ok.new({}, status: :substituted)
+    let(:after_all_proc_1) do
+      make_proc_double do |_, result, ctx, meta|
+        ctx[:from] = :callback
+        meta[:from] = :callback_meta
+
+        result.unwrap[:first] = :callback
+        result
       end
     end
 
-    it 'executes callback' do
+    let(:after_all_proc_2) do
+      make_proc_double do |_, _, ctx, meta|
+        Flows::Result::Ok.new(ctx, status: :substituted, meta: meta)
+      end
+    end
+
+    it 'executes 1st callback' do
       calculation
 
-      expect(after_all_proc).to have_received(:call).with(klass, Flows::Result::Ok.new(input: :data))
+      expect(after_all_proc_1).to have_received(:call).with(
+        klass, instance_of(Flows::Result::Ok), instance_of(Hash), instance_of(Hash)
+      )
+    end
+
+    it 'executes 2nd callback' do
+      calculation
+
+      expect(after_all_proc_2).to have_received(:call).with(
+        klass, instance_of(Flows::Result::Ok), instance_of(Hash), instance_of(Hash)
+      )
     end
 
     it 'substitutes result' do
       expect(calculation.status).to eq :substituted
+    end
+
+    it 'patches execution context' do
+      expect(calculation.unwrap).to eq(
+        input: :data,
+        first: :callback,
+        from: :callback
+      )
+    end
+
+    it 'patches meta' do
+      expect(calculation.meta).to eq(
+        from: :callback_meta
+      )
     end
   end
 
@@ -434,8 +476,9 @@ RSpec.describe Flows::SharedContextPipeline do
     end
 
     let(:before_each_proc) do
-      make_proc_double do |_, step_name, context|
+      make_proc_double do |_, step_name, context, meta|
         context[step_name] = :was_here
+        meta[step_name] = :was_here_meta
       end
     end
 
@@ -448,15 +491,31 @@ RSpec.describe Flows::SharedContextPipeline do
       }
     end
 
-    it 'executes callback' do # rubocop:disable RSpec/MultipleExpectations
+    let(:expected_meta) do
+      {
+        hi: :was_here_meta,
+        hello: :was_here_meta
+      }
+    end
+
+    it 'executes callback' do # rubocop:disable RSpec/MultipleExpectations, RSpec/ExampleLength
       calculation
 
-      expect(before_each_proc).to have_received(:call).with(klass, :hi, instance_of(Hash)).once.ordered
-      expect(before_each_proc).to have_received(:call).with(klass, :hello, instance_of(Hash)).once.ordered
+      expect(before_each_proc).to have_received(:call).with(
+        klass, :hi, instance_of(Hash), instance_of(Hash)
+      ).once.ordered
+
+      expect(before_each_proc).to have_received(:call).with(
+        klass, :hello, instance_of(Hash), instance_of(Hash)
+      ).once.ordered
     end
 
     it 'modifies context' do
       expect(calculation.unwrap).to eq expected_context
+    end
+
+    it 'modifies meta' do
+      expect(calculation.meta).to eq expected_meta
     end
   end
 
@@ -486,31 +545,46 @@ RSpec.describe Flows::SharedContextPipeline do
     end
 
     let(:after_each_proc) do
-      make_proc_double do |_, step_name, context, _|
+      make_proc_double do |_, step_name, _result, context, meta|
         context[step_name] = :was_here
+        meta[step_name] = :was_here_meta
       end
     end
 
     let(:expected_context) do
       {
-        input: :data,
-        from_hi: :data,
         hi: :was_here,
-        hello: :was_here
+        from_hi: :data,
+        hello: :was_here,
+        input: :data
       }
     end
 
-    it 'executes callback' do # rubocop:disable RSpec/MultipleExpectations
+    let(:expected_meta) do
+      {
+        hi: :was_here_meta,
+        hello: :was_here_meta
+      }
+    end
+
+    it 'executes callback' do # rubocop:disable RSpec/MultipleExpectations, RSpec/ExampleLength
       calculation
 
       expect(after_each_proc).to have_received(:call)
-        .with(klass, :hi, instance_of(Hash), ok(from_hi: :data)).once.ordered
+        .with(klass, :hi, ok(from_hi: :data), instance_of(Hash), instance_of(Hash))
+        .once.ordered
+
       expect(after_each_proc).to have_received(:call)
-        .with(klass, :hello, instance_of(Hash), Flows::Result::Ok.new(nil)).once.ordered
+        .with(klass, :hello, Flows::Result::Ok.new({}), instance_of(Hash), instance_of(Hash))
+        .once.ordered
     end
 
     it 'modifies context' do
       expect(calculation.unwrap).to eq expected_context
+    end
+
+    it 'modifies meta' do
+      expect(calculation.meta).to eq expected_meta
     end
   end
 end

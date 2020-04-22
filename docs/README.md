@@ -1,6 +1,6 @@
 # Flows
 
-[![Build Status](https://github.com/ffloyd/flows/workflows/Build/badge.svg)](https://github.com/ffloyd/flows/actions)
+[![Build Status](https://github.com/ffloyd/flows/workflows/Test/badge.svg)](https://github.com/ffloyd/flows/actions)
 [![codecov](https://codecov.io/gh/ffloyd/flows/branch/master/graph/badge.svg)](https://codecov.io/gh/ffloyd/flows)
 [![Gem Version](https://badge.fury.io/rb/flows.svg)](https://badge.fury.io/rb/flows)
 
