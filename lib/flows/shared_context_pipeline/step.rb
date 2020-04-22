@@ -19,11 +19,9 @@ module Flows
 
     Step.const_set(
       :NODE_PREPROCESSOR,
-      lambda do |_input, context, meta|
-        context[:last_step] = meta[:name]
-
+      lambda do |_input, context, node_meta|
         context[:class].before_each_callbacks.each do |callback|
-          callback.call(context[:class], meta[:name], context[:data])
+          callback.call(context[:class], node_meta[:name], context[:data], context[:meta])
         end
 
         [EMPTY_ARRAY, context[:data]]
@@ -32,11 +30,11 @@ module Flows
 
     Step.const_set(
       :NODE_POSTPROCESSOR,
-      lambda do |output, context, meta|
+      lambda do |output, context, node_meta|
         context[:data].merge!(output.instance_variable_get(:@data))
 
         context[:class].after_each_callbacks.each do |callback|
-          callback.call(context[:class], meta[:name], context[:data], output)
+          callback.call(context[:class], node_meta[:name], context[:data], output)
         end
 
         output

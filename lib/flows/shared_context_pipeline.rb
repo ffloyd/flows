@@ -153,12 +153,13 @@ module Flows
   #       end
   #
   #       after_all do |klass, pipeline_result, data, meta|
+  #         # you can modify execution data context and metadata here
   #         # you must return a final result object here
   #         # if no modifications needed - just return provided pipeline_result
   #       end
   #
-  #       before_each do |klass, step_name, context|
-  #         # you can modify context here
+  #       before_each do |klass, step_name, data, meta|
+  #         # you can modify execution data context and metadata here
   #         # return value will be ignored
   #       end
   #

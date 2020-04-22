@@ -476,8 +476,9 @@ RSpec.describe Flows::SharedContextPipeline do
     end
 
     let(:before_each_proc) do
-      make_proc_double do |_, step_name, context|
+      make_proc_double do |_, step_name, context, meta|
         context[step_name] = :was_here
+        meta[step_name] = :was_here_meta
       end
     end
 
@@ -490,15 +491,31 @@ RSpec.describe Flows::SharedContextPipeline do
       }
     end
 
-    it 'executes callback' do # rubocop:disable RSpec/MultipleExpectations
+    let(:expected_meta) do
+      {
+        hi: :was_here_meta,
+        hello: :was_here_meta
+      }
+    end
+
+    it 'executes callback' do # rubocop:disable RSpec/MultipleExpectations, RSpec/ExampleLength
       calculation
 
-      expect(before_each_proc).to have_received(:call).with(klass, :hi, instance_of(Hash)).once.ordered
-      expect(before_each_proc).to have_received(:call).with(klass, :hello, instance_of(Hash)).once.ordered
+      expect(before_each_proc).to have_received(:call).with(
+        klass, :hi, instance_of(Hash), instance_of(Hash)
+      ).once.ordered
+
+      expect(before_each_proc).to have_received(:call).with(
+        klass, :hello, instance_of(Hash), instance_of(Hash)
+      ).once.ordered
     end
 
     it 'modifies context' do
       expect(calculation.unwrap).to eq expected_context
+    end
+
+    it 'modifies meta' do
+      expect(calculation.meta).to eq expected_meta
     end
   end
 
