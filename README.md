@@ -251,6 +251,16 @@ version. _No exceptions._
 
 Commit with a version bump should contain _only_ version bump and CHANGELOG.md update.
 
+### GitHub Flow
+
+Since `v0.4.0` this repo strictly follow [GitHub
+Flow](https://guides.github.com/introduction/flow/) with some additions:
+
+* branch naming using dash: `improved-contexts`
+* use [references to
+  issues](https://help.github.com/en/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword)
+  in commit messages and CHANGELOG.md
+
 ### Planned features for v1.0.0
 
 * validation framework
