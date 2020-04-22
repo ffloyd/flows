@@ -259,7 +259,7 @@ Flow](https://guides.github.com/introduction/flow/) with some additions:
 * branch naming using dash: `improved-contexts`
 * use [references to
   issues](https://help.github.com/en/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword)
-  in commit messages and CHANGELOG.md
+  in commit messages and make links to issues in CHANGELOG.md
 
 ### Planned features for v1.0.0
 
