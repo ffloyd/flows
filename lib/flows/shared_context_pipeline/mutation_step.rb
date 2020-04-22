@@ -1,8 +1,8 @@
 module Flows
   class SharedContextPipeline
     EMPTY_HASH = {}.freeze
-    EMPTY_OK = Flows::Result::Ok.new(nil).freeze
-    EMPTY_ERR = Flows::Result::Err.new(nil).freeze
+    EMPTY_OK = Flows::Result::Ok.new({}.freeze).freeze
+    EMPTY_ERR = Flows::Result::Err.new({}.freeze).freeze
 
     # @api private
     class MutationStep < Step
@@ -20,7 +20,7 @@ module Flows
         else output ? EMPTY_OK : EMPTY_ERR
         end.tap do |result|
           context[:class].after_each_callbacks.each do |callback|
-            callback.call(context[:class], node_meta[:name], context[:data], result)
+            callback.call(context[:class], node_meta[:name], result, context[:data], context[:meta])
           end
         end
       end

@@ -30,14 +30,14 @@ module Flows
 
     Step.const_set(
       :NODE_POSTPROCESSOR,
-      lambda do |output, context, node_meta|
-        context[:data].merge!(output.instance_variable_get(:@data))
+      lambda do |result, context, node_meta|
+        context[:data].merge!(result.instance_variable_get(:@data))
 
         context[:class].after_each_callbacks.each do |callback|
-          callback.call(context[:class], node_meta[:name], context[:data], output)
+          callback.call(context[:class], node_meta[:name], result, context[:data], context[:meta])
         end
 
-        output
+        result
       end
     )
   end

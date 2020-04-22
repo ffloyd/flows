@@ -163,11 +163,14 @@ module Flows
   #         # return value will be ignored
   #       end
   #
-  #       after_each do |klass, step_name, context, step_result|
-  #         # you can modify context here
-  #         # you must not modify step_result
-  #         # context already has data from step_result at the moment of execution
+  #       after_each do |klass, step_name, step_result, data, meta|
+  #         # you can modify execution data context and metadata here
   #         # return value will be ignored
+  #         #
+  #         # callback executed after context is updated with result data
+  #         # (in the case of normal steps, mutation steps update context directly)
+  #         #
+  #         # DO NOT MODIFY RESULT OBJECT HERE - IT CAN BROKE MUTATION STEPS
   #       end
   #     end
   #

@@ -545,31 +545,46 @@ RSpec.describe Flows::SharedContextPipeline do
     end
 
     let(:after_each_proc) do
-      make_proc_double do |_, step_name, context, _|
+      make_proc_double do |_, step_name, _result, context, meta|
         context[step_name] = :was_here
+        meta[step_name] = :was_here_meta
       end
     end
 
     let(:expected_context) do
       {
-        input: :data,
-        from_hi: :data,
         hi: :was_here,
-        hello: :was_here
+        from_hi: :data,
+        hello: :was_here,
+        input: :data
       }
     end
 
-    it 'executes callback' do # rubocop:disable RSpec/MultipleExpectations
+    let(:expected_meta) do
+      {
+        hi: :was_here_meta,
+        hello: :was_here_meta
+      }
+    end
+
+    it 'executes callback' do # rubocop:disable RSpec/MultipleExpectations, RSpec/ExampleLength
       calculation
 
       expect(after_each_proc).to have_received(:call)
-        .with(klass, :hi, instance_of(Hash), ok(from_hi: :data)).once.ordered
+        .with(klass, :hi, ok(from_hi: :data), instance_of(Hash), instance_of(Hash))
+        .once.ordered
+
       expect(after_each_proc).to have_received(:call)
-        .with(klass, :hello, instance_of(Hash), Flows::Result::Ok.new(nil)).once.ordered
+        .with(klass, :hello, Flows::Result::Ok.new({}), instance_of(Hash), instance_of(Hash))
+        .once.ordered
     end
 
     it 'modifies context' do
       expect(calculation.unwrap).to eq expected_context
+    end
+
+    it 'modifies meta' do
+      expect(calculation.meta).to eq expected_meta
     end
   end
 end
