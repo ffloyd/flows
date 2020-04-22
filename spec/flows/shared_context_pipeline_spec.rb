@@ -354,21 +354,28 @@ RSpec.describe Flows::SharedContextPipeline do
     end
 
     let(:before_all_proc) do
-      make_proc_double do |_, ctx|
-        ctx.merge!(from: :callback)
+      make_proc_double do |_, ctx, meta|
+        ctx[:from] = :callback
+        meta[:from] = :callback_meta
       end
     end
 
     it 'executes callback' do
       calculation
 
-      expect(before_all_proc).to have_received(:call).with(klass, instance_of(Hash))
+      expect(before_all_proc).to have_received(:call).with(klass, instance_of(Hash), instance_of(Hash))
     end
 
     it 'patches execution context' do
       expect(calculation.unwrap).to eq(
         input: :data,
         from: :callback
+      )
+    end
+
+    it 'patches meta' do
+      expect(calculation.meta).to eq(
+        from: :callback_meta
       )
     end
   end

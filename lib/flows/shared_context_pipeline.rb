@@ -140,15 +140,15 @@ module Flows
   #       # steps implementations here
   #     end
   #
-  # ## Callbacks
+  # ## Callbacks and metadata
   #
   # You may want to have some logic to execute before all steps, or after all, or before each, or after each.
   # For example to inject generalized execution process logging.
   # To achieve this you can use callbacks:
   #
   #     class MySCP < Flows::SharedContextPipeline
-  #       before_all do |klass, context|
-  #         # you can modify execution context here
+  #       before_all do |klass, data, meta|
+  #         # you can modify execution data context and metadata here
   #         # return value will be ignored
   #       end
   #
@@ -169,6 +169,12 @@ module Flows
   #         # return value will be ignored
   #       end
   #     end
+  #
+  # Metadata - is a Hash which is shared between step executions.
+  # This hash becomes metadata of a final {Flows::Result}.
+  #
+  # Metadata is designed to store non-business data such as execution times,
+  # some library specific data, and so on.
   class SharedContextPipeline
     extend ::Flows::Plugin::ImplicitInit
 
@@ -192,20 +198,21 @@ module Flows
     # Executes pipeline with provided keyword arguments, returns Result Object.
     #
     # @return [Flows::Result]
-    def call(**kwargs) # rubocop:disable Metrics/MethodLength
+    def call(**data) # rubocop:disable Metrics/MethodLength
       klass = self.class
-      context = { data: kwargs, class: klass }
+      meta = {}
+      context = { data: data, meta: meta, class: klass }
 
       klass.before_all_callbacks.each do |callback|
-        callback.call(klass, context[:data])
+        callback.call(klass, data, meta)
       end
 
       flow_result = @__flow.call(nil, context: context)
 
       final_result = flow_result.class.new(
-        context[:data],
+        data,
         status: flow_result.status,
-        meta: { last_step: context[:last_step] }
+        meta: meta
       )
 
       klass.after_all_callbacks.reduce(final_result) do |result, callback|
