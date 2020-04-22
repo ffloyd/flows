@@ -394,25 +394,60 @@ RSpec.describe Flows::SharedContextPipeline do
         end
       end
 
-      result.after_all(&after_all_proc)
+      result.after_all(&after_all_proc_1)
+      result.after_all(&after_all_proc_2)
 
       result
     end
 
-    let(:after_all_proc) do
-      make_proc_double do |_, _|
-        Flows::Result::Ok.new({}, status: :substituted)
+    let(:after_all_proc_1) do
+      make_proc_double do |_, result, ctx, meta|
+        ctx[:from] = :callback
+        meta[:from] = :callback_meta
+
+        result.unwrap[:first] = :callback
+        result
       end
     end
 
-    it 'executes callback' do
+    let(:after_all_proc_2) do
+      make_proc_double do |_, _, ctx, meta|
+        Flows::Result::Ok.new(ctx, status: :substituted, meta: meta)
+      end
+    end
+
+    it 'executes 1st callback' do
       calculation
 
-      expect(after_all_proc).to have_received(:call).with(klass, Flows::Result::Ok.new(input: :data))
+      expect(after_all_proc_1).to have_received(:call).with(
+        klass, instance_of(Flows::Result::Ok), instance_of(Hash), instance_of(Hash)
+      )
+    end
+
+    it 'executes 2nd callback' do
+      calculation
+
+      expect(after_all_proc_2).to have_received(:call).with(
+        klass, instance_of(Flows::Result::Ok), instance_of(Hash), instance_of(Hash)
+      )
     end
 
     it 'substitutes result' do
       expect(calculation.status).to eq :substituted
+    end
+
+    it 'patches execution context' do
+      expect(calculation.unwrap).to eq(
+        input: :data,
+        first: :callback,
+        from: :callback
+      )
+    end
+
+    it 'patches meta' do
+      expect(calculation.meta).to eq(
+        from: :callback_meta
+      )
     end
   end
 

@@ -152,8 +152,8 @@ module Flows
   #         # return value will be ignored
   #       end
   #
-  #       after_all do |klass, pipeline_result|
-  #         # you must provide final result object for pipeline here
+  #       after_all do |klass, pipeline_result, data, meta|
+  #         # you must return a final result object here
   #         # if no modifications needed - just return provided pipeline_result
   #       end
   #
@@ -216,7 +216,7 @@ module Flows
       )
 
       klass.after_all_callbacks.reduce(final_result) do |result, callback|
-        callback.call(klass, result)
+        callback.call(klass, result, data, meta)
       end
     end
   end
