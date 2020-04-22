@@ -16,6 +16,10 @@ Types of changes:
 
 ## [Unreleased]
 
+### Changed
+
+* `Flows::SharedContextPipeline` callback API, GitHub issue: #6
+
 ## [0.4.0] - 2020-04-21
 
 ### Added
