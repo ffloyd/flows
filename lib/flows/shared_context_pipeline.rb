@@ -140,6 +140,85 @@ module Flows
   #       # steps implementations here
   #     end
   #
+  # ## Wrappers
+  #
+  # Sometimes you have to execute some steps inside SQL-transaction or something like this.
+  # Most frameworks allow to do it in the following approach:
+  #
+  #     SQLDataBase.transaction do
+  #       # your steps are executed here
+  #       # special error must be executed to cancel the transaction
+  #     end
+  #
+  # It's impossible to do with just step or track DSL. That's why `wrap` DSL method has been added.
+  # Let's review it on example:
+  #
+  #     class MySCP < Flows::SharedContextPipeline
+  #       step :some_preparations
+  #       wrap :in_transaction do
+  #         step :action_a
+  #         step :action_b
+  #       end
+  #
+  #       def in_transaction(ctx, meta, &block)
+  #         result = nil
+  #
+  #         ActiveRecord::Base.transaction do
+  #           result = block.call
+  #
+  #           raise ActiveRecord::Rollback if result.err?
+  #         end
+  #
+  #         result
+  #       end
+  #
+  #       # step implementations here
+  #     end
+  #
+  # `wrap` DSL method receives name and block. Inside block you can define steps and tracks.
+  #
+  # `wrap` makes an isolated track and step structure.
+  # You cannot route between wrapped and unwrapped steps and tracks.
+  # One exception - you can route to the first wrapped step.
+  #
+  # The same wrapper with the same name can be used multiple times in the same operation:
+  #
+  #     class MySCP < Flows::SharedContextPipeline
+  #       step :some_preparations
+  #       wrap :in_transaction do
+  #         step :action_a
+  #         step :action_b
+  #       end
+  #       step :some_calculations
+  #       wrap :in_transaction do
+  #         step :action_c
+  #         step :action_d
+  #       end
+  #
+  #       # ...
+  #     end
+  #
+  # Unlike step implementations wrapper implementation has access to a shared meta (can be useful for plugins).
+  #
+  # You may think about steps and tracks inside wrapper as a nested pipeline.
+  # Wrapper implementation receives mutable data context, metadata and block.
+  # Block execution (`block.call`) returns a result object of the executed "nested pipeline".
+  #
+  # When you route to `:end` inside wrapper - you're leaving wrapper, **not** the whole pipeline.
+  #
+  # From the execution perspective wrapper is a single step. The step name is the first wrapped step name.
+  #
+  # `wrap` itself also can have overriden routes table:
+  #
+  #     wrap :in_transaction, routes(match_ok => :next, match_err => :end) do
+  #       # steps...
+  #     end
+  #
+  # Like a step, wrapper implementation must return {Flows::Result}.
+  # Result is processed with the same approach as for normal step.
+  # **Do not modify result returned from block - build a new one if needed.
+  # Otherwise mutation steps can be broken.**
+  #
   # ## Callbacks and metadata
   #
   # You may want to have some logic to execute before all steps, or after all, or before each, or after each.
