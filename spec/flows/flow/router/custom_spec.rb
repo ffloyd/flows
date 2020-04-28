@@ -64,4 +64,12 @@ RSpec.describe Flows::Flow::Router::Custom do
       end
     end
   end
+
+  describe '#destinations' do
+    subject(:destinations) { router.destinations }
+
+    let(:router) { described_class.new(x: :y, a: :b) }
+
+    it { is_expected.to eq %i[y b] }
+  end
 end

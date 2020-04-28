@@ -82,6 +82,7 @@ module Flows
     class Node
       # Node metadata, a frozen Ruby Hash.
       attr_reader :meta
+      attr_reader :router
 
       # @param body [Proc] node body
       # @param router [Router] node router

@@ -742,7 +742,7 @@ RSpec.describe Flows::SharedContextPipeline do
     end
   end
 
-  xdescribe 'wrap DSL (invalid routing inside wrap)' do
+  describe 'wrap DSL (invalid routing inside wrap)' do
     include Flows::Result::Helpers
     include_context 'with helpers'
 
@@ -780,11 +780,11 @@ RSpec.describe Flows::SharedContextPipeline do
     end
 
     it 'raises routing error' do
-      expect { calculation }.to raise_error StandardError.new('TODO: design the error')
+      expect { calculation }.to raise_error Flows::Flow::InvalidNodeRouteError
     end
   end
 
-  xdescribe 'wrap DSL (invalid routing outside wrap)' do
+  describe 'wrap DSL (invalid routing outside wrap)' do
     include Flows::Result::Helpers
     include_context 'with helpers'
 
@@ -822,7 +822,7 @@ RSpec.describe Flows::SharedContextPipeline do
     end
 
     it 'raises routing error' do
-      expect { calculation }.to raise_error StandardError.new('TODO: design the error')
+      expect { calculation }.to raise_error Flows::Flow::InvalidNodeRouteError
     end
   end
 end

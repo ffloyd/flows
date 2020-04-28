@@ -1,3 +1,4 @@
+require_relative 'flow/errors'
 require_relative 'flow/node'
 require_relative 'flow/router'
 
@@ -66,9 +67,13 @@ module Flows
   class Flow
     # @param start_node [Symbol] name of the entry node.
     # @param node_map [Hash<Symbol, Node>] keys are node names, values are nodes.
+    # @raise [Flows::Flow::InvalidNodeRouteError] when some node has invalid routing destination.
+    # @raise [Flows::Flow::InvalidFirstNodeError] when first node is not presented in node map.
     def initialize(start_node:, node_map:)
       @start_node = start_node
       @node_map = node_map
+
+      check_routing_integrity
     end
 
     # Executes a flow.
@@ -84,6 +89,22 @@ module Flows
       end
 
       input
+    end
+
+    private
+
+    def check_routing_integrity
+      raise InvalidFirstNodeError, @start_node unless @node_map.key?(@start_node)
+
+      @node_map.each { |node_name, node| check_node_routing_integrity(node_name, node) }
+    end
+
+    def check_node_routing_integrity(node_name, node)
+      node.router.destinations.each do |destination_name|
+        if destination_name != :end && !@node_map.key?(destination_name)
+          raise InvalidNodeRouteError.new(node_name, destination_name)
+        end
+      end
     end
   end
 end

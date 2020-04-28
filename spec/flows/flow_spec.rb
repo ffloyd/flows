@@ -81,4 +81,37 @@ RSpec.describe Flows::Flow do
       end
     end
   end
+
+  describe 'routing integrity check (invalid start node)' do
+    subject(:init) do
+      described_class.new(
+        start_node: :first,
+        node_map: {}
+      )
+    end
+
+    it 'raises error when first step is not defined' do
+      expect { init }.to raise_error described_class::InvalidFirstNodeError
+    end
+  end
+
+  describe 'routing integrity check (invalid node router destinations)' do
+    subject(:init) do
+      described_class.new(
+        start_node: :first,
+        node_map: {
+          first: Flows::Flow::Node.new(
+            body: ->(_) {},
+            router: Flows::Flow::Router::Custom.new(
+              a: :b
+            )
+          )
+        }
+      )
+    end
+
+    it 'raises error when first step is not defined' do
+      expect { init }.to raise_error described_class::InvalidNodeRouteError
+    end
+  end
 end
