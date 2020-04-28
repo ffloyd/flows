@@ -4,6 +4,7 @@ require_relative 'shared_context_pipeline/step'
 require_relative 'shared_context_pipeline/mutation_step'
 require_relative 'shared_context_pipeline/track'
 require_relative 'shared_context_pipeline/track_list'
+require_relative 'shared_context_pipeline/wrap'
 require_relative 'shared_context_pipeline/dsl'
 
 module Flows
@@ -267,15 +268,7 @@ module Flows
     extend DSL
 
     def initialize
-      klass = self.class
-      tracks = klass.tracks
-
-      raise NoStepsError, klass if tracks.main_track_empty?
-
-      @__flow = Flows::Flow.new(
-        start_node: tracks.first_step_name,
-        node_map: tracks.to_node_map(self)
-      )
+      @__flow = self.class.tracks.to_flow(self)
     end
 
     # Executes pipeline with provided keyword arguments, returns Result Object.

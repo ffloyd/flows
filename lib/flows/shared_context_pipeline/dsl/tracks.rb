@@ -17,11 +17,21 @@ module Flows
         attr_reader :tracks
 
         def step(name, router_def = DEFAULT_ROUTER_DEF, &lambda)
-          tracks.add_step(name: name, lambda: lambda, router_def: router_def)
+          tracks.add_step(
+            Step.new(name: name, lambda: lambda, router_def: router_def)
+          )
         end
 
         def mut_step(name, router_def = DEFAULT_ROUTER_DEF, &lambda)
-          tracks.add_mutation_step(name: name, lambda: lambda, router_def: router_def)
+          tracks.add_step(
+            MutationStep.new(name: name, lambda: lambda, router_def: router_def)
+          )
+        end
+
+        def wrap(name, router_def = DEFAULT_ROUTER_DEF, &tracks_definitions)
+          tracks.add_step(
+            Wrap.new(method_name: name, router_def: router_def, &tracks_definitions)
+          )
         end
 
         def track(name, &block)

@@ -22,6 +22,7 @@ detectors:
   DataClump:
     exclude:
       - Flows::Result::Helpers
+      - Flows::SharedContextPipeline::DSL::Tracks
   IrresponsibleModule:
     exclude:
       - Flows::SharedContextPipeline
