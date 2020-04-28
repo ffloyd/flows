@@ -23,84 +23,73 @@ module Flows
         VAR_LIST_VAR_NAME = :@inheritable_vars_with_dup
 
         # @api private
-        module InheritanceCallback
-          def inherited(child_class)
-            DupStrategy.migrate(self, child_class)
+        module Migrator
+          def self.call(from, to)
+            parent_var_list = from.instance_variable_get(VAR_LIST_VAR_NAME)
+            child_var_list = to.instance_variable_get(VAR_LIST_VAR_NAME) || []
+
+            to.instance_variable_set(VAR_LIST_VAR_NAME, child_var_list + parent_var_list)
+
+            parent_var_list.each do |name|
+              to.instance_variable_set(name, from.instance_variable_get(name).dup)
+            end
+          end
+        end
+
+        # @api private
+        module Injector
+          def included(mod)
+            Migrator.call(self, mod)
+            mod.singleton_class.prepend Injector
 
             super
           end
 
-          def included(child_mod)
-            DupStrategy.migrate(self, child_mod)
-
-            child_mod.singleton_class.prepend(InheritanceCallback)
+          def extended(mod)
+            Migrator.call(self, mod)
+            mod.singleton_class.prepend Injector
 
             super
           end
 
-          def extended(child_mod)
-            DupStrategy.migrate(self, child_mod)
-
-            child_mod.singleton_class.prepend(InheritanceCallback)
+          def inherited(mod)
+            Migrator.call(self, mod)
+            mod.singleton_class.prepend Injector
 
             super
           end
         end
 
         class << self
-          # Applies behaviour and defaults for singleton variables.
-          #
-          # @note Variable names should look like `:@var` or `'@var'`.
-          #
-          # @param klass [Class] target class.
-          # @param attrs_with_default [Hash<Symbol, String => Object>] keys are variable names,
-          #   values are default values.
+          # Generates a module which applies behaviour and defaults for singleton variables.
           #
           # @example
           #   class MyClass
-          #     Flows::Util::InheritableSingletonVars::DupStrategy.call(
-          #       self,
+          #     SingletonVarsSetup = Flows::Util::InheritableSingletonVars::DupStrategy.make_module(
           #       :@my_list => []
           #     )
-          #   end
-          def call(klass, attrs_with_default = {})
-            init_variables_with_default_values(klass, attrs_with_default)
-
-            var_names = attrs_with_default.keys.map(&:to_sym)
-            add_var_list(klass, var_names)
-
-            inject_inheritance_hook(klass)
-          end
-
-          # Moves variables between modules
           #
-          # @api private
-          def migrate(from_mod, to_mod)
-            var_list = from_mod.instance_variable_get(VAR_LIST_VAR_NAME)
-            to_mod.instance_variable_set(VAR_LIST_VAR_NAME, var_list.dup)
-
-            var_list.each do |name|
-              to_mod.instance_variable_set(name, from_mod.instance_variable_get(name).dup)
+          #     include SingletonVarsSetup
+          #   end
+          #
+          # @note Variable names should look like `:@var` or `'@var'`.
+          #
+          # @param vars_with_default [Hash<Symbol, String => Object>] keys are variable names,
+          #   values are default values.
+          def make_module(vars_with_default = {})
+            Module.new.tap do |mod|
+              mod.instance_variable_set(VAR_LIST_VAR_NAME, vars_with_default.keys.map(&:to_sym))
+              init_vars(mod, vars_with_default)
+              mod.extend Injector
             end
           end
 
           private
 
-          def init_variables_with_default_values(klass, attrs_with_default)
-            attrs_with_default.each do |name, default_value|
-              klass.instance_variable_set(name, default_value)
+          def init_vars(mod, vars_with_default)
+            vars_with_default.each do |name, value|
+              mod.instance_variable_set(name, value)
             end
-          end
-
-          def add_var_list(klass, var_names)
-            watch_list = klass.instance_variable_get(VAR_LIST_VAR_NAME) || []
-            watch_list.concat(var_names)
-            klass.instance_variable_set(VAR_LIST_VAR_NAME, watch_list)
-          end
-
-          def inject_inheritance_hook(klass)
-            singleton = klass.singleton_class
-            singleton.prepend(InheritanceCallback) unless singleton.is_a?(InheritanceCallback)
           end
         end
       end

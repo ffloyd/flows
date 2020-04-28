@@ -88,10 +88,11 @@ module Flows
       # Placeholder for empty value. We cannot use `nil` because value can be `nil`.
       NO_VALUE = :__no_value__
 
-      Flows::Util::InheritableSingletonVars::DupStrategy.call(
-        self,
+      SingletonVarsSetup = Flows::Util::InheritableSingletonVars::DupStrategy.make_module(
         '@dependencies' => {}
       )
+
+      include SingletonVarsSetup
 
       # @api private
       module DSL
@@ -133,8 +134,7 @@ module Flows
 
       singleton_class.prepend InheritanceCallback
 
-      # @api private
-      module InitializePatch
+      InitializerWrapper = Util::PrependToClass.make_module do
         def initialize(*args, **kwargs, &block) # rubocop:disable Metrics/MethodLength
           klass = self.class
           DependencyList.new(
@@ -153,7 +153,7 @@ module Flows
         end
       end
 
-      Flows::Util::PrependToClass.call(self, InitializePatch)
+      include InitializerWrapper
     end
   end
 end

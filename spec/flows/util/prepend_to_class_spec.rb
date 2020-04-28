@@ -1,16 +1,6 @@
 require 'spec_helper'
 
 RSpec.describe Flows::Util::PrependToClass do
-  shared_examples 'preserves all the initializations' do
-    it 'preserves original initialization' do
-      expect(instance.greetings).to eq 'Hello!'
-    end
-
-    it 'preserves prepended initialization' do
-      expect(instance.data).to eq 'DATA'
-    end
-  end
-
   let(:klass) do
     Class.new do
       attr_reader :greetings
@@ -23,6 +13,11 @@ RSpec.describe Flows::Util::PrependToClass do
 
   let(:module_to_prepend) do
     Module.new do
+    end
+  end
+
+  let(:prepender_mod) do
+    described_class.make_module do
       def initialize(*args, **kwargs, &block)
         @data = kwargs[:data]
 
@@ -37,16 +32,26 @@ RSpec.describe Flows::Util::PrependToClass do
     end
   end
 
-  let(:patched_module) do
+  let(:patched_mod) do
     Module.new { attr_reader :data }.tap do |mod|
-      described_class.call(mod, module_to_prepend)
+      mod.include prepender_mod
+    end
+  end
+
+  shared_examples 'preserves all the initializations' do
+    it 'preserves original initialization' do
+      expect(instance.greetings).to eq 'Hello!'
+    end
+
+    it 'preserves prepended initialization' do
+      expect(instance.data).to eq 'DATA'
     end
   end
 
   context 'when patched module included into class' do
     subject(:instance) { klass.new(data: 'DATA') }
 
-    before { klass.include patched_module }
+    before { klass.include patched_mod }
 
     it_behaves_like 'preserves all the initializations'
   end
@@ -57,7 +62,7 @@ RSpec.describe Flows::Util::PrependToClass do
     before { klass.include middle_module }
 
     let(:middle_module) do
-      Module.new.tap { |mod| mod.include patched_module }
+      Module.new.tap { |mod| mod.include patched_mod }
     end
 
     it_behaves_like 'preserves all the initializations'

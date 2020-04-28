@@ -16,25 +16,38 @@ module Flows
         VAR_MAP_VAR_NAME = :@inheritable_vars_with_isolation
 
         # @api private
-        module InheritanceCallback
-          def inherited(child_class)
-            IsolationStrategy.migrate(self, child_class)
+        module Migrator
+          def self.call(from, to)
+            parent_var_map = from.instance_variable_get(VAR_MAP_VAR_NAME)
+            child_var_map = to.instance_variable_get(VAR_MAP_VAR_NAME) || {}
+
+            to.instance_variable_set(VAR_MAP_VAR_NAME, child_var_map.merge(parent_var_map))
+
+            parent_var_map.each do |name, value_proc|
+              to.instance_variable_set(name, value_proc.call)
+            end
+          end
+        end
+
+        # @api private
+        module Injector
+          def included(mod)
+            Migrator.call(self, mod)
+            mod.singleton_class.prepend Injector
 
             super
           end
 
-          def included(child_mod)
-            IsolationStrategy.migrate(self, child_mod)
-
-            child_mod.singleton_class.prepend InheritanceCallback
+          def extended(mod)
+            Migrator.call(self, mod)
+            mod.singleton_class.prepend Injector
 
             super
           end
 
-          def extended(child_mod)
-            IsolationStrategy.migrate(self, child_mod)
-
-            child_mod.singleton_class.prepend InheritanceCallback
+          def inherited(mod)
+            Migrator.call(self, mod)
+            mod.singleton_class.prepend Injector
 
             super
           end
@@ -43,59 +56,33 @@ module Flows
         class << self
           # Applies behaviour and defaults for singleton variables.
           #
-          # @note Variable names should look like `:@var` or `'@var'`.
-          #
-          # @param klass [Class] target class.
-          # @param attrs_with_default [Hash<Symbol, String => Proc>] keys are variable names,
-          #   values are procs or lambdas which return default values.
-          #
           # @example
           #   class MyClass
-          #     Flows::Util::InheritableSingletonVars::IsolationStrategy.call(
-          #       self,
+          #     SingletonVarsSetup = Flows::Util::InheritableSingletonVars::IsolationStrategy.make_module(
           #       :@my_list => -> { [] }
           #     )
-          #   end
-          def call(klass, attrs_with_default = {})
-            init_variables_with_default_values(klass, attrs_with_default)
-
-            var_defaults = attrs_with_default
-            add_variables_to_store(klass, var_defaults)
-
-            inject_inheritance_hook(klass)
-          end
-
-          # Moves variables between modules
           #
-          # @api private
-          def migrate(from_mod, to_mod)
-            new_var_map = from_mod.instance_variable_get(VAR_MAP_VAR_NAME).dup
-
-            to_mod.instance_variable_set(VAR_MAP_VAR_NAME, new_var_map)
-
-            new_var_map.each do |name, default_value_proc|
-              to_mod.instance_variable_set(name, default_value_proc.call)
+          #     include SingletonVarsSetup
+          #   end
+          #
+          # @note Variable names should look like `:@var` or `'@var'`.
+          #
+          # @param attrs_with_default [Hash<Symbol, String => Proc>] keys are variable names,
+          #   values are procs or lambdas which return default values.
+          def make_module(vars_with_default = {})
+            Module.new.tap do |mod|
+              mod.instance_variable_set(VAR_MAP_VAR_NAME, vars_with_default.dup)
+              init_vars(mod, vars_with_default)
+              mod.extend Injector
             end
           end
 
           private
 
-          def init_variables_with_default_values(klass, attrs_with_default)
-            attrs_with_default.each do |name, default_value_proc|
-              klass.instance_variable_set(name, default_value_proc.call)
+          def init_vars(mod, vars_with_default)
+            vars_with_default.each do |name, value_proc|
+              mod.instance_variable_set(name, value_proc.call)
             end
-          end
-
-          def add_variables_to_store(klass, var_defaults)
-            store = klass.instance_variable_get(VAR_MAP_VAR_NAME) || {}
-            next_store = store.merge(var_defaults)
-
-            klass.instance_variable_set(VAR_MAP_VAR_NAME, next_store)
-          end
-
-          def inject_inheritance_hook(klass)
-            singleton = klass.singleton_class
-            singleton.prepend(InheritanceCallback) unless singleton.is_a?(InheritanceCallback)
           end
         end
       end

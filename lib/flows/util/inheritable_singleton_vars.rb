@@ -41,30 +41,37 @@ module Flows
     # Each strategy here is using following way of injecting into yours abstract classes:
     #
     #     class BaseSomething
-    #       Flows::Util::InheritableSingletonVars::SomeStrategy.call(
-    #         self,
-    #         **rest_of_the_options_here
+    #       SingletonVarsSetup = Flows::Util::InheritableSingletonVars::SomeStrategy.make_module(
+    #         **options_here
     #       )
+    #
+    #       include SingeltonVarsSetup # extend also will work
     #     end
     #
     # In case of extensions and mixins:
     #
     #     module MyExtension
-    #       def self.extended(mod)
-    #         Flows::Util::InheritableSingletonVars::SomeStrategy.call(
-    #           mod,
-    #           **rest_of_the_options_here
-    #         )
-    #       end
+    #       SingletonVarsSetup = Flows::Util::InheritableSingletonVars::SomeStrategy.make_module(
+    #         **options_here
+    #       )
+    #
+    #       include SingeltonVarsSetup # extend also will work
+    #     end
+    #
+    #     class SomethingA
+    #       extend MyExtension
     #     end
     #
     #     module MyMixin
-    #       def self.included(mod)
-    #         Flows::Util::InheritableSingletonVars::SomeStrategy.call(
-    #           mod,
-    #           **rest_of_the_options_here
-    #         )
-    #       end
+    #       SingletonVarsSetup = Flows::Util::InheritableSingletonVars::SomeStrategy.make_module(
+    #         **options_here
+    #       )
+    #
+    #       include SingeltonVarsSetup # extend also will work
+    #     end
+    #
+    #     class SomethingB
+    #       include MyMixin
     #     end
     #
     # Moreover, you can use multiple strategies in the same class.

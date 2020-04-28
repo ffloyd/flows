@@ -78,7 +78,7 @@ module Flows
     #     module HasData
     #       attr_reader :data
     #
-    #       module InitializePatch
+    #       InitializePatch = Flows::Util::PrependToClass.make_module do
     #         def initialize(*args, **kwargs, &block)
     #           @data = kwargs[:data]
     #
@@ -92,7 +92,7 @@ module Flows
     #         end
     #       end
     #
-    #       Flows::Util::PrependToClass.call(self, InitializePatch)
+    #       include InitializePatch
     #     end
     #
     #     module Stuff
@@ -113,20 +113,54 @@ module Flows
     #
     #     x.data
     #     # => 'data'
+    #
+    #     x.greeting
+    #     # => 'hello'
+    #
+    # @note this solution is designed to patch `include` behaviour and
+    #   has no effect on `extend`.
     module PrependToClass
       class << self
-        # When `mod` is included into class in any way `module_to_prepend`
-        # will be prepended to the class.
+        # Allows to prepend some module to class when
+        # host module included into class.
         #
-        # @param mod [Module] host module
-        # @param module_to_prepend [Module] module to be prepended to a class
-        def call(mod, module_to_prepend)
-          mod.singleton_class.prepend injector(module_to_prepend)
+        # Under the hood two modules are created:
+        #
+        # * "to prepend" module made from provided block
+        # * "container" module which will be returned by this method
+        #
+        # When you include "container" module into your module `Mod`
+        # you're enabling the following behaviour:
+        #
+        # * when `Mod` included into class - "to prepend" module will be prepended to class
+        # * when `Mod` is included into some module `Mod2` - `Mod2` also will
+        #   prepend "to prepend" module when included into class.
+        # * you can include `Mod` into `Mod2`, then include `Mod2` into `Mod3` -
+        #   desribed behavior works for include chain of any length.
+        #
+        # Moreover, this behaviour also works with `extend`, not only `include`.
+        #
+        # @yield body for module which will be prepended
+        # @return [Module] module to be included or extended into your module
+        def make_module(&module_body)
+          Module.new.tap do |mod|
+            to_prepend_mod = Module.new(&module_body)
+            mod.const_set(:ToPrepend, to_prepend_mod)
+
+            set_injector_mod(mod, to_prepend_mod)
+          end
         end
 
         private
 
-        def injector(module_to_prepend)
+        def set_injector_mod(mod, module_to_prepend)
+          injector = make_injector_mod(module_to_prepend)
+
+          mod.const_set(:Injector, injector)
+          mod.singleton_class.prepend(injector)
+        end
+
+        def make_injector_mod(module_to_prepend)
           Module.new.tap do |injector|
             injector.define_method(:included) do |target_mod|
               if target_mod.class == Class
