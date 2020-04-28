@@ -133,8 +133,7 @@ module Flows
 
       singleton_class.prepend InheritanceCallback
 
-      # @api private
-      module InitializePatch
+      InitializerWrapper = Util::PrependToClass.make_module do
         def initialize(*args, **kwargs, &block) # rubocop:disable Metrics/MethodLength
           klass = self.class
           DependencyList.new(
@@ -153,7 +152,7 @@ module Flows
         end
       end
 
-      Flows::Util::PrependToClass.call(self, InitializePatch)
+      include InitializerWrapper
     end
   end
 end
