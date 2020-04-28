@@ -18,7 +18,8 @@ Types of changes:
 
 ### Changed
 
-* `Flows::SharedContextPipeline` callback API, GitHub issue: #6
+* `Flows::SharedContextPipeline` callback API, [issue](https://github.com/ffloyd/flows/issues/6)
+* `Flows::Util` modules API, [issue](https://github.com/ffloyd/flows/issues/11)
 
 ## [0.4.0] - 2020-04-21
 
