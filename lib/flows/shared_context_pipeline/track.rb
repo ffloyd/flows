@@ -16,22 +16,9 @@ module Flows
         @step_list = @step_list.map(&:dup)
       end
 
-      def add_step(name:, lambda: nil, router_def:)
-        step = Step.new(name: name, lambda: lambda, router_def: router_def)
-
+      def add_step(step)
         last_step = @step_list.last
-        last_step.next_step = name if last_step
-
-        @step_list << step
-
-        self
-      end
-
-      def add_mutation_step(name:, lambda: nil, router_def:)
-        step = MutationStep.new(name: name, lambda: lambda, router_def: router_def)
-
-        last_step = @step_list.last
-        last_step.next_step = name if last_step
+        last_step.next_step = step.name if last_step
 
         @step_list << step
 

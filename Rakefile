@@ -14,7 +14,7 @@ Reek::Rake::Task.new
 Inch::Rake::Suggest.new
 
 PATHS_TO_SPELLCHECK = ['.'].freeze
-PATHS_FOR_MDL = ['README.md', Dir.glob('docs/**/*.md')].flatten.freeze
+PATHS_FOR_MDL = ['README.md', 'CHANGELOG.md', Dir.glob('docs/**/*.md')].flatten.freeze
 
 desc 'Run self spellchecking'
 task :spellcheck do |_task|

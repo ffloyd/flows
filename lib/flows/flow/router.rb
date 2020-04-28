@@ -15,6 +15,10 @@ module Flows
     #   @param result [Flows::Result] Result Object, output of a {Node} execution.
     #   @return [Symbol] name of the next node or  a special symbol `:end`.
     #   @raise [NoRouteError] if cannot determine a route.
+    #
+    # @!method destinations
+    #   @abstract
+    #   @return [Array<Symbol>] names of all the possible destination nodes
     class Router
     end
   end

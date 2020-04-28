@@ -48,6 +48,11 @@ module Flows
 
           raise NoRouteError, "no route found for: `#{result.inspect}`"
         end
+
+        # @see Flows::Flow::Router#destinations
+        def destinations
+          @routes.values
+        end
       end
     end
   end

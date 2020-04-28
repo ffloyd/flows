@@ -14,6 +14,11 @@ module Flows
         def call(result)
           result.ok? ? @success_route : @failure_route
         end
+
+        # @see Flows::Flow::Router#destinations
+        def destinations
+          [@success_route, @failure_route]
+        end
       end
     end
   end

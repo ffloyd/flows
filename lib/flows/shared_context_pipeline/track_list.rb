@@ -18,12 +18,8 @@ module Flows
         @current_track = track_name
       end
 
-      def add_step(name:, lambda:, router_def:)
-        @tracks[@current_track].add_step(name: name, lambda: lambda, router_def: router_def)
-      end
-
-      def add_mutation_step(name:, lambda:, router_def:)
-        @tracks[@current_track].add_mutation_step(name: name, lambda: lambda, router_def: router_def)
+      def add_step(step)
+        @tracks[@current_track].add_step(step)
       end
 
       def first_step_name
@@ -40,6 +36,15 @@ module Flows
             track.to_node_map(method_source)
           )
         end
+      end
+
+      def to_flow(method_source)
+        raise NoStepsError, method_source if main_track_empty?
+
+        Flows::Flow.new(
+          start_node: first_step_name,
+          node_map: to_node_map(method_source)
+        )
       end
     end
   end

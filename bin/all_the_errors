@@ -45,3 +45,11 @@ echo "Shared Context Pipeline"
 echo "---------------------------"
 "${BASH_SOURCE%/*}/errors" scp no_steps
 "${BASH_SOURCE%/*}/errors" scp no_step_impl
+
+echo
+echo
+echo "---------------------------"
+echo "Flow"
+echo "---------------------------"
+"${BASH_SOURCE%/*}/errors" flow invalid_node_route
+"${BASH_SOURCE%/*}/errors" flow no_first_node

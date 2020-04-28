@@ -16,6 +16,11 @@ Types of changes:
 
 ## [Unreleased]
 
+### Added
+
+* `Flows::SharedContextPipeline` wrap DSL, [issue](https://github.com/ffloyd/flows/issues/7)
+* `Flows::Flow` routing integrity check on initialization
+
 ### Changed
 
 * `Flows::SharedContextPipeline` callback API, [issue](https://github.com/ffloyd/flows/issues/6)

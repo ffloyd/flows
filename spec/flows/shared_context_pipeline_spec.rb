@@ -587,4 +587,242 @@ RSpec.describe Flows::SharedContextPipeline do
       expect(calculation.meta).to eq expected_meta
     end
   end
+
+  describe 'wrap DSL (basic usage)' do
+    include Flows::Result::Helpers
+    include_context 'with helpers'
+
+    subject(:calculation) { klass.call(input: :data) }
+
+    let(:klass) do
+      Class.new(described_class) do
+        step :first
+        wrap :my_wrap do
+          step :inside_a
+        end
+        wrap :my_wrap do
+          step :inside_b
+        end
+
+        def my_wrap(ctx, meta)
+          ctx[:my_wrap] ||= []
+          ctx[:my_wrap] << :executed
+
+          meta[:my_wrap] ||= []
+          meta[:my_wrap] << :executed
+
+          result = yield
+
+          ok(**result.unwrap.merge(result: :patched))
+        end
+
+        def first(**)
+          ok(first_step: :executed)
+        end
+
+        def inside_a(**)
+          ok(inside_a_step: :executed)
+        end
+
+        def inside_b(**)
+          ok(inside_b_step: :executed)
+        end
+      end
+    end
+
+    let(:expected_context) do
+      {
+        input: :data,
+        first_step: :executed,
+        inside_a_step: :executed,
+        inside_b_step: :executed,
+        my_wrap: %i[executed executed],
+        result: :patched
+      }
+    end
+
+    let(:expected_meta) do
+      {
+        my_wrap: %i[executed executed]
+      }
+    end
+
+    it 'returns expected context' do
+      expect(calculation.unwrap).to eq expected_context
+    end
+
+    it 'returns expected meta' do
+      expect(calculation.meta).to eq expected_meta
+    end
+  end
+
+  describe 'wrap DSL (valid routing)' do
+    include Flows::Result::Helpers
+    include_context 'with helpers'
+
+    subject(:calculation) { klass.call(input: :data) }
+
+    let(:klass) do
+      Class.new(described_class) do
+        # routing to the first step in wrap
+        step :first, routes(match_ok => :inside_a, match_err => :end)
+
+        # routing for wrap result
+        wrap :my_wrap, routes(match_ok => :after_b, match_err => :end) do
+          # routing inside wrap
+          step :inside_a, routes(match_ok => :track_inside, match_err => :end)
+          step :inside_b
+          track :track_inside do
+            # routing inside wrap to :end must stop only wrap execution
+            step :inside_c, routes(match_ok => :end, match_err => :end)
+          end
+        end
+        step :after_a
+        step :after_b
+
+        def my_wrap(ctx, meta)
+          ctx[:my_wrap] = :executed
+          meta[:my_wrap] = :executed
+
+          result = yield
+
+          ok(**result.unwrap.merge(result: :patched))
+        end
+
+        def first(**)
+          ok(first_step: :executed)
+        end
+
+        def inside_a(**)
+          ok(inside_a_step: :executed)
+        end
+
+        def inside_b(**)
+          ok(inside_b_step: :executed)
+        end
+
+        def inside_c(**)
+          ok(inside_c_step: :executed)
+        end
+
+        def after_a(**)
+          ok(after_a_step: :executed)
+        end
+
+        def after_b(**)
+          ok(after_b_step: :executed)
+        end
+      end
+    end
+
+    let(:expected_context) do
+      {
+        input: :data,
+        first_step: :executed,
+        inside_a_step: :executed,
+        inside_c_step: :executed,
+        my_wrap: :executed,
+        after_b_step: :executed,
+        result: :patched
+      }
+    end
+
+    let(:expected_meta) do
+      {
+        my_wrap: :executed
+      }
+    end
+
+    it 'returns expected context' do
+      expect(calculation.unwrap).to eq expected_context
+    end
+
+    it 'returns expected meta' do
+      expect(calculation.meta).to eq expected_meta
+    end
+  end
+
+  describe 'wrap DSL (invalid routing inside wrap)' do
+    include Flows::Result::Helpers
+    include_context 'with helpers'
+
+    subject(:calculation) { klass.call(input: :data) }
+
+    let(:klass) do
+      Class.new(described_class) do
+        step :first, routes(match_ok => :inside_b, match_err => :end)
+        wrap :my_wrap do
+          step :inside_a
+          step :inside_b
+        end
+
+        def my_wrap(ctx, meta)
+          ctx[:my_wrap] = :executed
+          meta[:my_wrap] = :executed
+
+          result = yield
+
+          ok(**result.unwrap.merge(result: :patched))
+        end
+
+        def first(**)
+          ok(first_step: :executed)
+        end
+
+        def inside_a(**)
+          ok(inside_a_step: :executed)
+        end
+
+        def inside_b(**)
+          ok(inside_b_step: :executed)
+        end
+      end
+    end
+
+    it 'raises routing error' do
+      expect { calculation }.to raise_error Flows::Flow::InvalidNodeRouteError
+    end
+  end
+
+  describe 'wrap DSL (invalid routing outside wrap)' do
+    include Flows::Result::Helpers
+    include_context 'with helpers'
+
+    subject(:calculation) { klass.call(input: :data) }
+
+    let(:klass) do
+      Class.new(described_class) do
+        step :first
+        wrap :my_wrap do
+          step :inside, routes(match_ok => :after, match_err => :end)
+        end
+        step :after
+
+        def my_wrap(ctx, meta)
+          ctx[:my_wrap] = :executed
+          meta[:my_wrap] = :executed
+
+          result = yield
+
+          ok(**result.unwrap.merge(result: :patched))
+        end
+
+        def first(**)
+          ok(first_step: :executed)
+        end
+
+        def inside(**)
+          ok(inside_step: :executed)
+        end
+
+        def after(**)
+          ok(after_step: :executed)
+        end
+      end
+    end
+
+    it 'raises routing error' do
+      expect { calculation }.to raise_error Flows::Flow::InvalidNodeRouteError
+    end
+  end
 end
