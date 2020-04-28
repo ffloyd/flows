@@ -14,10 +14,11 @@ RSpec.describe Flows::Util::InheritableSingletonVars do
 
     let(:base_class) do
       Class.new do
-        Flows::Util::InheritableSingletonVars::DupStrategy.call(
-          self,
+        dup_vars = Flows::Util::InheritableSingletonVars::DupStrategy.make_module(
           '@with_dup' => []
         )
+
+        include dup_vars
 
         Flows::Util::InheritableSingletonVars::IsolationStrategy.call(
           self,

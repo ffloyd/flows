@@ -13,14 +13,15 @@ module Flows
         Flows::Result::Err => :end
       )
 
-      Flows::Util::InheritableSingletonVars::DupStrategy.call(
-        self,
+      SingletonVarsSetup = Flows::Util::InheritableSingletonVars::DupStrategy.make_module(
         '@tracks' => TrackList.new,
         '@before_all_callbacks' => [],
         '@after_all_callbacks' => [],
         '@before_each_callbacks' => [],
         '@after_each_callbacks' => []
       )
+
+      include SingletonVarsSetup
 
       def step(name, router_def = DEFAULT_ROUTER_DEF, &lambda)
         tracks.add_step(name: name, lambda: lambda, router_def: router_def)

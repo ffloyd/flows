@@ -9,11 +9,12 @@ module Flows
         # Hash of contracts for failure results.
         attr_reader :failure_contracts
 
-        Flows::Util::InheritableSingletonVars::DupStrategy.call(
-          self,
+        SingletonVarsSetup = Flows::Util::InheritableSingletonVars::DupStrategy.make_module(
           '@success_contracts' => {},
           '@failure_contracts' => {}
         )
+
+        include SingletonVarsSetup
 
         # Defines a contract for a successful result with specific status.
         #

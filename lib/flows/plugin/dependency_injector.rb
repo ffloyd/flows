@@ -88,10 +88,11 @@ module Flows
       # Placeholder for empty value. We cannot use `nil` because value can be `nil`.
       NO_VALUE = :__no_value__
 
-      Flows::Util::InheritableSingletonVars::DupStrategy.call(
-        self,
+      SingletonVarsSetup = Flows::Util::InheritableSingletonVars::DupStrategy.make_module(
         '@dependencies' => {}
       )
+
+      include SingletonVarsSetup
 
       # @api private
       module DSL

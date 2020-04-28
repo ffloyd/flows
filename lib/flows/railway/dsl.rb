@@ -4,10 +4,11 @@ module Flows
     module DSL
       attr_reader :steps
 
-      Flows::Util::InheritableSingletonVars::DupStrategy.call(
-        self,
+      SingletonVarsSetup = Flows::Util::InheritableSingletonVars::DupStrategy.make_module(
         '@steps' => StepList.new
       )
+
+      include SingletonVarsSetup
 
       def step(name, lambda = nil)
         steps.add(name: name, lambda: lambda)
