@@ -5,8 +5,7 @@ RSpec.describe Flows::Util::InheritableSingletonVars::IsolationStrategy do
            'each changes inherited variables after definition') do
     let(:base_class) do
       Class.new do
-        Flows::Util::InheritableSingletonVars::IsolationStrategy.call(
-          self,
+        include Flows::Util::InheritableSingletonVars::IsolationStrategy.make_module(
           '@base' => -> { [] }
         )
       end
@@ -14,8 +13,7 @@ RSpec.describe Flows::Util::InheritableSingletonVars::IsolationStrategy do
 
     let(:middle_class) do
       Class.new(base_class) do
-        Flows::Util::InheritableSingletonVars::IsolationStrategy.call(
-          self,
+        include Flows::Util::InheritableSingletonVars::IsolationStrategy.make_module(
           '@middle' => -> { [] }
         )
       end
@@ -23,8 +21,7 @@ RSpec.describe Flows::Util::InheritableSingletonVars::IsolationStrategy do
 
     let(:last_class) do
       Class.new(middle_class) do
-        Flows::Util::InheritableSingletonVars::IsolationStrategy.call(
-          self,
+        include Flows::Util::InheritableSingletonVars::IsolationStrategy.make_module(
           '@last' => -> { [] }
         )
       end
@@ -100,13 +97,11 @@ RSpec.describe Flows::Util::InheritableSingletonVars::IsolationStrategy do
 
     let(:inner_module) do
       Module.new.tap do |mod|
-        described_class.call(
-          mod,
+        mod.include described_class.make_module(
           '@array' => -> { [] }
         )
 
-        described_class.call(
-          mod,
+        mod.extend described_class.make_module(
           '@integer' => -> { 3 }
         )
       end

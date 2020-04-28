@@ -124,6 +124,12 @@ module Flows
     module Do
       MOD_VAR_NAME = :@flows_result_module_for_do
 
+      SingletonVarsSetup = ::Flows::Util::InheritableSingletonVars::IsolationStrategy.make_module(
+        MOD_VAR_NAME => -> { Module.new }
+      )
+
+      include SingletonVarsSetup
+
       # Utility functions for Flows::Result::Do.
       #
       # Isolated location prevents polluting user classes with unnecessary methods.
@@ -154,14 +160,6 @@ module Flows
             end
           end
         end
-      end
-
-      # @api private
-      def self.extended(mod)
-        ::Flows::Util::InheritableSingletonVars::IsolationStrategy.call(
-          mod,
-          MOD_VAR_NAME => -> { Module.new }
-        )
       end
 
       def do_notation(method_name)
