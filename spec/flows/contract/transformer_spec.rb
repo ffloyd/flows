@@ -8,6 +8,5 @@ RSpec.describe Flows::Contract::Transformer do
                   after_transform: 'AAA'
 
   it_behaves_like 'Flows::Contract with invalid value',
-                  value: :AAA,
-                  error_message: 'must match `String`'
+                  value: :AAA
 end

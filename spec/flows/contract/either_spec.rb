@@ -16,8 +16,7 @@ RSpec.describe Flows::Contract::Either do
                     value: 'aaa'
 
     it_behaves_like 'Flows::Contract with invalid value',
-                    value: 111,
-                    error_message: 'must match `String`'
+                    value: 111
   end
 
   context 'with 2 contracts without transforms' do
@@ -31,12 +30,8 @@ RSpec.describe Flows::Contract::Either do
     it_behaves_like 'Flows::Contract with valid value',
                     value: 'aaa'
 
-    error_message = "must match `String`\n" \
-                    'OR must match `Symbol`'
-
     it_behaves_like 'Flows::Contract with invalid value',
-                    value: 111,
-                    error_message: error_message
+                    value: 111
   end
 
   context 'with 2 contracts with transforms' do
@@ -55,11 +50,7 @@ RSpec.describe Flows::Contract::Either do
                     value: :megatron,
                     after_transform: 'megatron'
 
-    error_message = "must match `String`\n" \
-                    'OR must match `Symbol`'
-
     it_behaves_like 'Flows::Contract with invalid value',
-                    value: 111,
-                    error_message: error_message
+                    value: 111
   end
 end

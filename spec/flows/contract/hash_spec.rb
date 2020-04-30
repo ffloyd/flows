@@ -16,14 +16,8 @@ RSpec.describe Flows::Contract::Hash do
                     value: { a: 1, b: 20 },
                     after_transform: { a: 1, b: 20 }
 
-    error_message = "hash key `\"a\"` is invalid:\n" \
-                    "    must match `Symbol`\n" \
-                    "hash value `-10` is invalid:\n" \
-                    '    must be a positive number'
-
     it_behaves_like 'Flows::Contract with invalid value',
-                    value: { 'a' => 1, b: -10 },
-                    error_message: error_message
+                    value: { 'a' => 1, b: -10 }
   end
 
   context 'with value transformations' do
@@ -38,13 +32,7 @@ RSpec.describe Flows::Contract::Hash do
                     value: { '  aa  ' => 'aa' },
                     after_transform: { 'aa' => 'AA' }
 
-    error_message = "hash key `1` is invalid:\n" \
-                    "    must match `String`\n" \
-                    "hash value `2` is invalid:\n" \
-                    '    must match `String`'
-
     it_behaves_like 'Flows::Contract with invalid value',
-                    value: { 1 => 2 },
-                    error_message: error_message
+                    value: { 1 => 2 }
   end
 end

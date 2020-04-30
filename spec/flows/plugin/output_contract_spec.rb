@@ -213,4 +213,33 @@ RSpec.describe Flows::Plugin::OutputContract do
       expect(invoke.unwrap).to eq :AAAA
     end
   end
+
+  context 'when contract disabled' do
+    subject(:invoke) { klass.new.call }
+
+    let(:klass) do
+      Class.new do
+        include Flows::Plugin::OutputContract
+        include Flows::Result::Helpers
+
+        success_with :ok do
+          String
+        end
+
+        failure_with :err do
+          transformer(either(String, Symbol), &:to_sym)
+        end
+
+        skip_output_contract
+
+        def call
+          err_data('AAAA')
+        end
+      end
+    end
+
+    it 'returns Result object with non-transformed data' do
+      expect(invoke.error).to eq 'AAAA'
+    end
+  end
 end

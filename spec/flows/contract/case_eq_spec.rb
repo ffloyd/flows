@@ -8,8 +8,7 @@ RSpec.describe Flows::Contract::CaseEq do
                     value: 'AAA'
 
     it_behaves_like 'Flows::Contract with invalid value',
-                    value: 111,
-                    error_message: 'must match `String`'
+                    value: 111
   end
 
   context 'with custom error message' do

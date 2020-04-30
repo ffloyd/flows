@@ -30,7 +30,9 @@ module Flows
       # @see Contract#check!
       def check!(other)
         unless @object === other
-          value_error = @error_message || "must match `#{@object.inspect}`"
+          value_error =
+            @error_message ||
+            "must match `#{@object.inspect}`, but has class `#{other.class.inspect}` and value `#{other.inspect}`"
           raise Error.new(other, value_error)
         end
 

@@ -25,6 +25,7 @@ Types of changes:
 
 * `Flows::SharedContextPipeline` callback API, [issue](https://github.com/ffloyd/flows/issues/6)
 * `Flows::Util` modules API, [issue](https://github.com/ffloyd/flows/issues/11)
+* `Flows::Contract::CaseEq` default error expanded to present more context
 
 ## [0.4.0] - 2020-04-21
 

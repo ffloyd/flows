@@ -64,14 +64,20 @@ RSpec.shared_examples 'Flows::Contract with valid value' do |value:, after_trans
 end
 
 # expects `let(:contract)` to be defined
-RSpec.shared_examples 'Flows::Contract with invalid value' do |value:, error_message:|
+RSpec.shared_examples 'Flows::Contract with invalid value' do |value:, error_message: nil|
   describe '#check' do
     subject(:check) { contract.check(value) }
 
     it { is_expected.to be_err }
 
-    it 'returns expected error message' do
-      expect(check.error).to eq error_message
+    if error_message
+      it 'returns error message' do
+        expect(check.error).to eq error_message
+      end
+    else
+      it 'returns error message as String' do
+        expect(check.error).to be_a String
+      end
     end
   end
 
@@ -86,8 +92,14 @@ RSpec.shared_examples 'Flows::Contract with invalid value' do |value:, error_mes
 
     it { is_expected.to be_err }
 
-    it 'returns object after contract transform' do
-      expect(transform.error).to eq error_message
+    if error_message
+      it 'returns result object with expected error text after contract transform' do
+        expect(transform.error).to eq error_message
+      end
+    else
+      it 'returns result object after contract transform' do
+        expect(transform.error).to be_a String
+      end
     end
   end
 
