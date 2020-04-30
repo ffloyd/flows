@@ -15,9 +15,9 @@ module Flows
           result = super(*args, &block)
           klass = self.class
 
-          contract = Util.contract_for(klass, result)
+          return result if klass.skip_output_contract_flag
 
-          Util.transform_result(klass, contract, result)
+          Util.transform_result(klass, result)
 
           result
         end
@@ -28,6 +28,17 @@ module Flows
         # @api private
         module Util
           class << self
+            def transform_result(klass, result)
+              contract = Util.contract_for(klass, result)
+
+              data = result.send(:data)
+
+              transformed_result = contract.transform(data)
+              raise ContractError.new(klass, result, transformed_result.error) if transformed_result.err?
+
+              result.send(:'data=', transformed_result.unwrap)
+            end
+
             def contract_for(klass, result)
               raise ResultTypeError.new(klass, result) unless result.is_a?(Flows::Result)
 
@@ -35,15 +46,6 @@ module Flows
               contracts = result.ok? ? klass.success_contracts : klass.failure_contracts
 
               contracts[status] || raise(StatusError.new(klass, result, contracts.keys))
-            end
-
-            def transform_result(klass, contract, result)
-              data = result.send(:data)
-
-              transformed_result = contract.transform(data)
-              raise ContractError.new(klass, result, transformed_result.error) if transformed_result.err?
-
-              result.send(:'data=', transformed_result.unwrap)
             end
           end
         end

@@ -22,6 +22,7 @@ module Flows
     #
     # * `success_with(status, &block)` - defines contract for a successful result with status `status`.
     # * `failure_with(status, &block)` - defines contract for a failure result with status `status`.
+    # * `skip_output_contract` - disables contract check and transformation for current class and children.
     #
     # @example with one possible output contract
     #     class DoJob

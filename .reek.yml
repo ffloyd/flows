@@ -41,3 +41,6 @@ detectors:
   MissingSafeMethod:
     exclude:
       - Flows::Contract
+  BooleanParameter:
+    exclude:
+      - Flows::Plugin::OutputContract::DSL
