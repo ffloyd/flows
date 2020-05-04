@@ -33,10 +33,12 @@ detectors:
   TooManyStatements:
     exclude:
       - Flows::SharedContextPipeline#call
+      - Flows::Plugin::Profiler::Wrapper#make_module
       - initialize
   DuplicateMethodCall:
     exclude:
       - Flows::SharedContextPipeline#call
+      - Flows::Plugin::Profiler::Wrapper#make_module
       - 'length'
   MissingSafeMethod:
     exclude:
