@@ -30,6 +30,7 @@ detectors:
     exclude:
       - Flows::SharedContextPipeline#call
       - Flows::Contract # too many false positives here
+      - Flows::Plugin::Profiler::Report#to_a
   TooManyStatements:
     exclude:
       - Flows::SharedContextPipeline#call
