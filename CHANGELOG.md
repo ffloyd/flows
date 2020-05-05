@@ -21,6 +21,7 @@ Types of changes:
 * `Flows::SharedContextPipeline` wrap DSL, [issue](https://github.com/ffloyd/flows/issues/7)
 * `Flows::Flow` routing integrity check on initialization
 * `Flows::Plugin::OutputContract` skip contract DSL method
+* `Flows::Plugin::Profiler` introduced.
 
 ### Changed
 

@@ -17,7 +17,7 @@ module Flows
             mod.define_method(:included) do |target|
               raise 'must be included into class' unless target.is_a?(Class)
 
-              target.prepend Wrapper.make_module(target, :instance, method_name)
+              target.prepend Wrapper.make_instance_wrapper(method_name)
             end
           end
 
@@ -25,7 +25,7 @@ module Flows
             mod.define_method(:extended) do |target|
               raise 'must be extended into class' unless target.is_a?(Class)
 
-              target.singleton_class.prepend(Wrapper.make_module(target, :singleton, method_name))
+              target.singleton_class.prepend(Wrapper.make_singleton_wrapper(method_name))
             end
           end
         end

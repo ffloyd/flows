@@ -1,5 +1,6 @@
 require_relative 'report/events'
 require_relative 'report/raw'
+require_relative 'report/tree'
 
 module Flows
   module Plugin
@@ -30,7 +31,7 @@ module Flows
         end
 
         # @return [Array<Event>] array of events
-        def to_a
+        def events
           raw_data.map do |raw_event|
             klass = case raw_event.first
                     when :started then StartEvent
