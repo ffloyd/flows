@@ -1,6 +1,7 @@
 require_relative 'report/events'
 require_relative 'report/raw'
 require_relative 'report/tree'
+require_relative 'report/flat'
 
 module Flows
   module Plugin

@@ -71,6 +71,19 @@ module Flows
               @to_s ||= (base_text_list(root_node) + childeren_text_list(root_node)).join("\n")
             end
 
+            # :reek:DuplicateMethodCall
+            # :reek:NestedIterators
+            def group_by_subject
+              @group_by_subject ||= (
+                [children.group_by(&:subject)] + children.map(&:group_by_subject)
+              ).each_with_object({}) do |group, result|
+                group.each do |subject, nodes|
+                  result[subject] ||= []
+                  result[subject] += nodes
+                end
+              end
+            end
+
             private
 
             def base_text_list(root_node) # rubocop:disable Metrics/MethodLength
