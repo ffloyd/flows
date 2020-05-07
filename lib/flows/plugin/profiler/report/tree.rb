@@ -1,10 +1,11 @@
 require_relative 'tree/node'
+require_relative 'tree/calculated_node'
 
 module Flows
   module Plugin
     module Profiler
       class Report
-        # Tree report. Merges similar calls, saves execution dependencies.
+        # Tree report. Merges similar calls, saves execution structure (who called whom).
         #
         # @example
         #     Flows::Plugin::Profiler.profile(:tree) do
@@ -42,19 +43,31 @@ module Flows
           #     }
           #   ]
           def to_a
-            make_tree.to_h[:nested]
+            root_calculated_node.children.map { |node| node.to_h(root_calculated_node) }
+          end
+
+          def add(*)
+            forget_memoized_values
+            super
           end
 
           def to_s
-            root_node = make_tree
-
-            root_node.children.map { |node| node.to_s(root_node) }.join
+            root_calculated_node.children.map { |node| node.to_s(root_calculated_node) }.join
           end
 
           private
 
-          def make_tree
-            Node.new(subject: :ROOT).tap do |root_node|
+          def forget_memoized_values
+            @root_node = nil
+            @root_calculated_node = nil
+          end
+
+          def root_calculated_node
+            @root_calculated_node ||= CalculatedNode.new(root_node)
+          end
+
+          def root_node
+            @root_node ||= Node.new(subject: :ROOT).tap do |root_node|
               events.each_with_object([root_node]) do |event, node_path|
                 current_node = node_path.last
 
