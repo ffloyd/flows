@@ -8,7 +8,7 @@ module Flows
         def initialize(*args, &block)
           super(*args, &block)
           klass = self.class
-          raise NoContractError, klass if klass.success_contracts.empty?
+          raise NoContractError, klass if klass.success_contracts.empty? && !klass.skip_output_contract_flag
         end
 
         def call(*args, &block)
