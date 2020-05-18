@@ -19,7 +19,7 @@ Also `flows` is faster than Ruby's alternatives.
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'flows', '~> 0.4'
+gem 'flows', '~> 0.5'
 ```
 
 And then execute:
