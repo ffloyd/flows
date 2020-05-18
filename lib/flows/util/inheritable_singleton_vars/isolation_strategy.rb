@@ -67,7 +67,7 @@ module Flows
           #
           # @note Variable names should look like `:@var` or `'@var'`.
           #
-          # @param attrs_with_default [Hash<Symbol, String => Proc>] keys are variable names,
+          # @param vars_with_default [Hash<Symbol, String => Proc>] keys are variable names,
           #   values are procs or lambdas which return default values.
           def make_module(vars_with_default = {})
             Module.new.tap do |mod|

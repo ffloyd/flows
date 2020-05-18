@@ -16,8 +16,7 @@ RSpec.describe Flows::Contract::Compose do
                     value: 'aaa'
 
     it_behaves_like 'Flows::Contract with invalid value',
-                    value: 111,
-                    error_message: 'must match `String`'
+                    value: 111
   end
 
   context 'with 2 contracts without transforms' do
@@ -29,12 +28,10 @@ RSpec.describe Flows::Contract::Compose do
                     value: '111'
 
     it_behaves_like 'Flows::Contract with invalid value',
-                    value: 111,
-                    error_message: 'must match `String`'
+                    value: 111
 
     it_behaves_like 'Flows::Contract with invalid value',
-                    value: 'aaa',
-                    error_message: 'must match `/\\A\\d+\\z/`'
+                    value: 'aaa'
   end
 
   context 'with 2 contracts with transforms' do
@@ -50,7 +47,6 @@ RSpec.describe Flows::Contract::Compose do
                     after_transform: 'MEGATRON'
 
     it_behaves_like 'Flows::Contract with invalid value',
-                    value: 111,
-                    error_message: 'must match `String`'
+                    value: 111
   end
 end

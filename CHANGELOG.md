@@ -20,11 +20,14 @@ Types of changes:
 
 * `Flows::SharedContextPipeline` wrap DSL, [issue](https://github.com/ffloyd/flows/issues/7)
 * `Flows::Flow` routing integrity check on initialization
+* `Flows::Plugin::OutputContract` skip contract DSL method
+* `Flows::Plugin::Profiler` introduced. Report types: raw, tree and flat.
 
 ### Changed
 
 * `Flows::SharedContextPipeline` callback API, [issue](https://github.com/ffloyd/flows/issues/6)
 * `Flows::Util` modules API, [issue](https://github.com/ffloyd/flows/issues/11)
+* `Flows::Contract::CaseEq` default error expanded to present more context
 
 ## [0.4.0] - 2020-04-21
 

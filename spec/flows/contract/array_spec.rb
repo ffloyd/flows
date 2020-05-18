@@ -10,15 +10,10 @@ RSpec.describe Flows::Contract::Array do
                     value: %w[AAA BBB]
 
     it_behaves_like 'Flows::Contract with invalid value',
-                    value: 111,
-                    error_message: 'must match `Array`'
-
-    error_message = "array element `111` is invalid:\n" \
-                    '    must match `String`'
+                    value: 111
 
     it_behaves_like 'Flows::Contract with invalid value',
-                    value: ['AAA', 111],
-                    error_message: error_message
+                    value: ['AAA', 111]
   end
 
   context 'with transformation' do
@@ -33,7 +28,6 @@ RSpec.describe Flows::Contract::Array do
                     after_transform: %w[AAA BBB]
 
     it_behaves_like 'Flows::Contract with invalid value',
-                    value: 111,
-                    error_message: 'must match `Array`'
+                    value: 111
   end
 end

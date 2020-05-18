@@ -11,3 +11,4 @@ end
 require_relative 'plugin/dependency_injector'
 require_relative 'plugin/implicit_init'
 require_relative 'plugin/output_contract'
+require_relative 'plugin/profiler'

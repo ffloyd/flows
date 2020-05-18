@@ -10,13 +10,8 @@ RSpec.describe Flows::Contract::HashOf do
                     value: { x: 1.0, y: 20.0, name: 'Vasya' },
                     after_transform: { x: 1.0, y: 20.0 }
 
-    error_message = "missing hash key `:x`\n" \
-                    "hash key `:y` has an invalid assigned value:\n" \
-                    '    must match `Float`'
-
     it_behaves_like 'Flows::Contract with invalid value',
-                    value: { y: '10' },
-                    error_message: error_message
+                    value: { y: '10' }
   end
 
   context 'with hash contract with transforms' do
@@ -31,12 +26,7 @@ RSpec.describe Flows::Contract::HashOf do
                     value: { s: '  aa  ', u: ' aa ', name: 'Vasya' },
                     after_transform: { s: 'aa', u: ' AA ' }
 
-    error_message = "missing hash key `:s`\n" \
-                    "hash key `:u` has an invalid assigned value:\n" \
-                    '    must match `String`'
-
     it_behaves_like 'Flows::Contract with invalid value',
-                    value: { u: 10 },
-                    error_message: error_message
+                    value: { u: 10 }
   end
 end

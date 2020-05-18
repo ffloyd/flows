@@ -30,14 +30,25 @@ detectors:
     exclude:
       - Flows::SharedContextPipeline#call
       - Flows::Contract # too many false positives here
+      - Flows::Plugin::Profiler::Report#events
   TooManyStatements:
     exclude:
       - Flows::SharedContextPipeline#call
+      - Flows::Plugin::Profiler::Wrapper#make_instance_wrapper
+      - Flows::Plugin::Profiler::Wrapper#make_singleton_wrapper
       - initialize
   DuplicateMethodCall:
     exclude:
       - Flows::SharedContextPipeline#call
+      - Flows::Plugin::Profiler::Wrapper#make_instance_wrapper
+      - Flows::Plugin::Profiler::Wrapper#make_singleton_wrapper
       - 'length'
   MissingSafeMethod:
     exclude:
       - Flows::Contract
+  BooleanParameter:
+    exclude:
+      - Flows::Plugin::OutputContract::DSL
+  TooManyMethods:
+    exclude:
+      - Flows::Plugin::Profiler::Report::Tree::Node
