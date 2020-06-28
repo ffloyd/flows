@@ -825,4 +825,74 @@ RSpec.describe Flows::SharedContextPipeline do
       expect { calculation }.to raise_error Flows::Flow::InvalidNodeRouteError
     end
   end
+
+  describe 'wrap DSL and inheritace' do
+    include Flows::Result::Helpers
+    include_context 'with helpers'
+
+    subject(:calculation) { klass.call(input: :data) }
+
+    let(:klass) { Class.new(parent_klass) }
+
+    let(:parent_klass) do
+      Class.new(described_class) do
+        step :first
+        wrap :my_wrap do
+          step :inside_a
+        end
+        wrap :my_wrap do
+          step :inside_b
+        end
+
+        def my_wrap(ctx, meta)
+          ctx[:my_wrap] ||= []
+          ctx[:my_wrap] << :executed
+
+          meta[:my_wrap] ||= []
+          meta[:my_wrap] << :executed
+
+          result = yield
+
+          ok(**result.unwrap.merge(result: :patched))
+        end
+
+        def first(**)
+          ok(first_step: :executed)
+        end
+
+        def inside_a(**)
+          ok(inside_a_step: :executed)
+        end
+
+        def inside_b(**)
+          ok(inside_b_step: :executed)
+        end
+      end
+    end
+
+    let(:expected_context) do
+      {
+        input: :data,
+        first_step: :executed,
+        inside_a_step: :executed,
+        inside_b_step: :executed,
+        my_wrap: %i[executed executed],
+        result: :patched
+      }
+    end
+
+    let(:expected_meta) do
+      {
+        my_wrap: %i[executed executed]
+      }
+    end
+
+    it 'returns expected context' do
+      expect(calculation.unwrap).to eq expected_context
+    end
+
+    it 'returns expected meta' do
+      expect(calculation.meta).to eq expected_meta
+    end
+  end
 end
