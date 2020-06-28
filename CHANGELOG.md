@@ -16,6 +16,10 @@ Types of changes:
 
 ## [Unreleased]
 
+### Fixed
+
+* `Flows::SharedContextPipeline` wrap DSL failure in case of inheritance, [issue](https://github.com/ffloyd/flows/issues/18)
+
 ## [0.5.0] - 2020-05-18
 
 ### Added

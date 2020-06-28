@@ -3,6 +3,7 @@ module Flows
     # @api private
     class Wrap
       attr_reader :router_def
+      attr_reader :tracks_definitions
 
       # :reek:Attribute:
       attr_accessor :next_step
@@ -22,11 +23,20 @@ module Flows
       def initialize(method_name:, router_def:, &tracks_definitions)
         @method_name = method_name
         @router_def = router_def
+        @tracks_definitions = tracks_definitions
 
         singleton_class.extend DSL::Tracks
         singleton_class.extend Result::Helpers
 
         singleton_class.instance_exec(&tracks_definitions)
+      end
+
+      # on `#dup` we're getting new empty singleton class
+      # so we need to initialize it like original one
+      def initialize_dup(other)
+        singleton_class.extend DSL::Tracks
+        singleton_class.extend Result::Helpers
+        singleton_class.instance_exec(&other.tracks_definitions)
       end
 
       def name
