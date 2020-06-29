@@ -5,7 +5,7 @@ module Flows
       attr_reader :router_def
       attr_reader :tracks_definitions
 
-      # :reek:Attribute:
+      # :reek:Attribute
       attr_accessor :next_step
 
       EMPTY_HASH = {}.freeze
