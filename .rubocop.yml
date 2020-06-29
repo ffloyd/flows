@@ -5,6 +5,7 @@ require:
 
 AllCops:
   TargetRubyVersion: 2.7
+  NewCops: enable
 
 Style/HashEachMethods:
   Enabled: true
@@ -58,3 +59,6 @@ Naming/RescuedExceptionsVariableName:
 Style/Documentation:
   Exclude:
     - 'lib/flows/shared_context_pipeline/step.rb' # false positive here
+
+Style/SlicingWithRange:
+  Enabled: false # to support Ruby 2.5

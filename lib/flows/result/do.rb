@@ -143,7 +143,7 @@ module Flows
             module_for_do
           end
 
-          # `:reek:TooManyStatements:` - allowed because we have no choice here.
+          # `:reek:TooManyStatements` - allowed because we have no choice here.
           #
           # `:reek:NestedIterators` - allowed here because here are no iterators.
           def define_wrapper(mod, method_name) # rubocop:disable Metrics/MethodLength

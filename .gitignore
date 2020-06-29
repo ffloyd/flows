@@ -17,3 +17,7 @@
 
 # OS specific stuff
 .DS_Store
+
+# In case of gem development we don't need to track Gemfile.lock
+# All the constraints must be expressed in gemspec
+/Gemfile.lock
