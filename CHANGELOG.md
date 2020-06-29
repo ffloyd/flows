@@ -16,6 +16,8 @@ Types of changes:
 
 ## [Unreleased]
 
+## [0.5.1] - 2020-06-29
+
 ### Fixed
 
 * `Flows::SharedContextPipeline` wrap DSL failure in case of inheritance, [issue](https://github.com/ffloyd/flows/issues/18)
@@ -57,6 +59,7 @@ Types of changes:
 * `Flows::Util::PrependToClass` - allows to prepend some module to class even if
   target module did not included directly into class.
 
-[unreleased]: https://github.com/ffloyd/flows/compare/v0.4.0...HEAD
+[unreleased]: https://github.com/ffloyd/flows/compare/v0.5.1...HEAD
+[0.5.1]: https://github.com/ffloyd/flows/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/ffloyd/flows/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/ffloyd/flows/compare/v0.3.0...v0.4.0
