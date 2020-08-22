@@ -1,10 +1,12 @@
+inherit_from: .rubocop_todo.yml
+
 require:
   - rubocop-rspec
   - rubocop-performance
   - rubocop-md
 
 AllCops:
-  TargetRubyVersion: 2.7
+  TargetRubyVersion: 2.5
   NewCops: enable
 
 Style/HashEachMethods:

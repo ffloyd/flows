@@ -29,7 +29,7 @@ RSpec.describe Flows::Railway do
         end
 
         def square(sum:)
-          ok(square: sum * sum)
+          ok(square: sum**2)
         end
       end
     end
