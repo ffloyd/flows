@@ -21,7 +21,7 @@ module Flows
       :NODE_PREPROCESSOR,
       lambda do |_input, context, node_meta|
         context[:class].before_each_callbacks.each do |callback|
-          callback.call(context[:class], node_meta[:name], context[:data], context[:meta])
+          context[:instance].instance_exec(context[:class], node_meta[:name], context[:data], context[:meta], &callback)
         end
 
         [EMPTY_ARRAY, context[:data]]
@@ -34,7 +34,8 @@ module Flows
         context[:data].merge!(result.instance_variable_get(:@data))
 
         context[:class].after_each_callbacks.each do |callback|
-          callback.call(context[:class], node_meta[:name], result, context[:data], context[:meta])
+          context[:instance]
+            .instance_exec(context[:class], node_meta[:name], result, context[:data], context[:meta], &callback)
         end
 
         result

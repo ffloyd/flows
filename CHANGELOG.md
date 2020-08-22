@@ -16,6 +16,10 @@ Types of changes:
 
 ## [Unreleased]
 
+### Changed
+
+* `Flows::SharedContextPipeline` callbacks execution method is changed to `instance_exec` (previously was `.call`)
+
 ## [0.5.1] - 2020-06-29
 
 ### Fixed
