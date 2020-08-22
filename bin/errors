@@ -30,11 +30,11 @@ class ErrorsCLI
     ctx.command name do |cmd|
       cmd.action do |_, _, _|
         puts title.green
-        puts(('BEGIN' + '-' * (title.length - 5)).color(:darkgray))
+        puts("BEGIN#{'-' * (title.length - 5)}".color(:darkgray))
         yield
       rescue StandardError => err
         puts err.message
-        puts(('END' + '-' * (title.length - 3)).color(:darkgray))
+        puts("END#{'-' * (title.length - 3)}".color(:darkgray))
         puts
       end
     end

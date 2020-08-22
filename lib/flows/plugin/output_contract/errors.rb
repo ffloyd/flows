@@ -24,7 +24,7 @@ module Flows
         end
 
         def message
-          shifted_error = @error.split("\n").map { |str| '  ' + str }.join("\n")
+          shifted_error = @error.split("\n").map { |str| "  #{str}" }.join("\n")
 
           "Output contract for #{@klass} is violated.\n" \
           "Result:\n" \

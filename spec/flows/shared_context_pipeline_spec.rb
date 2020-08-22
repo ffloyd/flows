@@ -335,9 +335,9 @@ RSpec.describe Flows::SharedContextPipeline do
   end
 
   describe 'before_all callback' do
-    include_context 'with helpers'
-
     subject(:calculation) { klass.call(input: :data) }
+
+    include_context 'with helpers'
 
     let(:klass) do
       result = Class.new(described_class) do
@@ -381,9 +381,9 @@ RSpec.describe Flows::SharedContextPipeline do
   end
 
   describe 'after_all callback' do
-    include_context 'with helpers'
-
     subject(:calculation) { klass.call(input: :data) }
+
+    include_context 'with helpers'
 
     let(:klass) do
       result = Class.new(described_class) do
@@ -452,9 +452,9 @@ RSpec.describe Flows::SharedContextPipeline do
   end
 
   describe 'before_each callback' do
-    include_context 'with helpers'
-
     subject(:calculation) { klass.call(input: :data) }
+
+    include_context 'with helpers'
 
     let(:klass) do
       result = Class.new(described_class) do
@@ -521,9 +521,9 @@ RSpec.describe Flows::SharedContextPipeline do
 
   describe 'after_each callback' do
     include Flows::Result::Helpers
-    include_context 'with helpers'
-
     subject(:calculation) { klass.call(input: :data) }
+
+    include_context 'with helpers'
 
     let(:klass) do
       result = Class.new(described_class) do
@@ -590,9 +590,9 @@ RSpec.describe Flows::SharedContextPipeline do
 
   describe 'wrap DSL (basic usage)' do
     include Flows::Result::Helpers
-    include_context 'with helpers'
-
     subject(:calculation) { klass.call(input: :data) }
+
+    include_context 'with helpers'
 
     let(:klass) do
       Class.new(described_class) do
@@ -658,9 +658,9 @@ RSpec.describe Flows::SharedContextPipeline do
 
   describe 'wrap DSL (valid routing)' do
     include Flows::Result::Helpers
-    include_context 'with helpers'
-
     subject(:calculation) { klass.call(input: :data) }
+
+    include_context 'with helpers'
 
     let(:klass) do
       Class.new(described_class) do
@@ -744,9 +744,9 @@ RSpec.describe Flows::SharedContextPipeline do
 
   describe 'wrap DSL (invalid routing inside wrap)' do
     include Flows::Result::Helpers
-    include_context 'with helpers'
-
     subject(:calculation) { klass.call(input: :data) }
+
+    include_context 'with helpers'
 
     let(:klass) do
       Class.new(described_class) do
@@ -786,9 +786,9 @@ RSpec.describe Flows::SharedContextPipeline do
 
   describe 'wrap DSL (invalid routing outside wrap)' do
     include Flows::Result::Helpers
-    include_context 'with helpers'
-
     subject(:calculation) { klass.call(input: :data) }
+
+    include_context 'with helpers'
 
     let(:klass) do
       Class.new(described_class) do
@@ -828,9 +828,9 @@ RSpec.describe Flows::SharedContextPipeline do
 
   describe 'wrap DSL and inheritace' do
     include Flows::Result::Helpers
-    include_context 'with helpers'
-
     subject(:calculation) { klass.call(input: :data) }
+
+    include_context 'with helpers'
 
     let(:klass) { Class.new(parent_klass) }
 

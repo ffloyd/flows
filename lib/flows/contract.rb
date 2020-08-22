@@ -394,9 +394,9 @@ module Flows
 
     # :reek:UtilityFunction
     def merge_nested_errors(description, nested_errors)
-      shifted = nested_errors.split("\n").map { |str| '    ' + str }.join("\n")
+      shifted = nested_errors.split("\n").map { |str| "    #{str}" }.join("\n")
 
-      description + "\n" + shifted
+      "#{description}\n#{shifted}"
     end
   end
 end
