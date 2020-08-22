@@ -8,7 +8,7 @@ module Flows
     class MutationStep < Step
       NODE_PREPROCESSOR = lambda do |_input, context, node_meta|
         context[:class].before_each_callbacks.each do |callback|
-          callback.call(context[:class], node_meta[:name], context[:data], context[:meta])
+          context[:instance].instance_exec(context[:class], node_meta[:name], context[:data], context[:meta], &callback)
         end
 
         [[context[:data]], EMPTY_HASH]
@@ -20,7 +20,8 @@ module Flows
         else output ? EMPTY_OK : EMPTY_ERR
         end.tap do |result|
           context[:class].after_each_callbacks.each do |callback|
-            callback.call(context[:class], node_meta[:name], result, context[:data], context[:meta])
+            context[:instance]
+              .instance_exec(context[:class], node_meta[:name], result, context[:data], context[:meta], &callback)
           end
         end
       end

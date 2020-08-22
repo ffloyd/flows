@@ -224,6 +224,9 @@ module Flows
   #
   # You may want to have some logic to execute before all steps, or after all, or before each, or after each.
   # For example to inject generalized execution process logging.
+  #
+  # These callbacks are executed via `instance_exec` (in the context of instance).
+  #
   # To achieve this you can use callbacks:
   #
   #     class MySCP < Flows::SharedContextPipeline
@@ -277,10 +280,10 @@ module Flows
     def call(**data) # rubocop:disable Metrics/MethodLength
       klass = self.class
       meta = {}
-      context = { data: data, meta: meta, class: klass }
+      context = { data: data, meta: meta, class: klass, instance: self }
 
       klass.before_all_callbacks.each do |callback|
-        callback.call(klass, data, meta)
+        instance_exec(klass, data, meta, &callback)
       end
 
       flow_result = @__flow.call(nil, context: context)
@@ -292,7 +295,7 @@ module Flows
       )
 
       klass.after_all_callbacks.reduce(final_result) do |result, callback|
-        callback.call(klass, result, data, meta)
+        instance_exec(klass, result, data, meta, &callback)
       end
     end
   end

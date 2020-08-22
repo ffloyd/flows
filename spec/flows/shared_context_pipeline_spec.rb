@@ -346,6 +346,9 @@ RSpec.describe Flows::SharedContextPipeline do
         def hi(**)
           ok
         end
+
+        # to check lambda execution context
+        def method_of_instance; end
       end
 
       result.before_all(&before_all_proc)
@@ -354,16 +357,12 @@ RSpec.describe Flows::SharedContextPipeline do
     end
 
     let(:before_all_proc) do
-      make_proc_double do |_, ctx, meta|
+      lambda do |klass, ctx, meta|
         ctx[:from] = :callback
         meta[:from] = :callback_meta
+        meta[:klass] = klass
+        method_of_instance
       end
-    end
-
-    it 'executes callback' do
-      calculation
-
-      expect(before_all_proc).to have_received(:call).with(klass, instance_of(Hash), instance_of(Hash))
     end
 
     it 'patches execution context' do
@@ -375,7 +374,8 @@ RSpec.describe Flows::SharedContextPipeline do
 
     it 'patches meta' do
       expect(calculation.meta).to eq(
-        from: :callback_meta
+        from: :callback_meta,
+        klass: klass
       )
     end
   end
@@ -392,6 +392,9 @@ RSpec.describe Flows::SharedContextPipeline do
         def hi(**)
           ok
         end
+
+        # to check lambda execution context
+        def method_of_instance; end
       end
 
       result.after_all(&after_all_proc_1)
@@ -401,9 +404,10 @@ RSpec.describe Flows::SharedContextPipeline do
     end
 
     let(:after_all_proc_1) do
-      make_proc_double do |_, result, ctx, meta|
+      lambda do |klass, result, ctx, meta|
         ctx[:from] = :callback
         meta[:from] = :callback_meta
+        meta[:klass] = klass
 
         result.unwrap[:first] = :callback
         result
@@ -412,24 +416,10 @@ RSpec.describe Flows::SharedContextPipeline do
 
     let(:after_all_proc_2) do
       make_proc_double do |_, _, ctx, meta|
+        method_of_instance
+
         Flows::Result::Ok.new(ctx, status: :substituted, meta: meta)
       end
-    end
-
-    it 'executes 1st callback' do
-      calculation
-
-      expect(after_all_proc_1).to have_received(:call).with(
-        klass, instance_of(Flows::Result::Ok), instance_of(Hash), instance_of(Hash)
-      )
-    end
-
-    it 'executes 2nd callback' do
-      calculation
-
-      expect(after_all_proc_2).to have_received(:call).with(
-        klass, instance_of(Flows::Result::Ok), instance_of(Hash), instance_of(Hash)
-      )
     end
 
     it 'substitutes result' do
@@ -446,7 +436,8 @@ RSpec.describe Flows::SharedContextPipeline do
 
     it 'patches meta' do
       expect(calculation.meta).to eq(
-        from: :callback_meta
+        from: :callback_meta,
+        klass: klass
       )
     end
   end
@@ -468,6 +459,9 @@ RSpec.describe Flows::SharedContextPipeline do
         def hello(**)
           true
         end
+
+        # to check lambda execution context
+        def method_of_instance; end
       end
 
       result.before_each(&before_each_proc)
@@ -476,9 +470,11 @@ RSpec.describe Flows::SharedContextPipeline do
     end
 
     let(:before_each_proc) do
-      make_proc_double do |_, step_name, context, meta|
+      lambda do |klass, step_name, context, meta|
         context[step_name] = :was_here
         meta[step_name] = :was_here_meta
+        meta[:klass] = klass
+        method_of_instance
       end
     end
 
@@ -494,20 +490,9 @@ RSpec.describe Flows::SharedContextPipeline do
     let(:expected_meta) do
       {
         hi: :was_here_meta,
-        hello: :was_here_meta
+        hello: :was_here_meta,
+        klass: klass
       }
-    end
-
-    it 'executes callback' do # rubocop:disable RSpec/MultipleExpectations, RSpec/ExampleLength
-      calculation
-
-      expect(before_each_proc).to have_received(:call).with(
-        klass, :hi, instance_of(Hash), instance_of(Hash)
-      ).once.ordered
-
-      expect(before_each_proc).to have_received(:call).with(
-        klass, :hello, instance_of(Hash), instance_of(Hash)
-      ).once.ordered
     end
 
     it 'modifies context' do
@@ -537,6 +522,9 @@ RSpec.describe Flows::SharedContextPipeline do
         def hello(**)
           true
         end
+
+        # to check execution context
+        def method_of_instance; end
       end
 
       result.after_each(&after_each_proc)
@@ -545,9 +533,11 @@ RSpec.describe Flows::SharedContextPipeline do
     end
 
     let(:after_each_proc) do
-      make_proc_double do |_, step_name, _result, context, meta|
+      lambda do |klass, step_name, _result, context, meta|
         context[step_name] = :was_here
         meta[step_name] = :was_here_meta
+        meta[:klass] = klass
+        method_of_instance
       end
     end
 
@@ -563,20 +553,9 @@ RSpec.describe Flows::SharedContextPipeline do
     let(:expected_meta) do
       {
         hi: :was_here_meta,
-        hello: :was_here_meta
+        hello: :was_here_meta,
+        klass: klass
       }
-    end
-
-    it 'executes callback' do # rubocop:disable RSpec/MultipleExpectations, RSpec/ExampleLength
-      calculation
-
-      expect(after_each_proc).to have_received(:call)
-        .with(klass, :hi, ok(from_hi: :data), instance_of(Hash), instance_of(Hash))
-        .once.ordered
-
-      expect(after_each_proc).to have_received(:call)
-        .with(klass, :hello, Flows::Result::Ok.new({}), instance_of(Hash), instance_of(Hash))
-        .once.ordered
     end
 
     it 'modifies context' do
