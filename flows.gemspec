@@ -21,6 +21,8 @@ Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
+  spec.required_ruby_version = '>= 2.5'
+
   # This library has no production dependencies.
   # So, it will not block you from updating any dependencies in your project.
   # So, don't add production dependencies.

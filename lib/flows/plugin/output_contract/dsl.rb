@@ -39,7 +39,7 @@ module Flows
         # Disables contract check and transformation for current class and children.
         #
         # @param enable [Boolean] if true - contracts are disabled
-        def skip_output_contract(enable = true)
+        def skip_output_contract(enable: true)
           @skip_output_contract_flag = enable
         end
       end
