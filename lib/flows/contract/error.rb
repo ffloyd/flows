@@ -2,8 +2,7 @@ module Flows
   class Contract
     # Class for {Type} errors.
     class Error < ::Flows::Error
-      attr_reader :value
-      attr_reader :value_error
+      attr_reader :value, :value_error
 
       # @param value [Object] checked value
       # @param value_error [String] error message

@@ -5,8 +5,7 @@ module Flows
         class Tree < Report
           # @api private
           class Node
-            attr_reader :subject
-            attr_reader :executions
+            attr_reader :subject, :executions
 
             def initialize(subject:)
               @subject = subject

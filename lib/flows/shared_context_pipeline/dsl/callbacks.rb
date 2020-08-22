@@ -12,10 +12,7 @@ module Flows
 
         include SingletonVarsSetup
 
-        attr_reader :before_all_callbacks
-        attr_reader :after_all_callbacks
-        attr_reader :before_each_callbacks
-        attr_reader :after_each_callbacks
+        attr_reader :before_all_callbacks, :after_all_callbacks, :before_each_callbacks, :after_each_callbacks
 
         def before_all(&callback)
           before_all_callbacks << callback

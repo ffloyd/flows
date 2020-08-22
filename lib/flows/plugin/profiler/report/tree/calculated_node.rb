@@ -106,7 +106,7 @@ module Flows
               children.map { |node| node.to_s(root_node) }
                       .join("\n")
                       .split("\n")
-                      .map { |str| '|    ' + str }
+                      .map { |str| "|    #{str}" }
             end
           end
         end

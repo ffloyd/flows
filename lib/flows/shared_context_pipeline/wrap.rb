@@ -2,8 +2,7 @@ module Flows
   class SharedContextPipeline
     # @api private
     class Wrap
-      attr_reader :router_def
-      attr_reader :tracks_definitions
+      attr_reader :router_def, :tracks_definitions
 
       # :reek:Attribute
       attr_accessor :next_step

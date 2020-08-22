@@ -5,9 +5,7 @@ module Flows
       #
       # @api private
       class DependencyList
-        attr_reader :definitions
-        attr_reader :provided_values
-        attr_reader :dependencies
+        attr_reader :definitions, :provided_values, :dependencies
 
         def initialize(klass:, definitions:, provided_values:)
           @klass = klass

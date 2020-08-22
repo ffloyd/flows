@@ -5,8 +5,7 @@ module Flows
         class Flat < Tree
           # @api private
           class MethodReport
-            attr_reader :root_node
-            attr_reader :calculated_nodes
+            attr_reader :root_node, :calculated_nodes
 
             def initialize(root_node, *calculated_nodes)
               @root_node = root_node
