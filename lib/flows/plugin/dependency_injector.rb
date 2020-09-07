@@ -136,6 +136,17 @@ module Flows
 
       InitializerWrapper = Util::PrependToClass.make_module do
         def initialize(*args, **kwargs, &block) # rubocop:disable Metrics/MethodLength
+          if @__dependencies_injected__
+            if kwargs.empty? # https://bugs.ruby-lang.org/issues/14415
+              super(*args, &block)
+            else
+              super(*args, **kwargs, &block)
+            end
+
+            return
+          end
+          @__dependencies_injected__ = true
+
           klass = self.class
           DependencyList.new(
             klass: klass,

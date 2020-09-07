@@ -185,5 +185,34 @@ RSpec.describe Flows::Util::InheritableSingletonVars::DupStrategy do
     end
   end
 
-  context
+  describe 'when parent class has updated variable and the same module included into child class' do
+    let(:child_class) do
+      Class.new(parent_class).tap { |klass| klass.include vars_module }
+    end
+
+    let(:parent_class) do
+      Class.new.tap do |klass|
+        klass.include vars_module
+
+        klass.instance_variable_set(:@var, 10)
+      end
+    end
+
+    let(:vars_module) do
+      described_class.make_module(
+        '@var' => 0
+      )
+    end
+
+    let(:child_value) { child_class.instance_variable_get(:@var) }
+    let(:parent_value) { parent_class.instance_variable_get(:@var) }
+
+    it 'child class has an updated value' do
+      expect(child_value).to eq 10
+    end
+
+    it 'parent class has an updated value' do
+      expect(parent_value).to eq 10
+    end
+  end
 end
