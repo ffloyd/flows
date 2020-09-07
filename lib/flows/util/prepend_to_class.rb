@@ -138,7 +138,8 @@ module Flows
         # * you can include `Mod` into `Mod2`, then include `Mod2` into `Mod3` -
         #   desribed behavior works for include chain of any length.
         #
-        # Moreover, this behaviour also works with `extend`, not only `include`.
+        # Each `include` generates a new prepend. Be careful about this when including
+        # generated module several times in the inheritance chain.
         #
         # @yield body for module which will be prepended
         # @return [Module] module to be included or extended into your module

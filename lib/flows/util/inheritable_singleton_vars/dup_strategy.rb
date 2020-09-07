@@ -24,14 +24,16 @@ module Flows
 
         # @api private
         module Migrator
-          def self.call(from, to)
-            parent_var_list = from.instance_variable_get(VAR_LIST_VAR_NAME)
-            child_var_list = to.instance_variable_get(VAR_LIST_VAR_NAME) || []
+          # :reek:TooManyStatements is allowed here because it's impossible to split to smaller methods
+          def self.call(src_mod, dst_mod)
+            parent_var_list = src_mod.instance_variable_get(VAR_LIST_VAR_NAME)
+            child_var_list = dst_mod.instance_variable_get(VAR_LIST_VAR_NAME) || []
+            skip_list = parent_var_list & child_var_list
 
-            to.instance_variable_set(VAR_LIST_VAR_NAME, child_var_list + parent_var_list)
+            dst_mod.instance_variable_set(VAR_LIST_VAR_NAME, (child_var_list + parent_var_list).uniq)
 
-            parent_var_list.each do |name|
-              to.instance_variable_set(name, from.instance_variable_get(name).dup)
+            (parent_var_list - skip_list).each do |name|
+              dst_mod.instance_variable_set(name, src_mod.instance_variable_get(name).dup)
             end
           end
         end

@@ -224,4 +224,32 @@ RSpec.describe Flows::Plugin::DependencyInjector do
       expect { klass }.to raise_error described_class::MissingDependencyDefaultError
     end
   end
+
+  context 'when included twice in inheritance chain + required dependency' do
+    subject(:klass) do
+      Class.new(parent_class) do
+        include Flows::Plugin::DependencyInjector
+      end
+    end
+
+    let(:parent_class) do
+      Class.new do
+        include Flows::Plugin::DependencyInjector
+
+        dependency :test, required: true
+      end
+    end
+
+    it 'raises error if dependency is not provided' do
+      expect { klass.new }.to raise_error described_class::MissingDependencyError
+    end
+
+    it 'sets provided value if intialized with a dependency' do
+      value = klass.new(dependencies: {
+                          test: 'injected_val'
+                        }).test
+
+      expect(value).to eq 'injected_val'
+    end
+  end
 end
