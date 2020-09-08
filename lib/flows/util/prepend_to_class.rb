@@ -161,7 +161,8 @@ module Flows
           mod.singleton_class.prepend(injector)
         end
 
-        def make_injector_mod(module_to_prepend)
+        # :reek:TooManyStatements :reek:DuplicateMethodCall
+        def make_injector_mod(module_to_prepend) # rubocop:disable Metrics/MethodLength
           Module.new.tap do |injector|
             injector.define_method(:included) do |target_mod|
               if target_mod.class == Class
