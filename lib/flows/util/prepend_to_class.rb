@@ -172,6 +172,16 @@ module Flows
 
               super(target_mod)
             end
+
+            injector.define_method(:extended) do |target_mod|
+              if target_mod.class == Class
+                target_mod.prepend(module_to_prepend)
+              else # Module
+                target_mod.singleton_class.prepend injector
+              end
+
+              super(target_mod)
+            end
           end
         end
       end
