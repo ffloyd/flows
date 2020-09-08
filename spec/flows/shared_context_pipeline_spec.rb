@@ -334,6 +334,96 @@ RSpec.describe Flows::SharedContextPipeline do
     end
   end
 
+  describe 'sub-pipeline injection' do
+    include Flows::Result::Helpers
+
+    context 'when `step` is used without naming' do
+      subject(:calculation) { klass.call(data: 'ORIGINAL INPUT') }
+
+      let(:sub_pipeline) do
+        lambda do |data:, **|
+          ok(data: "#{data} MODIFIED")
+        end
+      end
+
+      let(:klass) do
+        Class.new(described_class).tap do |klass|
+          klass.step sub_pipeline
+          klass.step sub_pipeline
+        end
+      end
+
+      it 'exectues sub-pipeline as expected' do
+        expect(calculation).to eq ok(data: 'ORIGINAL INPUT MODIFIED MODIFIED')
+      end
+    end
+
+    context 'when `step` is used with explicit body' do
+      subject(:calculation) { klass.call(data: 'ORIGINAL INPUT') }
+
+      let(:sub_pipeline) do
+        lambda do |data:, **|
+          ok(data: "#{data} MODIFIED")
+        end
+      end
+
+      let(:klass) do
+        Class.new(described_class).tap do |klass|
+          klass.step :first, body: sub_pipeline
+          klass.step :second, body: sub_pipeline
+        end
+      end
+
+      it 'exectues sub-pipeline as expected' do
+        expect(calculation).to eq ok(data: 'ORIGINAL INPUT MODIFIED MODIFIED')
+      end
+    end
+
+    context 'when `mut_step` is used without naming' do
+      subject(:calculation) { klass.call(data: 'ORIGINAL INPUT') }
+
+      let(:sub_pipeline) do
+        lambda do |ctx|
+          ctx[:data] += ' MODIFIED'
+          true
+        end
+      end
+
+      let(:klass) do
+        Class.new(described_class).tap do |klass|
+          klass.mut_step sub_pipeline
+          klass.mut_step sub_pipeline
+        end
+      end
+
+      it 'exectues sub-pipeline as expected' do
+        expect(calculation).to eq ok(data: 'ORIGINAL INPUT MODIFIED MODIFIED')
+      end
+    end
+
+    context 'when `mut_step` is used with explicit body' do
+      subject(:calculation) { klass.call(data: 'ORIGINAL INPUT') }
+
+      let(:sub_pipeline) do
+        lambda do |ctx|
+          ctx[:data] += ' MODIFIED'
+          true
+        end
+      end
+
+      let(:klass) do
+        Class.new(described_class).tap do |klass|
+          klass.mut_step :first, body: sub_pipeline
+          klass.mut_step :second, body: sub_pipeline
+        end
+      end
+
+      it 'exectues sub-pipeline as expected' do
+        expect(calculation).to eq ok(data: 'ORIGINAL INPUT MODIFIED MODIFIED')
+      end
+    end
+  end
+
   describe 'before_all callback' do
     subject(:calculation) { klass.call(input: :data) }
 

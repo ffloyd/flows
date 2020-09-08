@@ -19,6 +19,7 @@ Types of changes:
 ### Added
 
 * `Flows::Plugin::Interface` basic implementation
+* `Flows::SharedContextPipeline` simple sub-pipelines injection
 
 ### Changed
 

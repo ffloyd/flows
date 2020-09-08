@@ -2,7 +2,7 @@ module Flows
   module Plugin
     # Class extension to define Java/C#-like interfaces in Ruby.
     #
-    # On target class initialization will check defined methods for existance.
+    # On target class initialization will check defined methods for existence.
     #
     # **Currently interface composition is not supported.** You cannot define
     # 2 interface modules and include it into one class.

@@ -141,6 +141,46 @@ module Flows
   #       # steps implementations here
   #     end
   #
+  # ## Simple injecting of nested pipelines
+  #
+  # If you provide some object which responds to `#call` instead of step name - this object will be used as a step body.
+  #
+  #     class SubOperation < Flows::SharedContextPipeline
+  #       step :hello
+  #
+  #       def hello(**)
+  #         ok(data: 'some data')
+  #       end
+  #     end
+  #
+  #     class MainOperation < Flows::SharedContextPipeline
+  #       step :init
+  #       step SubOperation
+  #
+  #       def init(**)
+  #         ok(generated_by_init: true)
+  #       end
+  #     end
+  #
+  #     MainOperation.call
+  #     # => ok(generated_by_init: true, data: 'some data')
+  #
+  # You can use the same object multiple times in the same pipeline:
+  #
+  #     step SubOperation
+  #     step SubOperation
+  #
+  # If you need any input or output processing - refactor such step definition into normal step.
+  #
+  # This way has disadvantage: you cannot route to a such step because it has no explicit name.
+  # To handle this you can use alternative syntax:
+  #
+  #     step :do_something, body: SubOperation
+  #
+  # Same features can be used with `mut_step`.
+  #
+  # This feature is primarily intended to simplify refactoring of big pipelines into smaller ones.
+  #
   # ## Wrappers
   #
   # Sometimes you have to execute some steps inside SQL-transaction or something like this.

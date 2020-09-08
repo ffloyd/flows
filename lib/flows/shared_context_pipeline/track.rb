@@ -44,7 +44,7 @@ module Flows
       def make_track_entry_node
         MutationStep.new(
           name: @name,
-          lambda: proc { true },
+          body: proc { true },
           router_def: TRACK_ENTRY_ROUTER_DEF,
           next_step: first_step_name
         ).to_node(nil)
