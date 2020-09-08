@@ -17,6 +17,7 @@ require_relative 'errors_cli/railway_error_demo'
 require_relative 'errors_cli/result_error_demo'
 require_relative 'errors_cli/scp_error_demo'
 require_relative 'errors_cli/flow_error_demo'
+require_relative 'errors_cli/interface_error_demo'
 
 class ErrorsCLI
   extend GLI::App
@@ -123,6 +124,13 @@ class ErrorsCLI
 
     make_cmd cmd, 'Invalid Node route', :invalid_node_route do
       FlowErrorDemo.invalid_node_route
+    end
+  end
+
+  desc 'Interface errors'
+  command :interface do |cmd|
+    make_cmd cmd, 'Missing Implementation', :missing_implementation do
+      InterfaceErrorDemo.missing_implementation
     end
   end
 end

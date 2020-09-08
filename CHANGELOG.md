@@ -16,6 +16,10 @@ Types of changes:
 
 ## [Unreleased]
 
+### Added
+
+* `Flows::Plugin::Interface` basic implementation
+
 ### Changed
 
 * `Flows::SharedContextPipeline` callbacks execution method is changed to `instance_exec` (previously was `.call`)
