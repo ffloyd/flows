@@ -1,15 +1,15 @@
 module Flows
   class Railway
+    NODE_PREPROCESSOR = ->(input, _, _) { [[], input.unwrap] }
+
+    NODE_POSTPROCESSOR = lambda do |output, context, meta|
+      context[:last_step] = meta[:name]
+
+      output
+    end
+
     # @api private
     Step = Struct.new(:name, :lambda, :next_step, keyword_init: true) do
-      NODE_PREPROCESSOR = ->(input, _, _) { [[], input.unwrap] }
-
-      NODE_POSTPROCESSOR = lambda do |output, context, meta|
-        context[:last_step] = meta[:name]
-
-        output
-      end
-
       def to_node(method_source)
         Flows::Flow::Node.new(
           body: lambda || method_source.method(name),
