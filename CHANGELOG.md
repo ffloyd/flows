@@ -16,6 +16,8 @@ Types of changes:
 
 ## [Unreleased]
 
+## [0.6.0] - 2020-09-23
+
 ### Added
 
 * `Flows::Plugin::Interface` basic implementation
@@ -72,7 +74,8 @@ Types of changes:
 * `Flows::Util::PrependToClass` - allows to prepend some module to class even if
   target module did not included directly into class.
 
-[unreleased]: https://github.com/ffloyd/flows/compare/v0.5.1...HEAD
+[unreleased]: https://github.com/ffloyd/flows/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/ffloyd/flows/compare/v0.5.1...v0.6.0
 [0.5.1]: https://github.com/ffloyd/flows/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/ffloyd/flows/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/ffloyd/flows/compare/v0.3.0...v0.4.0
