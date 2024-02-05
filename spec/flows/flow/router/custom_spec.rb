@@ -29,11 +29,14 @@ RSpec.describe Flows::Flow::Router::Custom do
     end
 
     context 'when several predicates matches' do
+      let(:predicate_2) { proc_double true }
+      let(:predicate_3) { proc_double true }
+
       let(:router) do
         described_class.new(
           predicate => :first_route,
-          predicate.clone => :second_route,
-          predicate.clone => :third_route
+          predicate_2 => :second_route,
+          predicate_3 => :third_route
         )
       end
 

@@ -546,7 +546,7 @@ RSpec.describe Flows::SharedContextPipeline do
           ok(from_hi: :data)
         end
 
-        def hello(**)
+        def hello(*)
           true
         end
 
@@ -609,7 +609,7 @@ RSpec.describe Flows::SharedContextPipeline do
           ok(from_hi: :data)
         end
 
-        def hello(**)
+        def hello(*)
           true
         end
 
