@@ -20,7 +20,7 @@ module Flows
             end
 
             def count
-              @count ||= calculated_nodes.map(&:count).sum
+              @count ||= calculated_nodes.sum(&:count)
             end
 
             def total_self_ms

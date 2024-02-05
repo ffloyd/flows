@@ -165,7 +165,7 @@ module Flows
         def make_injector_mod(module_to_prepend) # rubocop:disable Metrics/MethodLength
           Module.new.tap do |injector|
             injector.define_method(:included) do |target_mod|
-              if target_mod.class == Class
+              if target_mod.instance_of? Class
                 target_mod.prepend(module_to_prepend)
               else # Module
                 target_mod.singleton_class.prepend injector
@@ -175,7 +175,7 @@ module Flows
             end
 
             injector.define_method(:extended) do |target_mod|
-              if target_mod.class == Class
+              if target_mod.instance_of? Class
                 target_mod.prepend(module_to_prepend)
               else # Module
                 target_mod.singleton_class.prepend injector

@@ -76,7 +76,7 @@ class BenchmarkCLI
 
       def report_ostruct(benchmark)
         benchmark.report 'Open Struct' do
-          ostruct = OpenStruct.new(
+          ostruct = OpenStruct.new( # rubocop:disable Style/OpenStructUse
             a: rand(10),
             b: rand(10),
             c: rand(10)

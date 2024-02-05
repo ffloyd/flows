@@ -17,7 +17,7 @@ module Flows
 
       # @param contracts [Array<Contract, Object>] contract list. {CaseEq} applied to non-contract values.
       def initialize(*contracts)
-        @contracts = contracts.map(&method(:to_contract))
+        @contracts = contracts.map { |c| to_contract(c) }
       end
 
       # @see Contract#check!

@@ -29,14 +29,14 @@ RSpec.describe Flows::Flow::Router::Custom do
     end
 
     context 'when several predicates matches' do
-      let(:predicate_2) { proc_double true }
-      let(:predicate_3) { proc_double true }
+      let(:predicate2) { proc_double true } # rubocop:disable RSpec/IndexedLet
+      let(:predicate3) { proc_double true } # rubocop:disable RSpec/IndexedLet
 
       let(:router) do
         described_class.new(
           predicate => :first_route,
-          predicate_2 => :second_route,
-          predicate_3 => :third_route
+          predicate2 => :second_route,
+          predicate3 => :third_route
         )
       end
 

@@ -9,9 +9,15 @@ RSpec.describe Flows::Result::Do do
     Class.new do
       extend Flows::Result::Do
 
+      # we have to pass lambdas as arguments
+      # and `.call` them inside because
+      # sometimes we need to check if
+      # `first` or `last` was actually
+      # used.
       do_notation(:simple_unwrap)
       def simple_unwrap(first, last)
         yield first.call
+        # we return this as is to be able to check if unwrapping works
         yield last.call
       end
 
@@ -22,17 +28,17 @@ RSpec.describe Flows::Result::Do do
     end
   end
 
-  describe 'unwrapping successful result' do
+  describe 'when all yieled values were ok' do
     subject(:invoke) do
       example.simple_unwrap(-> { ok(first: :value) }, -> { ok(second: :value) })
     end
 
-    it 'works' do
+    it 'returns method result (which is unwrapped second value)' do
       expect(invoke).to eq(second: :value)
     end
   end
 
-  describe 'instant return on failure result' do
+  describe 'when yield gets err' do
     subject(:invoke) do
       example.simple_unwrap(-> { first_result }, -> { second_op.call })
     end
@@ -45,11 +51,11 @@ RSpec.describe Flows::Result::Do do
       end
     end
 
-    it 'returns first result' do
+    it 'returns this err' do
       expect(invoke).to eq first_result
     end
 
-    it 'does not invoke subsequent ops' do
+    it 'does not invoke subsequent lines in the method' do
       invoke
 
       expect(second_op).not_to have_received(:call)
@@ -66,7 +72,7 @@ RSpec.describe Flows::Result::Do do
     end
   end
 
-  describe 'inheritance support' do
+  describe 'when parent class has do-notation enabled' do
     subject(:invoke) { child.in_child(-> { ok }, -> { ok(all: 'good') }) }
 
     let(:child_class) do
@@ -81,7 +87,7 @@ RSpec.describe Flows::Result::Do do
 
     let(:child) { child_class.new }
 
-    it 'works' do
+    it 'child class also can use do-notation' do
       expect(invoke).to eq(all: 'good')
     end
   end

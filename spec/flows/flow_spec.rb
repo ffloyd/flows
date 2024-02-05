@@ -38,7 +38,7 @@ RSpec.describe Flows::Flow do
       let(:input) { 10 }
       let(:context) { {} }
 
-      it 'works' do
+      it 'returns correct result' do
         expect(call).to eq 22
       end
     end

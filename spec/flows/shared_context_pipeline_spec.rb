@@ -487,13 +487,14 @@ RSpec.describe Flows::SharedContextPipeline do
         def method_of_instance; end
       end
 
-      result.after_all(&after_all_proc_1)
-      result.after_all(&after_all_proc_2)
+      result.after_all(&add_fields_callback)
+      result.after_all(&call_method_callback)
+      result.after_all(&substitute_status_callback)
 
       result
     end
 
-    let(:after_all_proc_1) do
+    let(:add_fields_callback) do
       lambda do |klass, result, ctx, meta|
         ctx[:from] = :callback
         meta[:from] = :callback_meta
@@ -504,10 +505,16 @@ RSpec.describe Flows::SharedContextPipeline do
       end
     end
 
-    let(:after_all_proc_2) do
-      make_proc_double do |_, _, ctx, meta|
+    let(:call_method_callback) do
+      lambda do |_, result, _, _|
         method_of_instance
 
+        result
+      end
+    end
+
+    let(:substitute_status_callback) do
+      lambda do |_, _, ctx, meta|
         Flows::Result::Ok.new(ctx, status: :substituted, meta: meta)
       end
     end

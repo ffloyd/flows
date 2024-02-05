@@ -27,7 +27,7 @@ module Flows
 
       # `:reek:FeatureEnvy` is false positive here.
       def to_node_map(method_source)
-        @list.map { |step| [step.name, step.to_node(method_source)] }.to_h
+        @list.to_h { |step| [step.name, step.to_node(method_source)] }
       end
 
       def empty?

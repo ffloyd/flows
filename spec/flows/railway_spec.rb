@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 RSpec.describe Flows::Railway do
-  include ::Flows::Result::Helpers
+  include Flows::Result::Helpers
 
   context 'without steps' do
     subject(:build) { railway_class.new }

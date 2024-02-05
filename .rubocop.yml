@@ -1,12 +1,13 @@
 inherit_from: .rubocop_todo.yml
 
 require:
+  - rubocop-rake
   - rubocop-rspec
   - rubocop-performance
   - rubocop-md
 
 AllCops:
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 3.0
   NewCops: enable
 
 Style/HashEachMethods:
@@ -61,6 +62,3 @@ Naming/RescuedExceptionsVariableName:
 Style/Documentation:
   Exclude:
     - 'lib/flows/shared_context_pipeline/step.rb' # false positive here
-
-Style/SlicingWithRange:
-  Enabled: false # to support Ruby 2.5

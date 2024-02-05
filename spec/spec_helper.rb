@@ -13,7 +13,7 @@ end
 
 require 'flows'
 
-Dir[File.expand_path('support/*.rb', __dir__)].sort.each { |f| require f }
+Dir[File.expand_path('support/*.rb', __dir__)].each { |f| require f }
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
@@ -31,4 +31,4 @@ RSpec.shared_context 'with helpers' do
   include Support::Helpers
 end
 
-Dir[File.join(__dir__, 'shared', '*.rb')].sort.each { |f| require f }
+Dir[File.join(__dir__, 'shared', '*.rb')].each { |f| require f }

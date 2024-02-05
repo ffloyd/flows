@@ -82,5 +82,5 @@ module Flows
   end
 end
 
-require_relative './inheritable_singleton_vars/dup_strategy'
-require_relative './inheritable_singleton_vars/isolation_strategy'
+require_relative 'inheritable_singleton_vars/dup_strategy'
+require_relative 'inheritable_singleton_vars/isolation_strategy'

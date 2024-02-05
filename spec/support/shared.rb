@@ -6,14 +6,14 @@ RSpec.shared_examples 'Flows::Contract with valid value' do |value:, after_trans
     it { is_expected.to be_ok }
 
     it 'returns `true` as a result data' do
-      expect(check.unwrap).to eq true
+      expect(check.unwrap).to be true
     end
   end
 
   describe '#check!' do
     subject(:check) { contract.check!(value) }
 
-    it { is_expected.to eq true }
+    it { is_expected.to be true }
   end
 
   describe '#transform' do
@@ -35,7 +35,7 @@ RSpec.shared_examples 'Flows::Contract with valid value' do |value:, after_trans
   describe '#===' do
     subject(:case_eq) { contract === value } # rubocop:disable Style/CaseEquality
 
-    it { is_expected.to eq true }
+    it { is_expected.to be true }
   end
 
   describe '#to_proc' do
@@ -43,14 +43,14 @@ RSpec.shared_examples 'Flows::Contract with valid value' do |value:, after_trans
 
     let(:proc_check) { contract.to_proc }
 
-    it { is_expected.to eq true }
+    it { is_expected.to be true }
   end
 
   describe 'first transform law: "transformed value MUST match the contract"' do
     subject(:check) { contract.check!(after_transform) }
 
     it 'is met' do
-      expect(check).to eq true
+      expect(check).to be true
     end
   end
 
@@ -84,7 +84,7 @@ RSpec.shared_examples 'Flows::Contract with invalid value' do |value:, error_mes
   describe '#check!' do
     subject(:check) { contract.check!(value) }
 
-    it { expect { check }.to raise_error ::Flows::Contract::Error }
+    it { expect { check }.to raise_error Flows::Contract::Error }
   end
 
   describe '#transform' do
@@ -106,13 +106,13 @@ RSpec.shared_examples 'Flows::Contract with invalid value' do |value:, error_mes
   describe '#transform!' do
     subject(:transform) { contract.transform!(value) }
 
-    it { expect { transform }.to raise_error ::Flows::Contract::Error }
+    it { expect { transform }.to raise_error Flows::Contract::Error }
   end
 
   describe '#===' do
     subject(:case_eq) { contract === value } # rubocop:disable Style/CaseEquality
 
-    it { is_expected.to eq false }
+    it { is_expected.to be false }
   end
 
   describe '#to_proc' do
@@ -120,6 +120,6 @@ RSpec.shared_examples 'Flows::Contract with invalid value' do |value:, error_mes
 
     let(:proc_check) { contract.to_proc }
 
-    it { is_expected.to eq false }
+    it { is_expected.to be false }
   end
 end

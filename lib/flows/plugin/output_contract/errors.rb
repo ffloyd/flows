@@ -27,10 +27,10 @@ module Flows
           shifted_error = @error.split("\n").map { |str| "  #{str}" }.join("\n")
 
           "Output contract for #{@klass} is violated.\n" \
-          "Result:\n" \
-          "  `#{@result.inspect}`\n" \
-          "Contract Error:\n" \
-          "#{shifted_error}"
+            "Result:\n  " \
+            "`#{@result.inspect}`\n" \
+            "Contract Error:\n" \
+            "#{shifted_error}"
         end
       end
 
@@ -46,11 +46,11 @@ module Flows
           allowed_statuses_str = @allowed_statuses.map { |st| "`#{st.inspect}`" }.join(', ')
 
           "Output contract for #{@klass} is violated.\n" \
-          "Result:\n" \
-          "  `#{@result.inspect}`\n" \
-          "Contract Error:\n" \
-          "  has unexpected status `#{@result.status.inspect}`\n" \
-          "  allowed statuses for `#{@result.class}` are: #{allowed_statuses_str}"
+            "Result:\n  " \
+            "`#{@result.inspect}`\n" \
+            "Contract Error:\n  " \
+            "has unexpected status `#{@result.status.inspect}`\n  " \
+            "allowed statuses for `#{@result.class}` are: #{allowed_statuses_str}"
         end
       end
 
@@ -63,10 +63,10 @@ module Flows
 
         def message
           "Output contract for #{@klass} is violated.\n" \
-          "Result:\n" \
-          "  `#{@result.inspect}`\n" \
-          "Contract Error:\n" \
-          '  result must be instance of `Flows::Result`'
+            "Result:\n  " \
+            "`#{@result.inspect}`\n" \
+            "Contract Error:\n  " \
+            'result must be instance of `Flows::Result`'
         end
       end
     end

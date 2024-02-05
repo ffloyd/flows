@@ -11,17 +11,14 @@ RSpec.describe Flows::Util::PrependToClass do
     end
   end
 
-  let(:module_to_prepend) do
-    Module.new do
-    end
-  end
+  let(:module_to_prepend) { Module.new }
 
   let(:prepender_mod) do
     described_class.make_module do
       def initialize(*args, **kwargs, &block)
         @data = kwargs[:data]
 
-        filtered_kwargs = kwargs.reject { |key, _| key == :data }
+        filtered_kwargs = kwargs.except(:data)
 
         if filtered_kwargs.empty? # https://bugs.ruby-lang.org/issues/14415
           super(*args, &block)

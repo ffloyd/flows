@@ -18,9 +18,9 @@ module Flows
     class Either < Contract
       # @param contracts [Array<Contract, Object>] contract list. Non-contract elements will be wrapped with {CaseEq}.
       def initialize(*contracts)
-        raise 'Contract list must not be empty' if contracts.length.zero?
+        raise 'Contract list must not be empty' if contracts.empty?
 
-        @contracts = contracts.map(&method(:to_contract))
+        @contracts = contracts.map { |c| to_contract(c) }
       end
 
       # @see Contract#check!

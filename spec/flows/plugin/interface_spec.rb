@@ -55,7 +55,7 @@ RSpec.describe Flows::Plugin::Interface do
     end
   end
 
-  xdescribe 'composition of two interfaces' do
+  describe 'composition of two interfaces', skip: 'not implemented yet' do
     let(:interface_module_one) do
       Module.new.tap do |mod|
         mod.extend described_class

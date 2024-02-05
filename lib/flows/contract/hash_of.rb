@@ -26,7 +26,7 @@ module Flows
       HASH_CONTRACT = CaseEq.new(::Hash)
 
       def initialize(shape = {})
-        @shape = shape.transform_values(&method(:to_contract))
+        @shape = shape.transform_values { |c| to_contract(c) }
       end
 
       def check!(other)
@@ -44,8 +44,7 @@ module Flows
 
         other
           .slice(*@shape.keys)
-          .map { |key, value| [key, @shape[key].transform!(value)] }
-          .to_h
+          .to_h { |key, value| [key, @shape[key].transform!(value)] }
       end
 
       private

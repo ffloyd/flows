@@ -35,10 +35,10 @@ module Flows
       # After first invocation the instance will be memoized in {.default_instance}.
       #
       # Child classes have separate default instances.
-      def call(*args, **kwargs, &block)
+      def call(...)
         @default_instance ||= new
 
-        default_instance.call(*args, **kwargs, &block)
+        default_instance.call(...)
       end
     end
   end

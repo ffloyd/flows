@@ -118,7 +118,7 @@ module Flows
         def included(mod)
           mod.extend(DSL)
 
-          mod.singleton_class.prepend(InheritanceCallback) if mod.class == Module
+          mod.singleton_class.prepend(InheritanceCallback) if mod.instance_of? Module
 
           super
         end
@@ -126,7 +126,7 @@ module Flows
         def extended(mod)
           mod.extend(DSL)
 
-          mod.singleton_class.prepend(InheritanceCallback) if mod.class == Module
+          mod.singleton_class.prepend(InheritanceCallback) if mod.instance_of? Module
 
           super
         end
@@ -154,7 +154,7 @@ module Flows
             provided_values: kwargs[:dependencies].dup || {}
           ).inject_to(self)
 
-          filtered_kwargs = kwargs.reject { |key, _| key == :dependencies }
+          filtered_kwargs = kwargs.except(:dependencies)
 
           if filtered_kwargs.empty? # https://bugs.ruby-lang.org/issues/14415
             super(*args, &block)

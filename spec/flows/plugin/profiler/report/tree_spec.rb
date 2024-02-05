@@ -24,31 +24,27 @@ RSpec.describe Flows::Plugin::Profiler::Report::Tree do
     subject(:data) { report.to_a }
 
     let(:expected_report) do
-      match_array([
-                    match(
-                      subject: 'TestClass.perform',
-                      count: 2,
-                      total_ms: 0.2,
-                      total_percentage: 100.0,
-                      total_self_ms: a_value_within(0.00001).of(0.15),
-                      total_self_percentage: a_value_within(0.00001).of(75.0),
-                      avg_ms: 0.1,
-                      avg_self_ms: a_value_within(0.00001).of(0.075),
-                      nested: match_array([
-                                            match(
-                                              subject: 'TestClass#call',
-                                              count: 1,
-                                              total_ms: 0.05,
-                                              total_percentage: 25.0,
-                                              total_self_ms: 0.05,
-                                              total_self_percentage: 25.0,
-                                              avg_ms: 0.05,
-                                              avg_self_ms: 0.05,
-                                              nested: []
-                                            )
-                                          ])
-                    )
-                  ])
+      contain_exactly(match(
+                        subject: 'TestClass.perform',
+                        count: 2,
+                        total_ms: 0.2,
+                        total_percentage: 100.0,
+                        total_self_ms: a_value_within(0.00001).of(0.15),
+                        total_self_percentage: a_value_within(0.00001).of(75.0),
+                        avg_ms: 0.1,
+                        avg_self_ms: a_value_within(0.00001).of(0.075),
+                        nested: contain_exactly(match(
+                                                  subject: 'TestClass#call',
+                                                  count: 1,
+                                                  total_ms: 0.05,
+                                                  total_percentage: 25.0,
+                                                  total_self_ms: 0.05,
+                                                  total_self_percentage: 25.0,
+                                                  avg_ms: 0.05,
+                                                  avg_self_ms: 0.05,
+                                                  nested: []
+                                                ))
+                      ))
     end
 
     it 'returns expected report' do

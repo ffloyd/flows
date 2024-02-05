@@ -39,7 +39,7 @@ module Flows
                     when :finished then FinishEvent
                     end
 
-            klass.new(*raw_event[1..-1])
+            klass.new(*raw_event[1..])
           end
         end
       end

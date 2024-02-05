@@ -88,7 +88,7 @@ RSpec.describe Flows::Plugin::Profiler do
 
     context 'when profile with custom report' do
       before do
-        described_class.profile(report) {}
+        described_class.profile(report) {} # rubocop:disable Lint/EmptyBlock
       end
 
       it 'returns provided report' do
@@ -97,7 +97,7 @@ RSpec.describe Flows::Plugin::Profiler do
     end
 
     context 'when profile with default report' do
-      before { described_class.profile {} }
+      before { described_class.profile {} } # rubocop:disable Lint/EmptyBlock
 
       it 'returns raw report' do
         expect(last_report).to be_a described_class::Report::Raw

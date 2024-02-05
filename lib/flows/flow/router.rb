@@ -19,8 +19,7 @@ module Flows
     # @!method destinations
     #   @abstract
     #   @return [Array<Symbol>] names of all the possible destination nodes
-    class Router
-    end
+    class Router; end # rubocop:disable Lint/EmptyClass
   end
 end
 

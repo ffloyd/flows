@@ -8,7 +8,7 @@ RSpec.describe Flows::Contract do
       end
     end
 
-    it 'works' do
+    it 'defines a contract' do
       expect(contract.transform!('aaa')).to eq :aaa
     end
   end
