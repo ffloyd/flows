@@ -113,4 +113,25 @@ RSpec.describe Flows::Result::Do do
       expect(invoke).to eq(alles: 'gut')
     end
   end
+
+  describe 'when both args and kwargs passed to wrapped method' do
+    let(:klass) do
+      Class.new do
+        extend Flows::Result::Do
+
+        do_notation(:call_me)
+        def call_me(arg, kwarg:)
+          [arg, kwarg]
+        end
+      end
+    end
+
+    let(:instance) { klass.new }
+
+    subject(:invoke) { instance.call_me(:xxx, kwarg: :yyy)}
+
+    it 'passes all params' do
+      expect(invoke).to eq [:xxx, :yyy]
+    end
+  end
 end

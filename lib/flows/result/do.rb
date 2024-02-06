@@ -147,8 +147,8 @@ module Flows
           #
           # `:reek:NestedIterators` - allowed here because here are no iterators.
           def define_wrapper(mod, method_name) # rubocop:disable Metrics/MethodLength
-            mod.define_method(method_name) do |*args|
-              super(*args) do |*fields, result|
+            mod.define_method(method_name) do |*args, **kwargs|
+              super(*args, **kwargs) do |*fields, result|
                 case result
                 when Flows::Result::Ok
                   data = result.unwrap
