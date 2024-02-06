@@ -3,69 +3,85 @@ require 'spec_helper'
 RSpec.describe Flows::Result::Do do
   include Flows::Result::Helpers
 
-  let(:example) { example_class.new }
-
-  let(:example_class) do
-    Class.new do
-      extend Flows::Result::Do
-
-      # we have to pass lambdas as arguments
-      # and `.call` them inside because
-      # sometimes we need to check if
-      # `first` or `last` was actually
-      # used.
-      do_notation(:simple_unwrap)
-      def simple_unwrap(first, last)
-        yield first.call
-        # we return this as is to be able to check if unwrapping works
-        yield last.call
-      end
-
-      do_notation(:matched_unwrap)
-      def matched_unwrap(fun, *fields)
-        yield(*fields, fun.call)
-      end
-    end
-  end
-
   describe 'when all yieled values were ok' do
-    subject(:invoke) do
-      example.simple_unwrap(-> { ok(first: :value) }, -> { ok(second: :value) })
+    let(:klass) do
+      Class.new do
+        extend Flows::Result::Do
+        include Flows::Result::Helpers
+
+        do_notation(:call_me)
+        def call_me
+          a = yield ok(value: 1)
+          b = yield ok(value: 2)
+          c = yield ok(value: 4)
+
+          a[:value] + b[:value] + c[:value]
+        end
+      end
     end
 
-    it 'returns method result (which is unwrapped second value)' do
-      expect(invoke).to eq(second: :value)
+    let(:instance) { klass.new }
+    
+    subject(:invoke) { instance.call_me }
+
+    it 'yield unwraps its values' do
+      expect(invoke).to eq(7)
     end
   end
 
   describe 'when yield gets err' do
-    subject(:invoke) do
-      example.simple_unwrap(-> { first_result }, -> { second_op.call })
+    let(:klass) do
+      Class.new do
+        extend Flows::Result::Do
+        include Flows::Result::Helpers
+
+        do_notation(:call_me)
+        def call_me(err_val, some_fn)
+          yield err_val
+          yield some_fn.call
+        end
+      end
     end
 
-    let(:first_result) { err(i_am: :error) }
+    let(:instance) { klass.new }
+    
+    subject(:invoke) { instance.call_me(error, success_fn) }
 
-    let(:second_op) do
+    let(:error) { err(msg: 'Something went wrong') }
+
+    let(:success_fn) do
       double.tap do |dbl|
         allow(dbl).to receive(:call) { ok }
       end
     end
 
     it 'returns this err' do
-      expect(invoke).to eq first_result
+      expect(invoke).to be error
     end
 
     it 'does not invoke subsequent lines in the method' do
       invoke
 
-      expect(second_op).not_to have_received(:call)
+      expect(success_fn).not_to have_received(:call)
     end
   end
 
   describe 'unwrapping specific fields' do
-    subject(:invoke) do
-      example.matched_unwrap(-> { ok(data: :value) }, :data)
+    let(:klass) do
+      Class.new do
+        extend Flows::Result::Do
+        include Flows::Result::Helpers
+
+        do_notation(:call_me)
+        def call_me
+          yield :data, ok(data: :value, another_data: :another_value)
+        end
+      end
     end
+
+    let(:instance) { klass.new }
+    
+    subject(:invoke) { instance.call_me }
 
     it 'returns only given field value' do
       expect(invoke).to eq [:value]
@@ -73,14 +89,20 @@ RSpec.describe Flows::Result::Do do
   end
 
   describe 'when parent class has do-notation enabled' do
-    subject(:invoke) { child.in_child(-> { ok }, -> { ok(all: 'good') }) }
+    subject(:invoke) { child.in_child }
 
+    let(:parent_class) do
+      Class.new do
+        extend Flows::Result::Do
+        include Flows::Result::Helpers
+      end
+    end
+    
     let(:child_class) do
-      Class.new(example_class) do
+      Class.new(parent_class) do
         do_notation(:in_child)
-        def in_child(first, last)
-          yield first.call
-          yield last.call
+        def in_child
+          yield ok(alles: 'gut')
         end
       end
     end
@@ -88,7 +110,7 @@ RSpec.describe Flows::Result::Do do
     let(:child) { child_class.new }
 
     it 'child class also can use do-notation' do
-      expect(invoke).to eq(all: 'good')
+      expect(invoke).to eq(alles: 'gut')
     end
   end
 end
