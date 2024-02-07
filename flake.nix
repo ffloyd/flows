@@ -18,7 +18,7 @@
 
       devShell = pkgs.mkShell {
         packages = with pkgs; [
-          ruby_3_3
+          (ruby_3_3.withPackages (p: with p; [solargraph]))
           lefthook
         ];
 
