@@ -6,17 +6,17 @@ module Flows
         class << self
           def make_instance_wrapper(method_name) # rubocop:disable Metrics/MethodLength
             Module.new.tap do |mod|
-              mod.define_method(method_name) do |*args, &block| # rubocop:disable Metrics/MethodLength
+              mod.define_method(method_name) do |*args, **kwargs, &block| # rubocop:disable Metrics/MethodLength
                 thread = Thread.current
                 klass = self.class
 
-                return super(*args, &block) unless thread[THREAD_VAR_FLAG]
+                return super(*args, **kwargs, &block) unless thread[THREAD_VAR_FLAG]
 
                 report = thread[THREAD_VAR_REPORT]
                 report.add(:started, klass, :instance, method_name, nil)
 
                 before = Process.clock_gettime(Process::CLOCK_MONOTONIC, :float_microsecond)
-                super(*args, &block)
+                super(*args, **kwargs, &block)
               ensure
                 if before
                   after = Process.clock_gettime(Process::CLOCK_MONOTONIC, :float_microsecond)
@@ -28,16 +28,16 @@ module Flows
 
           def make_singleton_wrapper(method_name) # rubocop:disable Metrics/MethodLength
             Module.new.tap do |mod|
-              mod.define_method(method_name) do |*args, &block| # rubocop:disable Metrics/MethodLength
+              mod.define_method(method_name) do |*args, **kwargs, &block| # rubocop:disable Metrics/MethodLength
                 thread = Thread.current
 
-                return super(*args, &block) unless thread[THREAD_VAR_FLAG]
+                return super(*args, **kwargs, &block) unless thread[THREAD_VAR_FLAG]
 
                 report = thread[THREAD_VAR_REPORT]
                 report.add(:started, self, :singleton, method_name, nil)
 
                 before = Process.clock_gettime(Process::CLOCK_MONOTONIC, :float_microsecond)
-                super(*args, &block)
+                super(*args, **kwargs, &block)
               ensure
                 if before
                   after = Process.clock_gettime(Process::CLOCK_MONOTONIC, :float_microsecond)

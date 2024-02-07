@@ -3,6 +3,8 @@ require 'spec_helper'
 RSpec.describe Flows::Plugin::Profiler do
   let(:report) do
     instance_double(described_class::Report::Raw).tap do |dbl|
+      # `===` checks if report is instance of child of Report class
+      # so our double also should pass this check
       allow(described_class::Report).to receive(:===).and_call_original
       allow(described_class::Report).to receive(:===).with(dbl).and_return true
 
@@ -21,25 +23,25 @@ RSpec.describe Flows::Plugin::Profiler do
   describe '.profile' do
     subject(:profile) do
       described_class.profile(report) do
-        user_class.on_singleton
-        user_class.new.on_instance
+        user_class.on_singleton(:i_am_arg, kwarg: :i_am_kwarg) { :i_am_from_block }
+        user_class.new.on_instance(:i_am_arg, kwarg: :i_am_kwarg) { :i_am_from_block }
       end
     end
 
     let(:user_class) do
       Class.new do
-        def on_instance
-          :from_instance
+        def on_instance(arg, kwarg:)
+          [:from_instance, arg, kwarg, yield]
         end
 
-        def self.on_singleton
-          :from_singleton
+        def self.on_singleton(arg, kwarg:)
+          [:from_singleton, arg, kwarg, yield]
         end
       end
     end
 
     it 'returns block value' do
-      expect(profile).to eq :from_instance
+      expect(profile).to eq %i[from_instance i_am_arg i_am_kwarg i_am_from_block]
     end
 
     context 'with instance method' do
