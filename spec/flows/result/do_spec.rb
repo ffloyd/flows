@@ -4,6 +4,8 @@ RSpec.describe Flows::Result::Do do
   include Flows::Result::Helpers
 
   describe 'when all yieled values were ok' do
+    subject(:invoke) { instance.call_me }
+
     let(:klass) do
       Class.new do
         extend Flows::Result::Do
@@ -21,8 +23,6 @@ RSpec.describe Flows::Result::Do do
     end
 
     let(:instance) { klass.new }
-    
-    subject(:invoke) { instance.call_me }
 
     it 'yield unwraps its values' do
       expect(invoke).to eq(7)
@@ -30,6 +30,8 @@ RSpec.describe Flows::Result::Do do
   end
 
   describe 'when yield gets err' do
+    subject(:invoke) { instance.call_me(error, success_fn) }
+
     let(:klass) do
       Class.new do
         extend Flows::Result::Do
@@ -42,18 +44,14 @@ RSpec.describe Flows::Result::Do do
         end
       end
     end
-
-    let(:instance) { klass.new }
-    
-    subject(:invoke) { instance.call_me(error, success_fn) }
-
     let(:error) { err(msg: 'Something went wrong') }
-
     let(:success_fn) do
       double.tap do |dbl|
         allow(dbl).to receive(:call) { ok }
       end
     end
+
+    let(:instance) { klass.new }
 
     it 'returns this err' do
       expect(invoke).to be error
@@ -67,6 +65,8 @@ RSpec.describe Flows::Result::Do do
   end
 
   describe 'unwrapping specific fields' do
+    subject(:invoke) { instance.call_me }
+
     let(:klass) do
       Class.new do
         extend Flows::Result::Do
@@ -80,8 +80,6 @@ RSpec.describe Flows::Result::Do do
     end
 
     let(:instance) { klass.new }
-    
-    subject(:invoke) { instance.call_me }
 
     it 'returns only given field value' do
       expect(invoke).to eq [:value]
@@ -97,7 +95,7 @@ RSpec.describe Flows::Result::Do do
         include Flows::Result::Helpers
       end
     end
-    
+
     let(:child_class) do
       Class.new(parent_class) do
         do_notation(:in_child)
@@ -115,6 +113,8 @@ RSpec.describe Flows::Result::Do do
   end
 
   describe 'when both args and kwargs passed to wrapped method' do
+    subject(:invoke) { instance.call_me(:xxx, kwarg: :yyy) }
+
     let(:klass) do
       Class.new do
         extend Flows::Result::Do
@@ -128,10 +128,8 @@ RSpec.describe Flows::Result::Do do
 
     let(:instance) { klass.new }
 
-    subject(:invoke) { instance.call_me(:xxx, kwarg: :yyy)}
-
     it 'passes all params' do
-      expect(invoke).to eq [:xxx, :yyy]
+      expect(invoke).to eq %i[xxx yyy]
     end
   end
 end

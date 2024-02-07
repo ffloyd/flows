@@ -5,14 +5,14 @@ module Flows
       #
       # @api private
       module Wrapper
-        def initialize(*args, &block)
-          super(*args, &block)
+        def initialize(...)
+          super(...)
           klass = self.class
           raise NoContractError, klass if klass.success_contracts.empty? && !klass.skip_output_contract_flag
         end
 
-        def call(*args, &block)
-          result = super(*args, &block)
+        def call(...)
+          result = super(...)
           klass = self.class
 
           return result if klass.skip_output_contract_flag

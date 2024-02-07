@@ -242,4 +242,27 @@ RSpec.describe Flows::Plugin::OutputContract do
       expect(invoke.error).to eq 'AAAA'
     end
   end
+
+  context 'when args, kwargs and block used in the method' do
+    subject(:invoke) { klass.new.call(1, kwarg: 2) { 4 } }
+
+    let(:klass) do
+      Class.new do
+        include Flows::Plugin::OutputContract
+        include Flows::Result::Helpers
+
+        success_with :ok do
+          Numeric
+        end
+
+        def call(arg, kwarg:)
+          ok_data(arg + kwarg + yield)
+        end
+      end
+    end
+
+    it 'correctly passes them' do
+      expect(invoke.unwrap).to eq 7
+    end
+  end
 end
